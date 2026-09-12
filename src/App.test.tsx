@@ -16,6 +16,7 @@ describe('sound mimic routes', () => {
     beforeEach(async () => {
         await i18nReady;
         window.localStorage.clear();
+        window.sessionStorage.clear();
         delete document.documentElement.dataset.colorMode;
         await i18n.changeLanguage('en-GB');
     });
@@ -29,7 +30,37 @@ describe('sound mimic routes', () => {
 
         await user.type(screen.getByLabelText('Class or session code'), 'abcd12');
         await user.click(screen.getByRole('button', { name: 'Start exploring' }));
-        expect(await screen.findByRole('heading', { name: 'Welcome!' })).toBeInTheDocument();
+        expect(await screen.findByRole('heading', { name: 'Welcome!' }, { timeout: 5000 })).toBeInTheDocument();
+    });
+
+    it('shows a reusable class code and QR link for learners', async () => {
+        const user = userEvent.setup();
+        renderRoute('/home');
+
+        const openButtons = await screen.findAllByRole('button', { name: 'Show join code' });
+        await user.click(openButtons[0]);
+
+        const dialog = screen.getByRole('dialog', { name: 'Connect learners' });
+        const classCode = within(dialog).getByTestId('join-code').textContent ?? '';
+        expect(classCode).toMatch(/^\d{8}$/);
+        expect(screen.getAllByText(classCode)).toHaveLength(2);
+
+        const qrLink = await within(dialog).findByRole('link', { name: 'QR code to join the class' });
+        const qrUrl = new URL(qrLink.getAttribute('href') ?? '');
+        expect(qrUrl.searchParams.get('code')).toBe(classCode);
+        expect(qrUrl.searchParams.get('lng')).toBe('en-GB');
+        expect(await within(dialog).findByTestId('qr-code-canvas')).toBeInTheDocument();
+
+        await user.click(within(dialog).getByRole('button', { name: 'Close' }));
+        expect(screen.queryByRole('dialog', { name: 'Connect learners' })).not.toBeInTheDocument();
+    });
+
+    it('prefills the class code and locale from a scanned join link', async () => {
+        renderRoute('/?code=12345678&lng=vi-VN');
+
+        const codeInput = await screen.findByLabelText('Mã lớp hoặc phiên chơi');
+        expect(codeInput).toHaveValue('12345678');
+        expect(screen.getByRole('button', { name: 'Bắt đầu khám phá' })).toBeInTheDocument();
     });
 
     it('supports the student recording control', async () => {

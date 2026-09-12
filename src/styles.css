@@ -57,7 +57,8 @@ body,
 .results-reflection,
 .color-mode-control,
 .language-control,
-.settings-dialog {
+.settings-dialog,
+.join-code-dialog {
     transition:
         color 180ms ease,
         background-color 180ms ease,
@@ -370,7 +371,41 @@ select:focus-visible {
     display: flex;
     flex-direction: column;
     gap: 9px;
-    margin-top: 32px;
+    margin-top: 10px;
+}
+
+.sidebar__join {
+    padding: 17px 4px;
+    margin-top: 22px;
+    border-top: 1px solid var(--sidebar-divider);
+    border-bottom: 1px solid var(--sidebar-divider);
+}
+
+.sidebar__join button {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    min-height: 52px;
+    padding: 0 13px;
+    color: var(--color-sidebar-text);
+    background: transparent;
+    border-radius: 13px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 650;
+    text-align: left;
+}
+
+.sidebar__join button:hover {
+    color: var(--color-white);
+    background: var(--sidebar-hover);
+}
+
+.sidebar__join svg {
+    width: 29px;
+    height: 29px;
+    flex: 0 0 auto;
 }
 
 .sidebar__link {
@@ -527,6 +562,16 @@ select:focus-visible {
         margin-top: 18px;
     }
 
+    .sidebar--collapsed .sidebar__join {
+        padding: 12px 0;
+        margin-top: 14px;
+    }
+
+    .sidebar--collapsed .sidebar__join button {
+        justify-content: center;
+        padding: 0;
+    }
+
     .sidebar--collapsed .sidebar__link,
     .sidebar--collapsed .sidebar__link:nth-child(5) {
         justify-content: center;
@@ -540,6 +585,7 @@ select:focus-visible {
     }
 
     .sidebar--collapsed .sidebar__link span,
+    .sidebar--collapsed .sidebar__join span,
     .sidebar--collapsed .sidebar__utility span {
         display: none;
     }
@@ -865,6 +911,145 @@ select:focus-visible {
     flex: 1;
 }
 
+.join-code-dialog {
+    width: min(100%, 820px);
+    overflow: hidden;
+    color: var(--text-primary);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow-entry);
+}
+
+.join-code-dialog > header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 64px;
+    padding: 12px 18px 12px 24px;
+    background: var(--surface-soft);
+    border-bottom: 2px solid var(--color-blue);
+}
+
+.join-code-dialog h2,
+.join-code-dialog h3,
+.join-code-dialog p {
+    margin: 0;
+}
+
+.join-code-dialog h2 {
+    font-size: 21px;
+}
+
+.join-code-dialog h3 {
+    max-width: 280px;
+    min-height: 52px;
+    font-size: 17px;
+    font-weight: 650;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.join-code-dialog > header button {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    color: var(--text-secondary);
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    place-items: center;
+}
+
+.join-code-dialog > header button:hover {
+    color: var(--blue-strong);
+    background: var(--surface);
+}
+
+.join-code-dialog__content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 30px;
+    padding: 30px 42px 24px;
+}
+
+.join-code-dialog__qr,
+.join-code-dialog__manual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.join-code-dialog__canvas {
+    display: grid;
+    width: min(100%, 350px);
+    overflow: hidden;
+    background: var(--color-white);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    place-items: center;
+}
+
+.join-code-dialog__canvas a {
+    display: block;
+    max-width: 100%;
+    line-height: 0;
+}
+
+.join-code-dialog__canvas canvas {
+    display: block;
+    max-width: 100%;
+    height: auto !important;
+}
+
+.join-code-dialog__qr-placeholder {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--surface-soft);
+}
+
+.join-code-dialog__manual {
+    justify-content: center;
+    gap: 24px;
+    padding-bottom: 18px;
+}
+
+.join-code-dialog__manual strong {
+    color: var(--blue-strong);
+    font-size: clamp(30px, 4vw, 46px);
+    letter-spacing: 5px;
+}
+
+.join-code-dialog__manual span {
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 750;
+    overflow-wrap: anywhere;
+    text-align: center;
+}
+
+.join-code-dialog > footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 0 42px 28px;
+}
+
+.join-code-dialog > footer p {
+    color: var(--text-secondary);
+    font-size: 15px;
+}
+
+.join-code-dialog > footer .primary-button {
+    min-width: 104px;
+    min-height: 46px;
+    padding: 0 20px;
+    margin: 0;
+    font-size: 14px;
+}
+
 .topbar {
     position: relative;
     display: grid;
@@ -904,6 +1089,15 @@ select:focus-visible {
     margin-top: 3px;
     font-size: 17px;
     letter-spacing: 0.3px;
+}
+
+.class-code__actions {
+    display: flex;
+    align-items: center;
+}
+
+.icon-button.class-code__qr {
+    display: none;
 }
 
 .control-icon {
@@ -1891,6 +2085,10 @@ select:focus-visible {
         display: none;
     }
 
+    .sidebar__join {
+        display: none;
+    }
+
     .main-content {
         min-width: 0;
         padding: 14px 14px calc(174px + env(safe-area-inset-bottom));
@@ -2022,6 +2220,48 @@ select:focus-visible {
 
     .profile {
         display: none;
+    }
+
+    .icon-button.class-code__qr {
+        display: grid;
+    }
+
+    .join-code-dialog {
+        max-height: calc(100dvh - 28px);
+        overflow-y: auto;
+    }
+
+    .join-code-dialog__content {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
+        padding: 22px 20px;
+    }
+
+    .join-code-dialog h3 {
+        min-height: 0;
+        margin-bottom: 12px;
+        font-size: 15px;
+    }
+
+    .join-code-dialog__canvas {
+        width: min(100%, 250px);
+    }
+
+    .join-code-dialog__manual {
+        gap: 9px;
+        padding-bottom: 0;
+    }
+
+    .join-code-dialog__manual strong {
+        font-size: 29px;
+    }
+
+    .join-code-dialog__manual span {
+        font-size: 14px;
+    }
+
+    .join-code-dialog > footer {
+        padding: 0 20px 22px;
     }
 
     .app-hero {

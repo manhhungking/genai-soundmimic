@@ -3,6 +3,7 @@ import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
 import HomeRounded from '@mui/icons-material/HomeRounded';
 import MenuRounded from '@mui/icons-material/MenuRounded';
 import PlayCircleRounded from '@mui/icons-material/PlayCircleRounded';
+import QrCode2Rounded from '@mui/icons-material/QrCode2Rounded';
 import SettingsRounded from '@mui/icons-material/SettingsRounded';
 import TimelineRounded from '@mui/icons-material/TimelineRounded';
 import type { ReactNode } from 'react';
@@ -26,11 +27,12 @@ const navItems: NavItem[] = [
 
 type SidebarProps = {
     collapsed: boolean;
+    onOpenJoinCode: () => void;
     onOpenSettings: () => void;
     onToggle: () => void;
 };
 
-export default function Sidebar({ collapsed, onOpenSettings, onToggle }: SidebarProps) {
+export default function Sidebar({ collapsed, onOpenJoinCode, onOpenSettings, onToggle }: SidebarProps) {
     const { t } = useTranslation();
 
     return (
@@ -45,6 +47,17 @@ export default function Sidebar({ collapsed, onOpenSettings, onToggle }: Sidebar
                     type="button"
                 >
                     {collapsed ? <MenuRounded /> : <ChevronLeftRounded />}
+                </button>
+            </div>
+            <div className="sidebar__join">
+                <button
+                    aria-label={t('join.show')}
+                    onClick={onOpenJoinCode}
+                    title={collapsed ? t('join.show') : undefined}
+                    type="button"
+                >
+                    <QrCode2Rounded aria-hidden="true" />
+                    <span>{t('join.show')}</span>
                 </button>
             </div>
             <nav
