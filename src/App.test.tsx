@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryRouter } from 'react-router';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -75,6 +75,9 @@ describe('sound mimic routes', () => {
         const user = userEvent.setup();
         renderRoute('/home');
 
+        await user.click((await screen.findAllByRole('button', { name: 'Settings' }))[0]);
+        expect(screen.getByRole('dialog', { name: 'Settings' })).toBeInTheDocument();
+
         await user.click(await screen.findByRole('button', { name: 'Use dark mode' }));
         expect(document.documentElement).toHaveAttribute('data-color-mode', 'dark');
         expect(window.localStorage.getItem('soundmimic-color-mode')).toBe('dark');
@@ -88,30 +91,21 @@ describe('sound mimic routes', () => {
         const user = userEvent.setup();
         renderRoute('/home');
 
-        const languageSelect = await screen.findByRole<HTMLSelectElement>('combobox', { name: 'Language' });
-        expect(Array.from(languageSelect.options, ({ value }) => value)).toEqual([
-            'en-GB',
-            'de-DE',
-            'pt-BR',
-            'fr-FR',
-            'fi-FI',
-            'it-IT',
-            'ja-JP',
-            'kr-KR',
-            'krl-FI',
-            'si-LK',
-            'sv',
-            'sw',
-            'ru-RU',
-            'tr-TR',
-            'ua-UA',
-            'vi-VN',
-        ]);
+        const languageButton = await screen.findByRole('button', { name: 'Language: English' });
+        expect(languageButton).toHaveAttribute('aria-expanded', 'false');
+        await user.click(languageButton);
+        expect(languageButton).toHaveAttribute('aria-expanded', 'true');
+        const languageList = screen.getByRole('listbox', { name: 'Language' });
+        expect(within(languageList).getAllByRole('option')).toHaveLength(16);
 
-        await user.selectOptions(languageSelect, 'vi-VN');
+        await user.click(within(languageList).getByRole('option', { name: 'Tiếng Việt' }));
 
         expect(await screen.findByRole('heading', { name: 'Chào mừng!' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Huấn luyện' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Ngôn ngữ: Tiếng Việt' })).toHaveAttribute(
+            'aria-expanded',
+            'false',
+        );
         expect(window.localStorage.getItem('sound-mimic-language')).toBe('vi-VN');
         expect(document.documentElement).toHaveAttribute('lang', 'vi-VN');
     });

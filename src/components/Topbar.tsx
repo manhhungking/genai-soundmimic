@@ -6,7 +6,11 @@ import SchoolRounded from '@mui/icons-material/SchoolRounded';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export default function Topbar() {
+type TopbarProps = {
+    onOpenSettings: () => void;
+};
+
+export default function Topbar({ onOpenSettings }: TopbarProps) {
     const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
@@ -87,7 +91,15 @@ export default function Topbar() {
                 </button>
                 {profileOpen && (
                     <div className="profile__menu">
-                        <button type="button">{t('topbar.profileSettings')}</button>
+                        <button
+                            onClick={() => {
+                                setProfileOpen(false);
+                                onOpenSettings();
+                            }}
+                            type="button"
+                        >
+                            {t('topbar.profileSettings')}
+                        </button>
                         <button type="button">{t('topbar.leaveClass')}</button>
                     </div>
                 )}
