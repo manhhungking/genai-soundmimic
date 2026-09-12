@@ -1,0 +1,187 @@
+:root,
+:root[data-color-mode='light'] {
+    color-scheme: light;
+
+    /* Brand palette */
+    --color-white: #fff;
+    --color-ink: #10215e;
+    --color-ink-deep: #081757;
+    --color-sidebar: #0b2533;
+    --color-sidebar-top: #102e3d;
+    --color-blue: #1684ee;
+    --color-blue-strong: #1267df;
+    --color-cyan: #19bfd2;
+    --color-teal: #11b8a7;
+    --color-violet: #7241dd;
+    --color-pink: #ef85e9;
+    --color-green: #27b96e;
+    --color-orange: #ff793e;
+    --color-red: #ea2448;
+    --color-brand-mark: #5fe9ee;
+    --color-brand-word: #39d5df;
+    --color-danger-text: #b03448;
+    --color-blue-muted: #91afd0;
+    --color-sidebar-text: #e6edf2;
+    --color-sidebar-muted: #b9ccd4;
+    --color-game-panel: #3e4144;
+    --color-game-hover: #303638;
+    --color-github: #3d4145;
+    --color-project-link-text: #25364b;
+    --color-xai: #ef85e9;
+
+    /* Semantic application colors */
+    --text-primary: var(--color-ink);
+    --text-secondary: #60719f;
+    --text-subtle: #8290aa;
+    --text-on-dark: #eaf8fb;
+    --canvas: #f3f9fd;
+    --surface: #fff;
+    --surface-translucent: rgba(255, 255, 255, 0.97);
+    --surface-soft: #edf7ff;
+    --surface-muted: #f5f9fd;
+    --surface-violet: #f7f4ff;
+    --field-background: #fff;
+    --line: #d9e8f5;
+    --line-strong: #bdcce0;
+    --track: #dbe5ed;
+    --focus-ring: rgba(30, 160, 238, 0.33);
+    --shadow-color: rgba(29, 81, 117, 0.1);
+    --shadow-soft: 0 8px 26px var(--shadow-color);
+    --shadow-card: 0 6px 18px rgba(44, 90, 121, 0.07);
+    --shadow-card-hover: 0 13px 28px rgba(31, 102, 151, 0.14);
+    --shadow-entry: 0 30px 75px rgba(0, 19, 35, 0.28);
+    --shadow-button: 0 12px 24px rgba(23, 105, 221, 0.22);
+    --shadow-button-hover: 0 15px 28px rgba(23, 105, 221, 0.25);
+    --shadow-workflow: 0 9px 27px rgba(37, 82, 112, 0.1);
+    --shadow-project-link: 2px -2px 8px rgba(5, 25, 39, 0.14);
+    --shadow-game-controls: 0 8px 22px rgba(6, 29, 43, 0.28);
+    --shadow-topbar: 0 4px 16px rgba(38, 79, 111, 0.06);
+    --shadow-role: 0 6px 14px rgba(23, 115, 222, 0.25);
+    --shadow-hero-bubble: 0 8px 20px rgba(2, 45, 69, 0.14);
+    --shadow-avatar: 0 2px 8px rgba(35, 63, 130, 0.16);
+    --shadow-danger-ring: 0 0 0 7px rgba(244, 52, 84, 0.1);
+    --shadow-popover: 0 9px 22px rgba(50, 61, 89, 0.16);
+    --shadow-teal-action: 0 5px 13px rgba(0, 106, 136, 0.23);
+    --shadow-toggle: 0 2px 6px rgba(19, 41, 68, 0.2);
+    --shadow-notice: 0 8px 24px rgba(12, 57, 77, 0.25);
+    --brand-glow: rgba(15, 209, 225, 0.18);
+    --gradient-primary: linear-gradient(135deg, #238bed, #1664d9);
+    --gradient-role: linear-gradient(135deg, #258ff1, #136bdc);
+    --gradient-teal: linear-gradient(135deg, #058da9, #037695);
+    --gradient-teal-deep: linear-gradient(135deg, #078da9, #047593);
+    --gradient-profile: linear-gradient(145deg, #14aac5, #087d9f);
+    --gradient-blue: linear-gradient(145deg, #42b3fb, #1474e5);
+    --gradient-violet: linear-gradient(145deg, #9766ef, #6940da);
+    --gradient-green: linear-gradient(145deg, #31cdbd, #099aa4);
+    --gradient-record: linear-gradient(145deg, #25bfe0, #0b89bf);
+    --gradient-danger: linear-gradient(145deg, #ff4b67, #ea2448);
+    --gradient-waveform: linear-gradient(180deg, #1aaaf3, #1376e4);
+    --gradient-confidence: linear-gradient(90deg, #1ab4df, #1685ed);
+    --gradient-row-current: linear-gradient(90deg, #dcefff, #dff7ff);
+    --gradient-sidebar-selected: linear-gradient(110deg, rgba(32, 126, 178, 0.66), rgba(28, 141, 188, 0.76));
+    --app-background: linear-gradient(180deg, #fbfdff, #eff8fd);
+    --entry-background:
+        radial-gradient(circle at 50% 62%, rgba(17, 169, 194, 0.48), transparent 38%),
+        radial-gradient(circle at 12% 12%, rgba(21, 139, 186, 0.32), transparent 30%),
+        linear-gradient(135deg, #0b2d43 0%, #08273a 48%, #07425b 100%);
+    --sidebar-background:
+        radial-gradient(circle at 20% 20%, rgba(32, 154, 184, 0.09), transparent 30%),
+        linear-gradient(180deg, var(--color-sidebar-top), var(--color-sidebar));
+
+    /* Reusable accents */
+    --accent-blue-text: #177ee4;
+    --accent-blue-soft: #dff2ff;
+    --accent-teal-text: #0499aa;
+    --accent-teal-soft: #cffaf1;
+    --accent-violet-text: #6942d7;
+    --accent-violet-soft: #eee7ff;
+    --accent-green-text: #168254;
+    --accent-green-soft: #e4f7ed;
+    --accent-orange-soft: #ffeadc;
+    --accent-red-soft: #ffd8df;
+    --control-background: rgba(255, 255, 255, 0.97);
+    --control-border: #c8dce9;
+    --control-text: #263d59;
+    --control-selected: #dff2ff;
+    --control-hover: #edf7ff;
+    --control-shadow: 0 6px 16px rgba(20, 59, 86, 0.13);
+    --sidebar-divider: rgba(218, 242, 247, 0.3);
+    --sidebar-hover: rgba(30, 153, 200, 0.13);
+    --sidebar-control: rgba(255, 255, 255, 0.08);
+    --sidebar-control-subtle: rgba(255, 255, 255, 0.06);
+    --sidebar-collapse: rgba(18, 151, 183, 0.76);
+    --glass-line: rgba(255, 255, 255, 0.15);
+    --glass-line-subtle: rgba(255, 255, 255, 0.09);
+    --hero-overlay: rgba(8, 68, 91, 0.74);
+    --hero-line: rgba(255, 255, 255, 0.2);
+    --entry-orbit: rgba(86, 227, 236, 0.12);
+    --entry-glow: linear-gradient(115deg, transparent 0 45%, rgba(52, 218, 225, 0.04) 45% 46%, transparent 46%);
+    --class-violet: #9b51e8;
+    --class-violet-soft: #f0e4ff;
+    --class-blue: #168bf1;
+    --class-blue-soft: #dff3ff;
+    --class-green: #22b96b;
+    --class-green-soft: #dcf7e7;
+    --class-orange: #ff7141;
+
+    /* Data visualization */
+    --spectrogram-start: #27105f;
+    --spectrogram-end: #075782;
+    --spectrogram-low: #283895;
+    --spectrogram-mid: #15a79c;
+    --spectrogram-high: #b9dd43;
+    --spectrogram-axis: #6f7aa8;
+    --spectrogram-label: #576895;
+}
+
+:root[data-color-mode='dark'] {
+    color-scheme: dark;
+    --color-blue-strong: #68b7ff;
+    --color-danger-text: #ff8495;
+    --color-blue-muted: #7aa5c5;
+    --text-primary: #eaf4ff;
+    --text-secondary: #a8bed2;
+    --text-subtle: #8fa9bf;
+    --canvas: #0c1d29;
+    --surface: #142b3a;
+    --surface-translucent: rgba(20, 43, 58, 0.97);
+    --surface-soft: #19384b;
+    --surface-muted: #102634;
+    --surface-violet: #292343;
+    --field-background: #102534;
+    --line: #2a4a5d;
+    --line-strong: #426378;
+    --track: #304b5d;
+    --shadow-color: rgba(0, 7, 13, 0.34);
+    --shadow-card: 0 8px 22px rgba(0, 7, 13, 0.25);
+    --shadow-card-hover: 0 13px 28px rgba(0, 7, 13, 0.36);
+    --shadow-workflow: 0 10px 30px rgba(0, 7, 13, 0.3);
+    --app-background: linear-gradient(180deg, #102735, #0b1d29);
+    --entry-background:
+        radial-gradient(circle at 50% 62%, rgba(10, 133, 158, 0.32), transparent 38%),
+        radial-gradient(circle at 12% 12%, rgba(20, 111, 151, 0.22), transparent 30%),
+        linear-gradient(135deg, #061d2b 0%, #061923 48%, #063147 100%);
+    --accent-blue-soft: #183c58;
+    --accent-blue-text: #68b7ff;
+    --accent-teal-soft: #143f3e;
+    --accent-teal-text: #5fd5e5;
+    --accent-violet-soft: #30274f;
+    --accent-violet-text: #b69cff;
+    --accent-green-soft: #173d31;
+    --accent-green-text: #62d79b;
+    --accent-orange-soft: #49301f;
+    --accent-red-soft: #48242d;
+    --control-background: rgba(13, 38, 52, 0.96);
+    --control-border: #36576b;
+    --control-text: #e8f5fb;
+    --control-selected: #1c5272;
+    --control-hover: #173b50;
+    --control-shadow: 0 8px 24px rgba(0, 7, 13, 0.32);
+    --gradient-row-current: linear-gradient(90deg, #173f58, #164454);
+    --class-violet-soft: #33284c;
+    --class-blue-soft: #183d56;
+    --class-green-soft: #173e31;
+    --class-orange-soft: #49301f;
+    --spectrogram-axis: #a6bfd3;
+    --spectrogram-label: #b7cada;
+}
