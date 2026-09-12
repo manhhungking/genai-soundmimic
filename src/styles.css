@@ -58,7 +58,9 @@ body,
 .color-mode-control,
 .language-control,
 .settings-dialog,
-.join-code-dialog {
+.join-code-dialog,
+.profile-dialog,
+.profile-setup-card {
     transition:
         color 180ms ease,
         background-color 180ms ease,
@@ -302,6 +304,102 @@ select:focus-visible {
 .join-card__divider span {
     height: 1px;
     background: var(--line-strong);
+}
+
+.profile-setup-page {
+    overflow: auto;
+}
+
+.profile-setup-page__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    width: min(92vw, 640px);
+    padding: 28px 0 88px;
+}
+
+.profile-setup-card {
+    width: 100%;
+    padding: 28px 34px 32px;
+    color: var(--text-primary);
+    background: var(--surface-translucent);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow-entry);
+}
+
+.profile-setup-card > header {
+    text-align: center;
+}
+
+.profile-setup-card h1,
+.profile-setup-card p {
+    margin: 0;
+}
+
+.profile-setup-card h1 {
+    font-size: clamp(23px, 2.2vw, 30px);
+}
+
+.profile-setup-card > header p,
+.profile-ready > p {
+    margin-top: 7px;
+    color: var(--text-secondary);
+    font-size: 15px;
+}
+
+.profile-setup-card > header strong {
+    display: inline-block;
+    margin-top: 14px;
+    color: var(--blue-strong);
+    font-size: 13px;
+    letter-spacing: 0.3px;
+}
+
+.profile-setup-card form {
+    margin-top: 22px;
+}
+
+.profile-setup-card form > .primary-button,
+.profile-dialog form > .primary-button {
+    width: 100%;
+    min-height: 52px;
+    margin-top: 20px;
+    font-size: 15px;
+}
+
+.profile-ready {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0 8px;
+    text-align: center;
+}
+
+.profile-ready__avatar {
+    display: grid;
+    width: 96px;
+    height: 96px;
+    margin-bottom: 18px;
+    background: var(--surface-soft);
+    border-radius: 50%;
+    place-items: center;
+}
+
+.profile-setup-card__secondary {
+    min-height: 44px;
+    padding: 0 20px;
+    margin-top: 22px;
+    color: var(--blue-strong);
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 800;
 }
 
 .app-shell {
@@ -911,6 +1009,132 @@ select:focus-visible {
     flex: 1;
 }
 
+.profile-dialog {
+    width: min(100%, 600px);
+    padding: 22px;
+    color: var(--text-primary);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow-entry);
+}
+
+.profile-dialog > header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+}
+
+.profile-dialog h2,
+.profile-dialog p {
+    margin: 0;
+}
+
+.profile-dialog h2 {
+    font-size: 21px;
+}
+
+.profile-dialog > header p {
+    margin-top: 4px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.profile-dialog > header button {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    color: var(--text-secondary);
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    place-items: center;
+}
+
+.profile-dialog > header button:hover {
+    color: var(--blue-strong);
+    background: var(--surface-soft);
+}
+
+.profile-dialog form {
+    padding-top: 19px;
+}
+
+.profile-editor > label,
+.profile-editor legend {
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.profile-editor > input {
+    width: 100%;
+    min-height: 50px;
+    padding: 0 14px;
+    margin-top: 8px;
+    color: var(--text-primary);
+    background: var(--field-background);
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 650;
+}
+
+.profile-editor > input::placeholder {
+    color: var(--text-subtle);
+    font-weight: 500;
+}
+
+.profile-editor fieldset {
+    padding: 0;
+    margin: 19px 0 0;
+    border: 0;
+}
+
+.profile-editor legend {
+    padding: 0;
+}
+
+.profile-editor__avatars {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.profile-editor__avatars button {
+    display: grid;
+    min-width: 0;
+    min-height: 96px;
+    padding: 8px;
+    background: var(--surface-soft);
+    border: 2px solid transparent;
+    border-radius: 14px;
+    cursor: pointer;
+    place-items: center;
+}
+
+.profile-editor__avatars button:hover {
+    border-color: var(--line-strong);
+}
+
+.profile-editor__avatars button.is-selected {
+    background: var(--control-selected);
+    border-color: var(--color-blue);
+    box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.profile-editor__message {
+    margin: 10px 0 0;
+    color: var(--color-danger-text);
+    font-size: 13px;
+    font-weight: 700;
+}
+
 .join-code-dialog {
     width: min(100%, 820px);
     overflow: hidden;
@@ -1040,6 +1264,24 @@ select:focus-visible {
 .join-code-dialog > footer p {
     color: var(--text-secondary);
     font-size: 15px;
+}
+
+.join-code-dialog > footer > div {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.join-code-dialog__leave {
+    padding: 0;
+    color: var(--color-danger-text);
+    background: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 750;
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
 .join-code-dialog > footer .primary-button {
@@ -1201,16 +1443,8 @@ select:focus-visible {
     cursor: pointer;
 }
 
-.profile__initials {
-    display: grid;
-    width: 50px;
-    height: 50px;
-    color: var(--color-white);
-    background: var(--gradient-profile);
-    border-radius: 50%;
-    font-size: 15px;
-    font-weight: 700;
-    place-items: center;
+.profile__button .avatar {
+    border-width: 2px;
 }
 
 .profile__menu {
@@ -1219,8 +1453,9 @@ select:focus-visible {
     right: 0;
     z-index: 20;
     display: grid;
-    width: 185px;
-    padding: 8px;
+    width: max-content;
+    min-width: 148px;
+    padding: 6px;
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 14px;
@@ -1228,13 +1463,15 @@ select:focus-visible {
 }
 
 .profile__menu button {
-    padding: 10px;
+    min-height: 38px;
+    padding: 8px 10px;
     background: transparent;
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 700;
     text-align: left;
+    white-space: nowrap;
 }
 
 .profile__menu button:hover {
@@ -1395,6 +1632,11 @@ select:focus-visible {
 .avatar--medium {
     width: 58px;
     height: 58px;
+}
+
+.avatar--large {
+    width: 76px;
+    height: 76px;
 }
 
 .avatar--maya {
@@ -2177,6 +2419,35 @@ select:focus-visible {
     .join-card {
         padding: 29px 22px 30px;
         border-radius: 18px;
+    }
+
+    .profile-setup-page__content {
+        gap: 20px;
+        padding: 26px 0 110px;
+    }
+
+    .profile-setup-card {
+        padding: 24px 20px 26px;
+    }
+
+    .profile-dialog {
+        max-height: calc(100dvh - 28px);
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .profile-editor__avatars {
+        gap: 8px;
+    }
+
+    .profile-editor__avatars button {
+        min-height: 80px;
+        padding: 5px;
+    }
+
+    .profile-editor__avatars .avatar--large {
+        width: 64px;
+        height: 64px;
     }
 
     .join-card input,
