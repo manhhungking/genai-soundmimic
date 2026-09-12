@@ -16,6 +16,8 @@ export default function GameControls({ xaiEnabled, onToggleXai }: GameControlsPr
     const [paused, setPaused] = useState(false);
     const { pathname } = useLocation();
 
+    if (pathname.startsWith('/setup')) return null;
+
     return (
         <section
             aria-label={t('game.hostControls')}

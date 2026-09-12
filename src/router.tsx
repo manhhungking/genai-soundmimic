@@ -23,6 +23,10 @@ export const routes = createRoutesFromElements(
                 lazy={() => import('./pages/TrainPage')}
             />
             <Route
+                path="setup"
+                lazy={() => import('./pages/GameSetupPage')}
+            />
+            <Route
                 path="play"
                 lazy={() => import('./pages/PlayPage')}
             />
