@@ -32,7 +32,7 @@ Colors are managed through reusable design tokens in `src/theme.css`. The Light/
 
 ## Localization
 
-UI copy lives in `src/locales`. English is the fallback and first-visit default; the 15 GenAI Teachable Machine languages plus Vietnamese are lazy-loaded when selected. The chosen language is stored locally and restored on the next visit.
+UI copy lives in `public/locales/<locale>/translation.json`, matching GenAI Teachable Machine's HTTP-loaded locale structure. English is the fallback and first-visit default; the 15 original languages plus Vietnamese are loaded on demand. The chosen language is stored locally and restored on the next visit.
 
 ## License
 

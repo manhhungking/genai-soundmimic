@@ -1,6 +1,4 @@
-import type { TranslationKey } from './en';
-
-const soundNameKeys: Record<string, TranslationKey> = {
+const soundNameKeys: Record<string, string> = {
     'Background Noise': 'sound.backgroundNoise',
     Bird: 'sound.bird',
     Cat: 'sound.cat',
