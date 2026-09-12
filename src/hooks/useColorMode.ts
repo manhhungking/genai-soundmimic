@@ -1,10 +1,18 @@
-import { useEffect, useState } from 'react';
+import { createContext, createElement, useContext, useEffect, useMemo, useState, type PropsWithChildren } from 'react';
 
 export type ColorMode = 'light' | 'dark';
 
 const STORAGE_KEY = 'soundmimic-color-mode';
 
+type ColorModeContextValue = {
+    mode: ColorMode;
+    setMode: (mode: ColorMode) => void;
+};
+
+const ColorModeContext = createContext<ColorModeContextValue | null>(null);
+
 function getInitialMode(): ColorMode {
+    if (typeof window === 'undefined') return 'light';
     try {
         const storedMode = window.localStorage.getItem(STORAGE_KEY);
         if (storedMode === 'light' || storedMode === 'dark') return storedMode;
@@ -14,7 +22,7 @@ function getInitialMode(): ColorMode {
     return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-export default function useColorMode() {
+export function ColorModeProvider({ children }: PropsWithChildren) {
     const [mode, setMode] = useState<ColorMode>(getInitialMode);
 
     useEffect(() => {
@@ -26,8 +34,13 @@ export default function useColorMode() {
         }
     }, [mode]);
 
-    return {
-        mode,
-        setMode,
-    };
+    const value = useMemo(() => ({ mode, setMode }), [mode]);
+
+    return createElement(ColorModeContext.Provider, { value }, children);
+}
+
+export default function useColorMode() {
+    const context = useContext(ColorModeContext);
+    if (!context) throw new Error('useColorMode must be used inside ColorModeProvider');
+    return context;
 }

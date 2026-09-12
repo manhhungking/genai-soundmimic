@@ -26,10 +26,11 @@ const navItems: NavItem[] = [
 
 type SidebarProps = {
     collapsed: boolean;
+    onOpenSettings: () => void;
     onToggle: () => void;
 };
 
-export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
+export default function Sidebar({ collapsed, onOpenSettings, onToggle }: SidebarProps) {
     const { t } = useTranslation();
 
     return (
@@ -69,7 +70,11 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 })}
             </nav>
             <div className="sidebar__utility">
-                <button type="button">
+                <button
+                    aria-label={t('nav.settings')}
+                    onClick={onOpenSettings}
+                    type="button"
+                >
                     <SettingsRounded />
                     <span>{t('nav.settings')}</span>
                 </button>
