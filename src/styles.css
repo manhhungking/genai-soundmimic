@@ -1266,24 +1266,6 @@ select:focus-visible {
     font-size: 15px;
 }
 
-.join-code-dialog > footer > div {
-    display: flex;
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.join-code-dialog__leave {
-    padding: 0;
-    color: var(--color-danger-text);
-    background: transparent;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 750;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-}
-
 .join-code-dialog > footer .primary-button {
     min-width: 104px;
     min-height: 46px;
@@ -1476,6 +1458,10 @@ select:focus-visible {
 
 .profile__menu button:hover {
     background: var(--surface-soft);
+}
+
+.profile__menu .profile__leave {
+    color: var(--color-danger-text);
 }
 
 .toast {
