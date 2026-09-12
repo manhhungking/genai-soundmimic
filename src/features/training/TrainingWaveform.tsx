@@ -5,11 +5,13 @@ type TrainingWaveformProps = {
 };
 
 export default function TrainingWaveform({ active = false }: TrainingWaveformProps) {
+    const { t } = useTranslation();
+
     return (
         <div
             className={`training-waveform${active ? ' training-waveform--active' : ''}`}
             role="img"
-            aria-label={active ? 'Live sound waveform' : 'Recorded sound samples'}
+            aria-label={t(active ? 'media.liveWaveform' : 'media.recordedSamples')}
         >
             {bars.map((height, index) => (
                 <span
@@ -20,3 +22,4 @@ export default function TrainingWaveform({ active = false }: TrainingWaveformPro
         </div>
     );
 }
+import { useTranslation } from 'react-i18next';

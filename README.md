@@ -30,6 +30,10 @@ The current workspace is the teacher/host experience. The streamlined student ex
 
 Colors are managed through reusable design tokens in `src/theme.css`. The Light/Dark selector follows the learner's system preference on first visit and remembers later changes locally.
 
+## Localization
+
+UI copy lives in `src/locales`. English is the fallback and first-visit default; the other Teachable Machine language options are lazy-loaded when selected. The chosen language is stored locally and restored on the next visit.
+
 ## License
 
 MIT, matching GenAI Teachable Machine. See [LICENSE](./LICENSE).

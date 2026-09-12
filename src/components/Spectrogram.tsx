@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const cells = Array.from({ length: 96 }, (_, index) => {
     const x = index % 16;
@@ -11,17 +12,16 @@ type SpectrogramProps = {
     label?: string;
 };
 
-export default function Spectrogram({
-    label = 'A spectrogram with a highlighted high-pitch bird chirp',
-}: SpectrogramProps) {
+export default function Spectrogram({ label }: SpectrogramProps) {
     const gradientId = useId();
+    const { t } = useTranslation();
 
     return (
         <svg
             className="spectrogram"
             viewBox="0 0 420 220"
             role="img"
-            aria-label={label}
+            aria-label={label ?? t('media.spectrogram')}
         >
             <defs>
                 <linearGradient

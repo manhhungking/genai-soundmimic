@@ -4,12 +4,13 @@ import CalendarMonthRounded from '@mui/icons-material/CalendarMonthRounded';
 import GraphicEqRounded from '@mui/icons-material/GraphicEqRounded';
 import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import AppHero from '../components/AppHero';
 
 type Feature = {
-    title: string;
-    description: string;
+    titleKey: 'nav.train' | 'nav.play' | 'nav.results';
+    descriptionKey: 'home.trainDescription' | 'home.playDescription' | 'home.resultsDescription';
     icon: ReactNode;
     tone: string;
     to: string;
@@ -17,22 +18,22 @@ type Feature = {
 
 const features: Feature[] = [
     {
-        title: 'Train Model',
-        description: 'Record and label sound examples.',
+        titleKey: 'nav.train',
+        descriptionKey: 'home.trainDescription',
         icon: <GraphicEqRounded />,
         tone: 'blue',
         to: '/train',
     },
     {
-        title: 'Play',
-        description: 'Take turns and hear the AI guess.',
+        titleKey: 'nav.play',
+        descriptionKey: 'home.playDescription',
         icon: <PlayArrowRounded />,
         tone: 'teal',
         to: '/play',
     },
     {
-        title: 'Results',
-        description: 'Review guesses and reflect together.',
+        titleKey: 'nav.results',
+        descriptionKey: 'home.resultsDescription',
         icon: <BarChartRounded />,
         tone: 'blue',
         to: '/results',
@@ -40,46 +41,36 @@ const features: Feature[] = [
 ];
 
 const steps = [
-    ['Train', 'Record and label sounds.'],
-    ['Play', 'Take turns at the mic.'],
-    ['Reflect', 'Review the AI guesses together.'],
-];
+    ['home.stepTrain', 'home.stepTrainDescription'],
+    ['home.stepPlay', 'home.stepPlayDescription'],
+    ['home.stepReflect', 'home.stepReflectDescription'],
+] as const;
 
 export function Component() {
+    const { t } = useTranslation();
+
     return (
         <div className="view-page home-view">
             <AppHero
-                title="Welcome!"
-                description={
-                    <>
-                        Train sounds. Play together.
-                        <br />
-                        Review what the AI guessed.
-                    </>
-                }
-                slogan={
-                    <>
-                        Start with training, then play,
-                        <br />
-                        then talk about what happened.
-                    </>
-                }
-                bubble="Ready to explore?"
+                title={t('home.title')}
+                description={t('home.description')}
+                slogan={t('home.slogan')}
+                bubble={t('home.bubble')}
             />
 
             <section
                 className="feature-grid"
-                aria-label="Choose an activity"
+                aria-label={t('home.chooseActivity')}
             >
                 {features.map((feature) => (
                     <Link
                         className="feature-card"
-                        key={feature.title}
+                        key={feature.titleKey}
                         to={feature.to}
                     >
                         <span className={`feature-card__icon feature-card__icon--${feature.tone}`}>{feature.icon}</span>
-                        <h2>{feature.title}</h2>
-                        <p>{feature.description}</p>
+                        <h2>{t(feature.titleKey)}</h2>
+                        <p>{t(feature.descriptionKey)}</p>
                         <span className="feature-card__arrow">
                             <ArrowForwardRounded />
                         </span>
@@ -88,14 +79,14 @@ export function Component() {
             </section>
 
             <section className="how-it-works">
-                <h2>How it works</h2>
+                <h2>{t('home.howItWorks')}</h2>
                 <ol>
                     {steps.map(([title, description], index) => (
                         <li key={title}>
                             <span>{index + 1}</span>
                             <div>
-                                <strong>{title}</strong>
-                                <p>{description}</p>
+                                <strong>{t(title)}</strong>
+                                <p>{t(description)}</p>
                             </div>
                         </li>
                     ))}
@@ -108,19 +99,19 @@ export function Component() {
                         <CalendarMonthRounded />
                     </span>
                     <div>
-                        <h2>Today’s sound adventure</h2>
-                        <p>A quick guide for your group.</p>
+                        <h2>{t('home.todayTitle')}</h2>
+                        <p>{t('home.todayDescription')}</p>
                     </div>
                 </div>
                 <ol>
                     <li>
-                        <span>1</span> Build your sound set
+                        <span>1</span> {t('home.todayOne')}
                     </li>
                     <li>
-                        <span>2</span> Take turns at the mic
+                        <span>2</span> {t('home.todayTwo')}
                     </li>
                     <li>
-                        <span>3</span> Share what surprised you
+                        <span>3</span> {t('home.todayThree')}
                     </li>
                 </ol>
             </section>

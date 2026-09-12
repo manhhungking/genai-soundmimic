@@ -2,6 +2,7 @@ import FolderOpenRounded from '@mui/icons-material/FolderOpenRounded';
 import SaveRounded from '@mui/icons-material/SaveRounded';
 import { WorkflowLayout, type IConnection } from '@genai-fi/base';
 import { useMemo, useRef, useState, type ChangeEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import TrainingDataPanel from '../features/training/TrainingDataPanel';
 import TrainingOutputColumn from '../features/training/TrainingOutputColumn';
 import TrainingStage, { type TrainingStatus } from '../features/training/TrainingStage';
@@ -39,6 +40,7 @@ function isSoundClassList(value: unknown): value is SoundClass[] {
     );
 }
 export function Component() {
+    const { t } = useTranslation();
     const loadRef = useRef<HTMLInputElement>(null);
     const [classes, setClasses] = useState<SoundClass[]>(initialSoundClasses);
     const [trainingStatus, setTrainingStatus] = useState<TrainingStatus>('ready');
@@ -77,7 +79,7 @@ export function Component() {
             ...items,
             {
                 id: randomId(),
-                name: `Class ${index + 1}`,
+                name: t('train.defaultClass', { number: index + 1 }),
                 icon: 'music',
                 sampleCount: 0,
                 tone: classTones[index % classTones.length],
@@ -93,15 +95,15 @@ export function Component() {
 
     async function trainClassifier() {
         setTrainingStatus('loading');
-        setNotice('Loading the sound classifier…');
+        setNotice(t('train.loadingNotice'));
         try {
             await loadClassifier();
             await new Promise((resolve) => window.setTimeout(resolve, 850));
             setTrainingStatus('done');
-            setNotice('Great work! Your classroom model is ready to try.');
+            setNotice(t('train.successNotice'));
         } catch {
             setTrainingStatus('ready');
-            setNotice('The classifier could not start. Please try again.');
+            setNotice(t('train.errorNotice'));
         }
     }
 
@@ -113,7 +115,7 @@ export function Component() {
         link.download = 'sound-mimic-classes.json';
         link.click();
         URL.revokeObjectURL(url);
-        setNotice('Class names, icons, and sample counts were saved.');
+        setNotice(t('train.savedNotice'));
     }
 
     async function loadModel(event: ChangeEvent<HTMLInputElement>) {
@@ -127,9 +129,9 @@ export function Component() {
             if (!isSoundClassList(nextClasses)) throw new Error('Invalid class data');
             setClasses(nextClasses);
             setTrainingStatus('ready');
-            setNotice('Model classes loaded. Review them, then train again.');
+            setNotice(t('train.loadedNotice'));
         } catch {
-            setNotice('That file is not a Sound Mimic model.');
+            setNotice(t('train.invalidNotice'));
         }
     }
 
@@ -137,17 +139,23 @@ export function Component() {
         <div className="train-page">
             <header className="train-toolbar">
                 <div>
-                    <h1>Train Model</h1>
-                    <p>Record or upload sounds to build your classifier.</p>
+                    <h1>{t('train.title')}</h1>
+                    <p>{t('train.description')}</p>
                 </div>
                 <div className="train-toolbar__actions">
                     <button type="button" onClick={() => loadRef.current?.click()}>
-                        <FolderOpenRounded /> Load Model
+                        <FolderOpenRounded /> {t('train.loadModel')}
                     </button>
                     <button className="is-primary" type="button" onClick={saveModel}>
-                        <SaveRounded /> Save Model
+                        <SaveRounded /> {t('train.saveModel')}
                     </button>
-                    <input ref={loadRef} type="file" accept="application/json,.json" onChange={loadModel} aria-label="Load a Sound Mimic model" />
+                    <input
+                        ref={loadRef}
+                        type="file"
+                        accept="application/json,.json"
+                        onChange={loadModel}
+                        aria-label={t('train.loadModelAria')}
+                    />
                 </div>
             </header>
 

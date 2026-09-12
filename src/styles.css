@@ -949,6 +949,7 @@ select:focus-visible {
     font-size: clamp(17px, 1.4vw, 23px);
     font-weight: 550;
     line-height: 1.35;
+    white-space: pre-line;
 }
 
 .app-hero__slogan {
@@ -960,6 +961,7 @@ select:focus-visible {
     font-size: clamp(14px, 1.05vw, 18px);
     font-style: italic;
     font-weight: 650;
+    white-space: pre-line;
     line-height: 1.35;
 }
 
@@ -1640,7 +1642,7 @@ select:focus-visible {
         left: 40px;
     }
 
-    .app-hero__slogan {
+.app-hero__slogan {
         margin-top: 30px;
     }
 

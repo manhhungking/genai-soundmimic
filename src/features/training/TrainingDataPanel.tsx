@@ -1,5 +1,6 @@
 import AddRounded from '@mui/icons-material/AddRounded';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import { useTranslation } from 'react-i18next';
 import TrainingClassCard from './TrainingClassCard';
 import type { SoundClass } from './model';
 
@@ -20,14 +21,16 @@ export default function TrainingDataPanel({
     onRemoveSample,
     onUpdateClass,
 }: TrainingDataPanelProps) {
+    const { t } = useTranslation();
+
     return (
         <section className="training-data-panel">
             <header className="training-data-panel__heading">
                 <div>
-                    <h2>Training Data</h2>
-                    <p>Add audio examples for each class.</p>
+                    <h2>{t('train.dataTitle')}</h2>
+                    <p>{t('train.dataDescription')}</p>
                 </div>
-                <InfoOutlined aria-label="Each class needs a few clear sound examples" />
+                <InfoOutlined aria-label={t('train.dataInfo')} />
             </header>
             <div className="training-class-list">
                 {classes.map((soundClass) => (
@@ -47,7 +50,7 @@ export default function TrainingDataPanel({
                 type="button"
                 onClick={onAddClass}
             >
-                <AddRounded /> Add a class
+                <AddRounded /> {t('train.addClass')}
             </button>
         </section>
     );

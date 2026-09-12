@@ -4,6 +4,7 @@ import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
 import SettingsRounded from '@mui/icons-material/SettingsRounded';
 import StorageRounded from '@mui/icons-material/StorageRounded';
+import { useTranslation } from 'react-i18next';
 import WorkflowNode from './WorkflowNode';
 
 export type TrainingStatus = 'ready' | 'loading' | 'done';
@@ -16,6 +17,8 @@ type TrainingStageProps = {
 };
 
 export default function TrainingStage({ classCount, sampleCount, status, onTrain }: TrainingStageProps) {
+    const { t } = useTranslation();
+
     return (
         <WorkflowNode
             className="training-stage"
@@ -23,11 +26,11 @@ export default function TrainingStage({ classCount, sampleCount, status, onTrain
             active={sampleCount > 0}
         >
             <header>
-                <h2>Training</h2>
+                <h2>{t('train.stageTitle')}</h2>
                 <button
                     className="icon-button"
                     type="button"
-                    aria-label="Training settings"
+                    aria-label={t('train.settings')}
                 >
                     <SettingsRounded />
                 </button>
@@ -35,11 +38,13 @@ export default function TrainingStage({ classCount, sampleCount, status, onTrain
             <div className={`training-stage__brain${status === 'loading' ? ' is-training' : ''}`}>
                 <DataObjectRounded />
             </div>
-            <h3>{status === 'done' ? 'Training complete!' : status === 'loading' ? 'Learning your sounds…' : 'Ready to train'}</h3>
+            <h3>
+                {t(status === 'done' ? 'train.complete' : status === 'loading' ? 'train.learning' : 'train.ready')}
+            </h3>
             <p>
                 {status === 'done'
-                    ? 'Your sound model is ready to try.'
-                    : 'The model will learn the sound classes using the examples on the left.'}
+                    ? t('train.modelReady')
+                    : t('train.modelDescription')}
             </p>
             <button
                 className="train-classifier-button"
@@ -48,22 +53,22 @@ export default function TrainingStage({ classCount, sampleCount, status, onTrain
                 onClick={onTrain}
             >
                 {status === 'done' ? <CheckCircleRounded /> : <PlayArrowRounded />}
-                {status === 'loading' ? 'Training…' : status === 'done' ? 'Train again' : 'Train Classifier'}
+                {t(status === 'loading' ? 'train.training' : status === 'done' ? 'train.trainAgain' : 'train.trainClassifier')}
             </button>
             <div className="model-summary">
-                <h3>Model Summary</h3>
+                <h3>{t('train.modelSummary')}</h3>
                 <p>
-                    <DataObjectRounded /> <strong>{classCount}</strong> classes
+                    <DataObjectRounded /> {t('train.classCount', { count: classCount })}
                 </p>
                 <p>
-                    <StorageRounded /> <strong>{sampleCount}</strong> samples
+                    <StorageRounded /> {t('train.sampleCount', { count: sampleCount })}
                 </p>
                 <p>
-                    <span className="model-summary__ready" /> Ready to train
+                    <span className="model-summary__ready" /> {t('train.ready')}
                 </p>
             </div>
             <p className="training-stage__tip">
-                <InfoOutlined /> Add more samples to help your model learn.
+                <InfoOutlined /> {t('train.tip')}
             </p>
         </WorkflowNode>
     );
