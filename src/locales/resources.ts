@@ -3,24 +3,28 @@ import type { LanguageCode } from './config';
 
 type Locale = Record<keyof typeof en, string>;
 
-const localeLoaders: Record<Exclude<LanguageCode, 'en'>, () => Promise<{ default: Locale }>> = {
-    ja: () => import('./ja'),
-    pt: () => import('./pt'),
-    es: () => import('./es'),
-    de: () => import('./de'),
-    ru: () => import('./ru'),
-    fr: () => import('./fr'),
-    'zh-CN': () => import('./zh-CN'),
-    'zh-TW': () => import('./zh-TW'),
-    ko: () => import('./ko'),
-    th: () => import('./th'),
-    vi: () => import('./vi'),
+const localeLoaders: Record<Exclude<LanguageCode, 'en-GB'>, () => Promise<{ default: Locale }>> = {
+    'de-DE': () => import('./de'),
+    'pt-BR': () => import('./pt'),
+    'fr-FR': () => import('./fr'),
+    'fi-FI': () => import('./fi'),
+    'it-IT': () => import('./it'),
+    'ja-JP': () => import('./ja'),
+    'kr-KR': () => import('./ko'),
+    'krl-FI': () => import('./krl'),
+    'si-LK': () => import('./si'),
+    sv: () => import('./sv'),
+    sw: () => import('./sw'),
+    'ru-RU': () => import('./ru'),
+    'tr-TR': () => import('./tr'),
+    'ua-UA': () => import('./uk'),
+    'vi-VN': () => import('./vi'),
 };
 
-export const englishResources = { en: { translation: en } };
+export const englishResources = { 'en-GB': { translation: en } };
 
 export async function loadLocale(language: LanguageCode) {
-    if (language === 'en') return en;
+    if (language === 'en-GB') return en;
     const { default: locale } = await localeLoaders[language]();
     return locale;
 }
