@@ -1,8 +1,12 @@
+import { useTranslation } from 'react-i18next';
+
 type BrandProps = {
     large?: boolean;
 };
 
 export default function Brand({ large = false }: BrandProps) {
+    const { t } = useTranslation();
+
     return (
         <div className={`brand${large ? ' brand--large' : ''}`}>
             <svg
@@ -40,7 +44,7 @@ export default function Brand({ large = false }: BrandProps) {
                 <div className="brand__name">GenAI</div>
                 <div className="brand__name">Sound Mimic</div>
             </div>
-            {large && <p>Train sounds. Play together. Explain the AI.</p>}
+            {large && <p>{t('app.brandTagline')}</p>}
         </div>
     );
 }

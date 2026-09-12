@@ -1,4 +1,5 @@
 import { RouterProvider, type RouterProviderProps } from 'react-router';
+import './i18n';
 import { defaultRouter } from './router';
 
 type AppProps = {

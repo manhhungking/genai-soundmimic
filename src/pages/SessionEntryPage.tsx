@@ -1,10 +1,12 @@
 import { useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import Brand from '../components/Brand';
 import CornerControls from '../components/CornerControls';
 import ProjectLinks from '../components/ProjectLinks';
 
 export function Component() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [code, setCode] = useState('');
     const [message, setMessage] = useState('');
@@ -12,7 +14,7 @@ export function Component() {
     function joinSession(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         if (!code.trim()) {
-            setMessage('Ask your teacher for the class code, then try again.');
+            setMessage(t('entry.missingCode'));
             return;
         }
         navigate('/home');
@@ -27,8 +29,8 @@ export function Component() {
                     className="join-card"
                     onSubmit={joinSession}
                 >
-                    <h1>Student — Enter code</h1>
-                    <label htmlFor="session-code">Class or session code</label>
+                    <h1>{t('entry.title')}</h1>
+                    <label htmlFor="session-code">{t('entry.codeLabel')}</label>
                     <input
                         id="session-code"
                         value={code}
@@ -36,7 +38,7 @@ export function Component() {
                             setCode(event.target.value.toUpperCase());
                             setMessage('');
                         }}
-                        placeholder="Try ABCD12"
+                        placeholder={t('entry.codePlaceholder')}
                         autoComplete="off"
                         maxLength={8}
                     />
@@ -52,11 +54,11 @@ export function Component() {
                         className="primary-button"
                         type="submit"
                     >
-                        Start exploring
+                        {t('entry.start')}
                     </button>
                     <div className="join-card__divider">
                         <span />
-                        or
+                        {t('entry.or')}
                         <span />
                     </div>
                     <button
@@ -64,7 +66,7 @@ export function Component() {
                         type="button"
                         onClick={() => navigate('/home')}
                     >
-                        Teacher — Create a new session
+                        {t('entry.teacher')}
                     </button>
                 </form>
             </div>

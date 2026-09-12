@@ -7,6 +7,8 @@ import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
 import StopRounded from '@mui/icons-material/StopRounded';
 import UploadRounded from '@mui/icons-material/UploadRounded';
 import { useRef, useState, type ChangeEvent } from 'react';
+import { useTranslation } from 'react-i18next';
+import { getSoundNameKey } from '../../locales/sounds';
 import SoundClassIcon from './SoundClassIcon';
 import TrainingWaveform from './TrainingWaveform';
 import WorkflowNode from './WorkflowNode';
@@ -29,6 +31,7 @@ export default function TrainingClassCard({
     onRemoveSample,
     onUpdate,
 }: TrainingClassCardProps) {
+    const { t } = useTranslation();
     const fileRef = useRef<HTMLInputElement>(null);
     const [editing, setEditing] = useState(false);
     const [recording, setRecording] = useState(false);
@@ -36,9 +39,11 @@ export default function TrainingClassCard({
     const [menuOpen, setMenuOpen] = useState(false);
     const [draftName, setDraftName] = useState(soundClass.name);
     const [draftIcon, setDraftIcon] = useState<SoundIconKey>(soundClass.icon);
+    const defaultNameKey = getSoundNameKey(soundClass.name);
+    const displayName = defaultNameKey ? t(defaultNameKey) : soundClass.name;
 
     function startEditing() {
-        setDraftName(soundClass.name);
+        setDraftName(displayName);
         setDraftIcon(soundClass.icon);
         setMenuOpen(false);
         setEditing(true);
@@ -46,7 +51,7 @@ export default function TrainingClassCard({
 
     function saveEdit() {
         onUpdate(soundClass.id, {
-            name: draftName.trim() || 'Sound class',
+            name: draftName.trim() || t('train.soundClass'),
             icon: draftIcon,
         });
         setEditing(false);
@@ -73,14 +78,14 @@ export default function TrainingClassCard({
                     <SoundClassIcon icon={soundClass.icon} />
                 </span>
                 <div>
-                    <h3>{soundClass.name}</h3>
-                    <small>{soundClass.sampleCount} samples</small>
+                    <h3>{displayName}</h3>
+                    <small>{t('train.sampleCount', { count: soundClass.sampleCount })}</small>
                 </div>
                 <button
                     className="icon-button"
                     type="button"
                     onClick={startEditing}
-                    aria-label={`Edit ${soundClass.name} class`}
+                    aria-label={t('train.editClass', { name: displayName })}
                 >
                     <EditRounded />
                 </button>
@@ -89,7 +94,7 @@ export default function TrainingClassCard({
                         className="icon-button"
                         type="button"
                         onClick={() => setMenuOpen((value) => !value)}
-                        aria-label={`More options for ${soundClass.name}`}
+                        aria-label={t('train.moreOptions', { name: displayName })}
                         aria-expanded={menuOpen}
                     >
                         <MoreVertRounded />
@@ -101,7 +106,7 @@ export default function TrainingClassCard({
                             disabled={!canRemove}
                             onClick={() => onRemove(soundClass.id)}
                         >
-                            <DeleteOutlineRounded /> Remove class
+                            <DeleteOutlineRounded /> {t('train.removeClass')}
                         </button>
                     )}
                 </div>
@@ -111,10 +116,10 @@ export default function TrainingClassCard({
                 <div
                     className="class-editor"
                     role="group"
-                    aria-label={`Edit ${soundClass.name} class`}
+                    aria-label={t('train.editClass', { name: displayName })}
                 >
                     <label>
-                        Class name
+                        {t('train.className')}
                         <input
                             value={draftName}
                             onChange={(event) => setDraftName(event.target.value)}
@@ -122,28 +127,31 @@ export default function TrainingClassCard({
                             autoFocus
                         />
                     </label>
-                    <span>Choose an icon</span>
+                    <span>{t('train.chooseIcon')}</span>
                     <div className="class-editor__icons">
-                        {soundIconOptions.map((option) => (
-                            <button
-                                className={draftIcon === option.value ? 'is-selected' : ''}
-                                key={option.value}
-                                type="button"
-                                onClick={() => setDraftIcon(option.value)}
-                                aria-label={`Use ${option.label} icon`}
-                                aria-pressed={draftIcon === option.value}
-                                title={option.label}
-                            >
-                                <SoundClassIcon icon={option.value} />
-                            </button>
-                        ))}
+                        {soundIconOptions.map((option) => {
+                            const iconLabel = t(option.labelKey);
+                            return (
+                                <button
+                                    className={draftIcon === option.value ? 'is-selected' : ''}
+                                    key={option.value}
+                                    type="button"
+                                    onClick={() => setDraftIcon(option.value)}
+                                    aria-label={t('train.useIcon', { name: iconLabel })}
+                                    aria-pressed={draftIcon === option.value}
+                                    title={iconLabel}
+                                >
+                                    <SoundClassIcon icon={option.value} />
+                                </button>
+                            );
+                        })}
                     </div>
                     <button
                         className="class-editor__done"
                         type="button"
                         onClick={saveEdit}
                     >
-                        <CheckRounded /> Done
+                        <CheckRounded /> {t('train.done')}
                     </button>
                 </div>
             )}
@@ -152,16 +160,20 @@ export default function TrainingClassCard({
                 <button
                     type="button"
                     onClick={toggleRecording}
-                    aria-label={recording ? `Stop recording ${soundClass.name}` : `Record ${soundClass.name}`}
+                    aria-label={
+                        recording
+                            ? t('play.stopRecording')
+                            : t('train.recordClass', { name: displayName })
+                    }
                 >
                     {recording ? <StopRounded /> : <MicRounded />}
-                    {recording ? 'Stop' : 'Mic'}
+                    {recording ? t('train.stop') : t('train.mic')}
                 </button>
                 <button
                     type="button"
                     onClick={() => fileRef.current?.click()}
                 >
-                    <UploadRounded /> Upload
+                    <UploadRounded /> {t('train.upload')}
                 </button>
                 <input
                     ref={fileRef}
@@ -169,7 +181,7 @@ export default function TrainingClassCard({
                     accept="audio/*"
                     multiple
                     onChange={handleUpload}
-                    aria-label={`Upload audio samples for ${soundClass.name}`}
+                    aria-label={t('train.uploadSamples', { name: displayName })}
                 />
             </div>
 
@@ -179,7 +191,7 @@ export default function TrainingClassCard({
                     className="round-action"
                     type="button"
                     onClick={() => setPlaying((value) => !value)}
-                    aria-label={playing ? `Pause ${soundClass.name} samples` : `Play ${soundClass.name} samples`}
+                    aria-label={t(playing ? 'train.pauseSamples' : 'train.playSamples', { name: displayName })}
                 >
                     {playing ? <span className="pause-icon">Ⅱ</span> : <PlayArrowRounded />}
                 </button>
@@ -188,7 +200,7 @@ export default function TrainingClassCard({
                     type="button"
                     disabled={soundClass.sampleCount === 0}
                     onClick={() => onRemoveSample(soundClass.id)}
-                    aria-label={`Remove one ${soundClass.name} sample`}
+                    aria-label={t('train.removeSample', { name: displayName })}
                 >
                     <DeleteOutlineRounded />
                 </button>

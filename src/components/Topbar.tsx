@@ -4,8 +4,10 @@ import GroupsRounded from '@mui/icons-material/GroupsRounded';
 import PersonRounded from '@mui/icons-material/PersonRounded';
 import SchoolRounded from '@mui/icons-material/SchoolRounded';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function Topbar() {
+    const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
 
@@ -22,14 +24,14 @@ export default function Topbar() {
                     <GroupsRounded />
                 </span>
                 <span>
-                    <small>Class Code</small>
+                    <small>{t('topbar.classCode')}</small>
                     <strong>ABCD12</strong>
                 </span>
                 <button
                     className="icon-button"
                     type="button"
                     onClick={copyClassCode}
-                    aria-label="Copy class code"
+                    aria-label={t('topbar.copyCode')}
                 >
                     <ContentCopyRounded />
                 </button>
@@ -40,10 +42,10 @@ export default function Topbar() {
                     <GroupsRounded />
                 </span>
                 <span>
-                    <small>Group</small>
+                    <small>{t('topbar.group')}</small>
                     <select defaultValue="group-one">
-                        <option value="group-one">Group 1</option>
-                        <option value="sound-explorers">Sound Explorers</option>
+                        <option value="group-one">{t('topbar.groupOne')}</option>
+                        <option value="sound-explorers">{t('topbar.soundExplorers')}</option>
                     </select>
                 </span>
                 <ExpandMoreRounded aria-hidden="true" />
@@ -51,17 +53,17 @@ export default function Topbar() {
 
             <div
                 className="role-switch"
-                aria-label="Choose role"
+                aria-label={t('topbar.chooseRole')}
             >
                 <button
-                    aria-label="Student view is coming later"
+                    aria-label={t('topbar.studentComing')}
                     disabled
                     type="button"
                     aria-pressed={false}
-                    title="Student view is coming later"
+                    title={t('topbar.studentComing')}
                 >
                     <PersonRounded />
-                    Student
+                    {t('topbar.student')}
                 </button>
                 <button
                     className="is-active"
@@ -69,7 +71,7 @@ export default function Topbar() {
                     aria-pressed={true}
                 >
                     <SchoolRounded />
-                    Host
+                    {t('topbar.host')}
                 </button>
             </div>
 
@@ -85,8 +87,8 @@ export default function Topbar() {
                 </button>
                 {profileOpen && (
                     <div className="profile__menu">
-                        <button type="button">Profile settings</button>
-                        <button type="button">Leave class</button>
+                        <button type="button">{t('topbar.profileSettings')}</button>
+                        <button type="button">{t('topbar.leaveClass')}</button>
                     </div>
                 )}
             </div>
@@ -95,7 +97,7 @@ export default function Topbar() {
                 className={`toast${copied ? ' toast--visible' : ''}`}
                 role="status"
             >
-                Class code copied
+                {t('topbar.codeCopied')}
             </div>
         </header>
     );

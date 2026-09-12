@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { createMemoryRouter } from 'react-router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import App from './App';
+import i18n, { i18nReady } from './i18n';
 import { routes } from './router';
 
 function renderRoute(path: string) {
@@ -12,9 +13,11 @@ function renderRoute(path: string) {
 }
 
 describe('sound mimic routes', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+        await i18nReady;
         window.localStorage.clear();
         delete document.documentElement.dataset.colorMode;
+        await i18n.changeLanguage('en');
     });
 
     it('validates a class code and opens the app home', async () => {
@@ -79,6 +82,34 @@ describe('sound mimic routes', () => {
         await user.click(screen.getByRole('button', { name: 'Use light mode' }));
         expect(document.documentElement).toHaveAttribute('data-color-mode', 'light');
         expect(window.localStorage.getItem('soundmimic-color-mode')).toBe('light');
+    });
+
+    it('switches language across the app and remembers the preference', async () => {
+        const user = userEvent.setup();
+        renderRoute('/home');
+
+        const languageSelect = await screen.findByRole<HTMLSelectElement>('combobox', { name: 'Language' });
+        expect(Array.from(languageSelect.options, ({ value }) => value)).toEqual([
+            'en',
+            'ja',
+            'pt',
+            'es',
+            'de',
+            'ru',
+            'fr',
+            'zh-CN',
+            'zh-TW',
+            'ko',
+            'th',
+            'vi',
+        ]);
+
+        await user.selectOptions(languageSelect, 'vi');
+
+        expect(await screen.findByRole('heading', { name: 'Chào mừng!' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Huấn luyện' })).toBeInTheDocument();
+        expect(window.localStorage.getItem('sound-mimic-language')).toBe('vi');
+        expect(document.documentElement).toHaveAttribute('lang', 'vi');
     });
 
     it('lets students rename a training class, change its icon, and add another class', async () => {

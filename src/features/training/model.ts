@@ -1,10 +1,10 @@
 export const soundIconOptions = [
-    { value: 'noise', label: 'Sound wave' },
-    { value: 'bird', label: 'Bird' },
-    { value: 'cat', label: 'Cat' },
-    { value: 'clap', label: 'Clap' },
-    { value: 'bell', label: 'Bell' },
-    { value: 'music', label: 'Music' },
+    { value: 'noise', labelKey: 'sound.wave' },
+    { value: 'bird', labelKey: 'sound.bird' },
+    { value: 'cat', labelKey: 'sound.cat' },
+    { value: 'clap', labelKey: 'sound.clap' },
+    { value: 'bell', labelKey: 'sound.bell' },
+    { value: 'music', labelKey: 'sound.music' },
 ] as const;
 
 export type SoundIconKey = (typeof soundIconOptions)[number]['value'];
