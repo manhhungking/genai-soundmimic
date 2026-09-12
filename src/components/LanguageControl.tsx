@@ -5,6 +5,12 @@ export default function LanguageControl() {
     return (
         <label className="language-control">
             <LanguageRounded aria-hidden="true" />
+            <span
+                aria-hidden="true"
+                className="language-control__short-label"
+            >
+                EN
+            </span>
             <select
                 aria-label="Language"
                 defaultValue="en"
