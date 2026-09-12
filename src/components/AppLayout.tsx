@@ -41,6 +41,10 @@ export function Component() {
             <main className="main-content">
                 <Topbar
                     classCode={classCode}
+                    onLeaveClass={() => {
+                        window.sessionStorage.removeItem('genai-sm-idcode-8');
+                        navigate('/');
+                    }}
                     onOpenJoinCode={() => setJoinCodeOpen(true)}
                     onOpenProfileSettings={() => setProfileOpen(true)}
                     profile={profile}
@@ -59,11 +63,6 @@ export function Component() {
             <JoinCodeDialog
                 code={classCode}
                 onClose={() => setJoinCodeOpen(false)}
-                onLeaveClass={() => {
-                    window.sessionStorage.removeItem('genai-sm-idcode-8');
-                    setJoinCodeOpen(false);
-                    navigate('/');
-                }}
                 open={joinCodeOpen}
             />
             {profileOpen && (

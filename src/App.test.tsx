@@ -56,7 +56,7 @@ describe('sound mimic routes', () => {
         await user.click(openButtons[0]);
 
         const dialog = screen.getByRole('dialog', { name: 'Connect learners' });
-        expect(within(dialog).getByRole('button', { name: 'Leave class' })).toBeInTheDocument();
+        expect(within(dialog).queryByRole('button', { name: 'Leave class' })).not.toBeInTheDocument();
         const classCode = within(dialog).getByTestId('join-code').textContent ?? '';
         expect(classCode).toMatch(/^\d{8}$/);
         expect(screen.getAllByText(classCode)).toHaveLength(2);
@@ -69,12 +69,6 @@ describe('sound mimic routes', () => {
 
         await user.click(within(dialog).getByRole('button', { name: 'Close' }));
         expect(screen.queryByRole('dialog', { name: 'Connect learners' })).not.toBeInTheDocument();
-
-        await user.click((await screen.findAllByRole('button', { name: 'Show join code' }))[0]);
-        expect(window.sessionStorage.getItem('genai-sm-idcode-8')).toBe(classCode);
-        await user.click(screen.getByRole('button', { name: 'Leave class' }));
-        expect(await screen.findByRole('heading', { name: 'Student — Enter code' })).toBeInTheDocument();
-        expect(window.sessionStorage.getItem('genai-sm-idcode-8')).toBeNull();
     });
 
     it('keeps profile settings separate and updates the host identity', async () => {
@@ -82,7 +76,7 @@ describe('sound mimic routes', () => {
         renderRoute('/home');
 
         await user.click(await screen.findByRole('button', { name: 'Open profile menu for Jordan Davis' }));
-        expect(screen.queryByRole('button', { name: 'Leave class' })).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Leave class' })).toBeInTheDocument();
         await user.click(screen.getByRole('button', { name: 'Profile settings' }));
 
         const dialog = screen.getByRole('dialog', { name: 'Profile settings' });
@@ -97,6 +91,12 @@ describe('sound mimic routes', () => {
             avatar: 'sophia',
             name: 'Ms Rivera',
         });
+
+        await user.click(screen.getByRole('button', { name: 'Open profile menu for Ms Rivera' }));
+        expect(window.sessionStorage.getItem('genai-sm-idcode-8')).not.toBeNull();
+        await user.click(screen.getByRole('button', { name: 'Leave class' }));
+        expect(await screen.findByRole('heading', { name: 'Student — Enter code' })).toBeInTheDocument();
+        expect(window.sessionStorage.getItem('genai-sm-idcode-8')).toBeNull();
     });
 
     it('prefills the class code and locale from a scanned join link', async () => {

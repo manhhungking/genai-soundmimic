@@ -7,11 +7,10 @@ const QRCode = lazy(() => import('@genai-fi/base/components/QRCode'));
 type JoinCodeDialogProps = {
     code: string;
     onClose: () => void;
-    onLeaveClass: () => void;
     open: boolean;
 };
 
-export default function JoinCodeDialog({ code, onClose, onLeaveClass, open }: JoinCodeDialogProps) {
+export default function JoinCodeDialog({ code, onClose, open }: JoinCodeDialogProps) {
     const { i18n, t } = useTranslation();
     const closeButtonRef = useRef<HTMLButtonElement>(null);
     const joinUrl = useMemo(() => {
@@ -90,16 +89,7 @@ export default function JoinCodeDialog({ code, onClose, onLeaveClass, open }: Jo
                 </div>
 
                 <footer>
-                    <div>
-                        <p>{t('join.waiting')}</p>
-                        <button
-                            className="join-code-dialog__leave"
-                            onClick={onLeaveClass}
-                            type="button"
-                        >
-                            {t('topbar.leaveClass')}
-                        </button>
-                    </div>
+                    <p>{t('join.waiting')}</p>
                     <button
                         className="primary-button"
                         onClick={onClose}

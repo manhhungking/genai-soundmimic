@@ -11,12 +11,13 @@ import Avatar from './Avatar';
 
 type TopbarProps = {
     classCode: string;
+    onLeaveClass: () => void;
     onOpenJoinCode: () => void;
     onOpenProfileSettings: () => void;
     profile: UserProfile;
 };
 
-export default function Topbar({ classCode, onOpenJoinCode, onOpenProfileSettings, profile }: TopbarProps) {
+export default function Topbar({ classCode, onLeaveClass, onOpenJoinCode, onOpenProfileSettings, profile }: TopbarProps) {
     const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
@@ -120,6 +121,16 @@ export default function Topbar({ classCode, onOpenJoinCode, onOpenProfileSetting
                             type="button"
                         >
                             {t('topbar.profileSettings')}
+                        </button>
+                        <button
+                            className="profile__leave"
+                            onClick={() => {
+                                setProfileOpen(false);
+                                onLeaveClass();
+                            }}
+                            type="button"
+                        >
+                            {t('topbar.leaveClass')}
                         </button>
                     </div>
                 )}
