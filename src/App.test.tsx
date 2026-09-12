@@ -17,7 +17,7 @@ describe('sound mimic routes', () => {
         await i18nReady;
         window.localStorage.clear();
         delete document.documentElement.dataset.colorMode;
-        await i18n.changeLanguage('en');
+        await i18n.changeLanguage('en-GB');
     });
 
     it('validates a class code and opens the app home', async () => {
@@ -90,26 +90,30 @@ describe('sound mimic routes', () => {
 
         const languageSelect = await screen.findByRole<HTMLSelectElement>('combobox', { name: 'Language' });
         expect(Array.from(languageSelect.options, ({ value }) => value)).toEqual([
-            'en',
-            'ja',
-            'pt',
-            'es',
-            'de',
-            'ru',
-            'fr',
-            'zh-CN',
-            'zh-TW',
-            'ko',
-            'th',
-            'vi',
+            'en-GB',
+            'de-DE',
+            'pt-BR',
+            'fr-FR',
+            'fi-FI',
+            'it-IT',
+            'ja-JP',
+            'kr-KR',
+            'krl-FI',
+            'si-LK',
+            'sv',
+            'sw',
+            'ru-RU',
+            'tr-TR',
+            'ua-UA',
+            'vi-VN',
         ]);
 
-        await user.selectOptions(languageSelect, 'vi');
+        await user.selectOptions(languageSelect, 'vi-VN');
 
         expect(await screen.findByRole('heading', { name: 'Chào mừng!' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Huấn luyện' })).toBeInTheDocument();
-        expect(window.localStorage.getItem('sound-mimic-language')).toBe('vi');
-        expect(document.documentElement).toHaveAttribute('lang', 'vi');
+        expect(window.localStorage.getItem('sound-mimic-language')).toBe('vi-VN');
+        expect(document.documentElement).toHaveAttribute('lang', 'vi-VN');
     });
 
     it('lets students rename a training class, change its icon, and add another class', async () => {
