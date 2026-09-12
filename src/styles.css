@@ -687,6 +687,12 @@ select:focus-visible {
     appearance: none;
 }
 
+.language-control__short-label {
+    display: none;
+    font-size: 12px;
+    font-weight: 850;
+}
+
 .language-control svg:first-child {
     width: 23px;
     height: 23px;
@@ -1724,7 +1730,18 @@ select:focus-visible {
 
     .main-content {
         min-width: 0;
-        padding: 14px;
+        padding: 14px 14px calc(174px + env(safe-area-inset-bottom));
+    }
+
+    .game-controls,
+    .app-shell--sidebar-collapsed .game-controls {
+        bottom: calc(12px + env(safe-area-inset-bottom));
+        left: 50%;
+    }
+
+    .app-shell .corner-controls {
+        right: 12px;
+        bottom: calc(80px + env(safe-area-inset-bottom));
     }
 
     .feature-grid {
@@ -3464,7 +3481,7 @@ select:focus-visible {
 
     .entry-page .corner-controls {
         right: 13px;
-        bottom: 12px;
+        bottom: calc(12px + env(safe-area-inset-bottom));
     }
 
     .sidebar .project-links {
@@ -3472,8 +3489,31 @@ select:focus-visible {
     }
 
     .app-shell .corner-controls {
-        right: 12px;
-        bottom: 82px;
+        right: auto;
+        bottom: calc(78px + env(safe-area-inset-bottom));
+        left: 50%;
+        gap: 0;
+        padding: 0 2px;
+        background: var(--control-background);
+        border: 1px solid var(--control-border);
+        border-radius: 25px;
+        box-shadow: var(--control-shadow);
+        transform: translateX(-50%);
+        backdrop-filter: blur(12px);
+    }
+
+    .app-shell .corner-controls .color-mode-control,
+    .app-shell .corner-controls .language-control {
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+        backdrop-filter: none;
+    }
+
+    .app-shell .corner-controls .language-control {
+        min-width: 82px;
+        border-left: 1px solid var(--control-border);
+        border-radius: 0 24px 24px 0;
     }
 
     .color-mode-control button {
@@ -3485,9 +3525,26 @@ select:focus-visible {
         display: none;
     }
 
+    .language-control {
+        position: relative;
+        grid-template-columns: 23px auto 18px;
+    }
+
+    .language-control__short-label {
+        display: block;
+    }
+
+    .language-control select {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+    }
+
     .game-controls,
     .app-shell--sidebar-collapsed .game-controls {
-        bottom: 12px;
+        bottom: calc(12px + env(safe-area-inset-bottom));
         left: 50%;
         min-height: 54px;
     }
