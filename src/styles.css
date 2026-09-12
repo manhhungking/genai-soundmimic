@@ -303,6 +303,7 @@ select:focus-visible {
 }
 
 .app-shell {
+    position: relative;
     display: grid;
     grid-template-columns: clamp(250px, 15.5vw, 310px) minmax(0, 1fr);
     min-height: 100vh;
@@ -2012,6 +2013,24 @@ select:focus-visible {
         width: 5px;
     }
 
+    .playback-panel__body {
+        gap: 10px;
+    }
+
+    .playback-panel .waveform {
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .playback-panel__body > button {
+        width: 52px;
+        height: 52px;
+    }
+
+    .playback-panel__body > span {
+        font-size: 12px;
+    }
+
     .turn-panel li {
         grid-template-columns: 40px 52px 1fr;
         padding-right: 7px;
@@ -3488,17 +3507,45 @@ select:focus-visible {
         display: none;
     }
 
+    .sidebar__header {
+        min-height: 48px;
+        padding-right: 166px;
+    }
+
+    .sidebar__header > .brand {
+        grid-template-columns: 50px minmax(0, 1fr);
+        gap: 3px;
+    }
+
+    .sidebar__header .brand__mark {
+        width: 48px;
+        height: 42px;
+    }
+
+    .sidebar__header .brand__name {
+        display: block;
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.05;
+    }
+
+    .main-content {
+        padding-bottom: calc(92px + env(safe-area-inset-bottom));
+    }
+
     .app-shell .corner-controls {
-        right: auto;
-        bottom: calc(78px + env(safe-area-inset-bottom));
-        left: 50%;
+        position: absolute;
+        top: 13px;
+        right: 14px;
+        bottom: auto;
+        left: auto;
         gap: 0;
         padding: 0 2px;
         background: var(--control-background);
         border: 1px solid var(--control-border);
         border-radius: 25px;
         box-shadow: var(--control-shadow);
-        transform: translateX(-50%);
+        transform: none;
         backdrop-filter: blur(12px);
     }
 
@@ -3511,14 +3558,15 @@ select:focus-visible {
     }
 
     .app-shell .corner-controls .language-control {
-        min-width: 82px;
+        min-width: 72px;
+        padding: 0 8px;
         border-left: 1px solid var(--control-border);
         border-radius: 0 24px 24px 0;
     }
 
     .color-mode-control button {
-        min-width: 38px;
-        padding: 0 8px;
+        min-width: 34px;
+        padding: 0 6px;
     }
 
     .color-mode-control button span {
@@ -3527,7 +3575,18 @@ select:focus-visible {
 
     .language-control {
         position: relative;
-        grid-template-columns: 23px auto 18px;
+        grid-template-columns: 20px auto 16px;
+        gap: 5px;
+    }
+
+    .language-control svg:first-child {
+        width: 20px;
+        height: 20px;
+    }
+
+    .language-control svg:last-child {
+        width: 16px;
+        height: 16px;
     }
 
     .language-control__short-label {
