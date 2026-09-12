@@ -13,7 +13,7 @@ import Brand from './Brand';
 import ProjectLinks from './ProjectLinks';
 
 type NavItem = {
-    labelKey: 'nav.home' | 'nav.train' | 'nav.play' | 'nav.results';
+    labelKey: 'nav.home' | 'nav.train' | 'nav.setup' | 'nav.play' | 'nav.results';
     icon: ReactNode;
     to: string;
 };
@@ -21,6 +21,7 @@ type NavItem = {
 const navItems: NavItem[] = [
     { labelKey: 'nav.home', icon: <HomeRounded />, to: '/home' },
     { labelKey: 'nav.train', icon: <TimelineRounded />, to: '/train' },
+    { labelKey: 'nav.setup', icon: <SettingsRounded />, to: '/setup' },
     { labelKey: 'nav.play', icon: <PlayCircleRounded />, to: '/play' },
     { labelKey: 'nav.results', icon: <BarChartRounded />, to: '/results' },
 ];

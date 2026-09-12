@@ -200,4 +200,48 @@ describe('sound mimic routes', () => {
         await user.click(screen.getByRole('button', { name: 'Add a class' }));
         expect(screen.getByRole('heading', { name: 'Class 5' })).toBeInTheDocument();
     });
+
+    it('lets the host build, edit, save, and start a game setup', async () => {
+        const user = userEvent.setup();
+        const router = renderRoute('/setup');
+
+        expect(await screen.findByRole('heading', { level: 1, name: 'Game Setup' })).toBeInTheDocument();
+        expect(screen.queryByLabelText('Host game controls')).not.toBeInTheDocument();
+
+        await user.click(screen.getByRole('radio', { name: /Use one selected model/ }));
+        await user.click(screen.getByRole('button', { name: /Maya’s Model/ }));
+        expect(screen.getByText('Selected Model')).toBeInTheDocument();
+
+        await user.click(screen.getByRole('button', { name: 'Change the challenge for round 1' }));
+        expect(screen.getAllByText('Break').length).toBeGreaterThan(1);
+
+        await user.click(screen.getAllByRole('button', { name: 'Edit clip' })[1]);
+        expect(screen.getByText('Editing: fast_clap.wav')).toBeInTheDocument();
+        const startTime = screen.getByLabelText(/Start time/);
+        const endTime = screen.getByLabelText(/End time/);
+        await user.clear(startTime);
+        await user.type(startTime, '0.4');
+        await user.clear(endTime);
+        await user.type(endTime, '1.4');
+        await user.click(screen.getByRole('button', { name: 'Use Clip' }));
+        expect(screen.getByText('Clip updated')).toBeInTheDocument();
+        expect(screen.getByText('1.0')).toBeInTheDocument();
+
+        await user.click(screen.getByRole('button', { name: 'Add Round' }));
+        expect(screen.getByText('Round 5')).toBeInTheDocument();
+        expect(screen.getByText('5 rounds')).toBeInTheDocument();
+
+        await user.click(screen.getByRole('button', { name: 'Save Setup' }));
+        const savedSetup = JSON.parse(window.localStorage.getItem('soundmimic-game-setup') ?? '{}');
+        expect(savedSetup).toMatchObject({ modelMode: 'single', selectedStudent: 1, version: 1 });
+        expect(savedSetup.rounds).toHaveLength(5);
+
+        await router.navigate('/home');
+        await router.navigate('/setup');
+        expect(await screen.findByText('Round 5')).toBeInTheDocument();
+        expect(screen.getByText('Selected Model')).toBeInTheDocument();
+
+        await user.click(screen.getByRole('button', { name: 'Start Game' }));
+        expect(await screen.findByRole('heading', { level: 1, name: 'Play' })).toBeInTheDocument();
+    });
 });
