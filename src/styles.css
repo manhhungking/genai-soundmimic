@@ -64,6 +64,13 @@ body,
         box-shadow 180ms ease;
 }
 
+.project-links,
+.project-links a {
+    transition:
+        color 180ms ease,
+        background-color 180ms ease;
+}
+
 button,
 input,
 select {
@@ -437,7 +444,7 @@ select:focus-visible {
     height: 42px;
     margin: 12px 0 -26px -14px;
     overflow: hidden;
-    background: var(--color-white);
+    background: var(--project-link-background);
     border-radius: 0 22px 0 0;
     box-shadow: var(--shadow-project-link);
 }
@@ -445,7 +452,7 @@ select:focus-visible {
 .project-links a {
     display: grid;
     height: 100%;
-    color: var(--color-project-link-text);
+    color: var(--project-link-text);
     font-size: 12px;
     font-weight: 650;
     place-items: center;
@@ -460,7 +467,7 @@ select:focus-visible {
 .project-links__github {
     width: 45px;
     color: var(--color-white) !important;
-    background: var(--color-github);
+    background: var(--project-link-icon-background);
 }
 
 .project-links__github svg {

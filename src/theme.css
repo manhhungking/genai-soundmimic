@@ -105,6 +105,9 @@
     --control-selected: #dff2ff;
     --control-hover: #edf7ff;
     --control-shadow: 0 6px 16px rgba(20, 59, 86, 0.13);
+    --project-link-background: var(--color-white);
+    --project-link-text: var(--color-project-link-text);
+    --project-link-icon-background: var(--color-github);
     --sidebar-divider: rgba(218, 242, 247, 0.3);
     --sidebar-hover: rgba(30, 153, 200, 0.13);
     --sidebar-control: rgba(255, 255, 255, 0.08);
@@ -177,6 +180,9 @@
     --control-selected: #1c5272;
     --control-hover: #173b50;
     --control-shadow: 0 8px 24px rgba(0, 7, 13, 0.32);
+    --project-link-background: var(--surface-soft);
+    --project-link-text: var(--text-primary);
+    --project-link-icon-background: var(--surface-muted);
     --gradient-row-current: linear-gradient(90deg, #173f58, #164454);
     --class-violet-soft: #33284c;
     --class-blue-soft: #183d56;
