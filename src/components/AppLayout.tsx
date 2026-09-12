@@ -1,9 +1,17 @@
 import { useID } from '@genai-fi/base/hooks/id';
 import { useState } from 'react';
-import { Outlet } from 'react-router';
+import { Outlet, useNavigate } from 'react-router';
+import {
+    defaultHostProfile,
+    hostProfileStorageKey,
+    readProfile,
+    saveProfile,
+    type UserProfile,
+} from '../data/profile';
 import CornerControls from './CornerControls';
 import GameControls from './GameControls';
 import JoinCodeDialog from './JoinCodeDialog';
+import ProfileDialog from './ProfileDialog';
 import SettingsDialog from './SettingsDialog';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
@@ -13,9 +21,12 @@ export type AppOutletContext = {
 };
 
 export function Component() {
+    const navigate = useNavigate();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [joinCodeOpen, setJoinCodeOpen] = useState(false);
+    const [profileOpen, setProfileOpen] = useState(false);
+    const [profile, setProfile] = useState(() => readProfile(hostProfileStorageKey, defaultHostProfile));
     const [xaiEnabled, setXaiEnabled] = useState(false);
     const classCode = useID(8);
 
@@ -31,7 +42,8 @@ export function Component() {
                 <Topbar
                     classCode={classCode}
                     onOpenJoinCode={() => setJoinCodeOpen(true)}
-                    onOpenSettings={() => setSettingsOpen(true)}
+                    onOpenProfileSettings={() => setProfileOpen(true)}
+                    profile={profile}
                 />
                 <Outlet context={{ xaiEnabled } satisfies AppOutletContext} />
             </main>
@@ -47,8 +59,23 @@ export function Component() {
             <JoinCodeDialog
                 code={classCode}
                 onClose={() => setJoinCodeOpen(false)}
+                onLeaveClass={() => {
+                    window.sessionStorage.removeItem('genai-sm-idcode-8');
+                    setJoinCodeOpen(false);
+                    navigate('/');
+                }}
                 open={joinCodeOpen}
             />
+            {profileOpen && (
+                <ProfileDialog
+                    onClose={() => setProfileOpen(false)}
+                    onSave={(nextProfile: UserProfile) => {
+                        setProfile(nextProfile);
+                        saveProfile(hostProfileStorageKey, nextProfile);
+                    }}
+                    profile={profile}
+                />
+            )}
         </div>
     );
 }

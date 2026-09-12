@@ -8,7 +8,7 @@ import { isLanguageCode } from '../locales/config';
 import { setAppLanguage } from '../i18n';
 
 export function Component() {
-    const { t } = useTranslation();
+    const { i18n, t } = useTranslation();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const [code, setCode] = useState(() => searchParams.get('code')?.slice(0, 8).toUpperCase() ?? '');
@@ -25,7 +25,16 @@ export function Component() {
             setMessage(t('entry.missingCode'));
             return;
         }
-        navigate('/home');
+        if (!/^\d{8}$/.test(code)) {
+            setMessage(t('entry.invalidCode'));
+            return;
+        }
+
+        const params = new URLSearchParams({
+            code,
+            lng: i18n.resolvedLanguage ?? i18n.language,
+        });
+        navigate(`/join/profile?${params.toString()}`);
     }
 
     return (

@@ -1,6 +1,8 @@
+import type { AvatarVariant } from './profile';
+
 export type Student = {
     name: string;
-    avatar: 'maya' | 'ethan' | 'sophia' | 'leo';
+    avatar: AvatarVariant;
 };
 
 export const students: Student[] = [

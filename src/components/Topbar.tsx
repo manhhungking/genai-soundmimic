@@ -6,14 +6,17 @@ import QrCode2Rounded from '@mui/icons-material/QrCode2Rounded';
 import SchoolRounded from '@mui/icons-material/SchoolRounded';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { UserProfile } from '../data/profile';
+import Avatar from './Avatar';
 
 type TopbarProps = {
     classCode: string;
     onOpenJoinCode: () => void;
-    onOpenSettings: () => void;
+    onOpenProfileSettings: () => void;
+    profile: UserProfile;
 };
 
-export default function Topbar({ classCode, onOpenJoinCode, onOpenSettings }: TopbarProps) {
+export default function Topbar({ classCode, onOpenJoinCode, onOpenProfileSettings, profile }: TopbarProps) {
     const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
@@ -94,12 +97,17 @@ export default function Topbar({ classCode, onOpenJoinCode, onOpenSettings }: To
 
             <div className="profile">
                 <button
+                    aria-label={t('profile.open', { name: profile.name })}
                     className="profile__button"
                     type="button"
                     onClick={() => setProfileOpen((open) => !open)}
                     aria-expanded={profileOpen}
                 >
-                    <span className="profile__initials">JD</span>
+                    <Avatar
+                        name={profile.name}
+                        size="small"
+                        variant={profile.avatar}
+                    />
                     <ExpandMoreRounded />
                 </button>
                 {profileOpen && (
@@ -107,13 +115,12 @@ export default function Topbar({ classCode, onOpenJoinCode, onOpenSettings }: To
                         <button
                             onClick={() => {
                                 setProfileOpen(false);
-                                onOpenSettings();
+                                onOpenProfileSettings();
                             }}
                             type="button"
                         >
                             {t('topbar.profileSettings')}
                         </button>
-                        <button type="button">{t('topbar.leaveClass')}</button>
                     </div>
                 )}
             </div>

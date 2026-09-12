@@ -21,7 +21,7 @@ describe('sound mimic routes', () => {
         await i18n.changeLanguage('en-GB');
     });
 
-    it('validates a class code and opens the app home', async () => {
+    it('validates a class code and lets a student choose their profile', async () => {
         const user = userEvent.setup();
         renderRoute('/');
 
@@ -30,7 +30,22 @@ describe('sound mimic routes', () => {
 
         await user.type(screen.getByLabelText('Class or session code'), 'abcd12');
         await user.click(screen.getByRole('button', { name: 'Start exploring' }));
-        expect(await screen.findByRole('heading', { name: 'Welcome!' }, { timeout: 5000 })).toBeInTheDocument();
+        expect(screen.getByRole('alert')).toHaveTextContent('Enter the 8-digit class code');
+
+        await user.clear(screen.getByLabelText('Class or session code'));
+        await user.type(screen.getByLabelText('Class or session code'), '12345678');
+        await user.click(screen.getByRole('button', { name: 'Start exploring' }));
+
+        expect(await screen.findByRole('heading', { name: 'Choose your player' })).toBeInTheDocument();
+        await user.type(screen.getByLabelText('Display name'), 'Alex');
+        await user.click(screen.getByRole('radio', { name: 'Choose avatar 3' }));
+        await user.click(screen.getByRole('button', { name: 'Join class' }));
+
+        expect(screen.getByRole('heading', { name: 'You’re ready, Alex!' })).toBeInTheDocument();
+        expect(JSON.parse(window.localStorage.getItem('soundmimic-student-profile') ?? '{}')).toEqual({
+            avatar: 'sophia',
+            name: 'Alex',
+        });
     });
 
     it('shows a reusable class code and QR link for learners', async () => {
@@ -41,6 +56,7 @@ describe('sound mimic routes', () => {
         await user.click(openButtons[0]);
 
         const dialog = screen.getByRole('dialog', { name: 'Connect learners' });
+        expect(within(dialog).getByRole('button', { name: 'Leave class' })).toBeInTheDocument();
         const classCode = within(dialog).getByTestId('join-code').textContent ?? '';
         expect(classCode).toMatch(/^\d{8}$/);
         expect(screen.getAllByText(classCode)).toHaveLength(2);
@@ -53,6 +69,34 @@ describe('sound mimic routes', () => {
 
         await user.click(within(dialog).getByRole('button', { name: 'Close' }));
         expect(screen.queryByRole('dialog', { name: 'Connect learners' })).not.toBeInTheDocument();
+
+        await user.click((await screen.findAllByRole('button', { name: 'Show join code' }))[0]);
+        expect(window.sessionStorage.getItem('genai-sm-idcode-8')).toBe(classCode);
+        await user.click(screen.getByRole('button', { name: 'Leave class' }));
+        expect(await screen.findByRole('heading', { name: 'Student — Enter code' })).toBeInTheDocument();
+        expect(window.sessionStorage.getItem('genai-sm-idcode-8')).toBeNull();
+    });
+
+    it('keeps profile settings separate and updates the host identity', async () => {
+        const user = userEvent.setup();
+        renderRoute('/home');
+
+        await user.click(await screen.findByRole('button', { name: 'Open profile menu for Jordan Davis' }));
+        expect(screen.queryByRole('button', { name: 'Leave class' })).not.toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Profile settings' }));
+
+        const dialog = screen.getByRole('dialog', { name: 'Profile settings' });
+        const nameInput = within(dialog).getByLabelText('Display name');
+        await user.clear(nameInput);
+        await user.type(nameInput, 'Ms Rivera');
+        await user.click(within(dialog).getByRole('radio', { name: 'Choose avatar 3' }));
+        await user.click(within(dialog).getByRole('button', { name: 'Save changes' }));
+
+        expect(screen.getByRole('button', { name: 'Open profile menu for Ms Rivera' })).toBeInTheDocument();
+        expect(JSON.parse(window.localStorage.getItem('soundmimic-host-profile') ?? '{}')).toEqual({
+            avatar: 'sophia',
+            name: 'Ms Rivera',
+        });
     });
 
     it('prefills the class code and locale from a scanned join link', async () => {

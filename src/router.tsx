@@ -9,6 +9,10 @@ export const routes = createRoutesFromElements(
             index
             lazy={() => import('./pages/SessionEntryPage')}
         />
+        <Route
+            path="join/profile"
+            lazy={() => import('./pages/ProfileSetupPage')}
+        />
         <Route lazy={() => import('./components/AppLayout')}>
             <Route
                 path="home"

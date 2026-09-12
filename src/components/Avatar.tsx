@@ -1,10 +1,10 @@
-import type { Student } from '../data/home';
+import type { AvatarVariant } from '../data/profile';
 import { useTranslation } from 'react-i18next';
 
 type AvatarProps = {
     name: string;
-    variant: Student['avatar'];
-    size?: 'small' | 'medium';
+    variant: AvatarVariant;
+    size?: 'large' | 'small' | 'medium';
 };
 
 export default function Avatar({ name, variant, size = 'medium' }: AvatarProps) {
