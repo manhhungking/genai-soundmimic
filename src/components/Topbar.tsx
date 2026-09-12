@@ -2,21 +2,24 @@ import ContentCopyRounded from '@mui/icons-material/ContentCopyRounded';
 import ExpandMoreRounded from '@mui/icons-material/ExpandMoreRounded';
 import GroupsRounded from '@mui/icons-material/GroupsRounded';
 import PersonRounded from '@mui/icons-material/PersonRounded';
+import QrCode2Rounded from '@mui/icons-material/QrCode2Rounded';
 import SchoolRounded from '@mui/icons-material/SchoolRounded';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 type TopbarProps = {
+    classCode: string;
+    onOpenJoinCode: () => void;
     onOpenSettings: () => void;
 };
 
-export default function Topbar({ onOpenSettings }: TopbarProps) {
+export default function Topbar({ classCode, onOpenJoinCode, onOpenSettings }: TopbarProps) {
     const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
 
     async function copyClassCode() {
-        await navigator.clipboard?.writeText('ABCD12');
+        await navigator.clipboard?.writeText(classCode);
         setCopied(true);
         window.setTimeout(() => setCopied(false), 1800);
     }
@@ -29,16 +32,26 @@ export default function Topbar({ onOpenSettings }: TopbarProps) {
                 </span>
                 <span>
                     <small>{t('topbar.classCode')}</small>
-                    <strong>ABCD12</strong>
+                    <strong>{classCode}</strong>
                 </span>
-                <button
-                    className="icon-button"
-                    type="button"
-                    onClick={copyClassCode}
-                    aria-label={t('topbar.copyCode')}
-                >
-                    <ContentCopyRounded />
-                </button>
+                <div className="class-code__actions">
+                    <button
+                        className="icon-button class-code__qr"
+                        type="button"
+                        onClick={onOpenJoinCode}
+                        aria-label={t('join.show')}
+                    >
+                        <QrCode2Rounded />
+                    </button>
+                    <button
+                        className="icon-button"
+                        type="button"
+                        onClick={copyClassCode}
+                        aria-label={t('topbar.copyCode')}
+                    >
+                        <ContentCopyRounded />
+                    </button>
+                </div>
             </div>
 
             <label className="group-select topbar__control">

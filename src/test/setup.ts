@@ -33,4 +33,18 @@ Object.defineProperty(globalThis, 'ResizeObserver', {
     value: ResizeObserverMock,
 });
 
+Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+    configurable: true,
+    value: vi.fn(() => ({
+        clearRect: vi.fn(),
+        createImageData: (width: number, height: number) => ({
+            colorSpace: 'srgb',
+            data: new Uint8ClampedArray(width * height * 4),
+            height,
+            width,
+        }),
+        putImageData: vi.fn(),
+    })),
+});
+
 afterEach(cleanup);

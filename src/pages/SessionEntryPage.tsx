@@ -1,15 +1,23 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import Brand from '../components/Brand';
 import CornerControls from '../components/CornerControls';
 import ProjectLinks from '../components/ProjectLinks';
+import { isLanguageCode } from '../locales/config';
+import { setAppLanguage } from '../i18n';
 
 export function Component() {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const [code, setCode] = useState('');
+    const [searchParams] = useSearchParams();
+    const [code, setCode] = useState(() => searchParams.get('code')?.slice(0, 8).toUpperCase() ?? '');
     const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        const language = searchParams.get('lng');
+        if (isLanguageCode(language)) void setAppLanguage(language, false);
+    }, [searchParams]);
 
     function joinSession(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
