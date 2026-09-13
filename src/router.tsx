@@ -7,32 +7,32 @@ export const routes = createRoutesFromElements(
     >
         <Route
             index
-            lazy={() => import('./pages/SessionEntryPage')}
+            lazy={() => import('./views/SessionEntryView')}
         />
         <Route
             path="join/profile"
-            lazy={() => import('./pages/ProfileSetupPage')}
+            lazy={() => import('./views/ProfileSetupView')}
         />
         <Route lazy={() => import('./components/AppLayout')}>
             <Route
                 path="home"
-                lazy={() => import('./pages/HomePage')}
+                lazy={() => import('./views/HomeView')}
             />
             <Route
                 path="train"
-                lazy={() => import('./pages/TrainPage')}
+                lazy={() => import('./views/TrainView')}
             />
             <Route
                 path="setup"
-                lazy={() => import('./pages/GameSetupPage')}
+                lazy={() => import('./views/GameSetupView')}
             />
             <Route
                 path="play"
-                lazy={() => import('./pages/PlayPage')}
+                lazy={() => import('./views/PlayView')}
             />
             <Route
                 path="results"
-                lazy={() => import('./pages/ResultsPage')}
+                lazy={() => import('./views/ResultsView')}
             />
             <Route
                 path="xai"
