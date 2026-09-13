@@ -6,18 +6,24 @@ import MoreVertRounded from '@mui/icons-material/MoreVertRounded';
 import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
 import StopRounded from '@mui/icons-material/StopRounded';
 import UploadRounded from '@mui/icons-material/UploadRounded';
-import { useRef, useState, type ChangeEvent } from 'react';
+import type { AudioExample, SoundRecorder } from '@genai-fi/classifier';
+import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getSoundNameKey } from '../../locales/sounds';
 import SoundClassIcon from './SoundClassIcon';
 import TrainingWaveform from './TrainingWaveform';
 import WorkflowNode from './WorkflowNode';
 import { soundIconOptions, type SoundClass, type SoundIconKey } from './model';
+import { createSoundRecorder, extractAudioExamples, recordingOptions } from './soundClassifier';
 
 type TrainingClassCardProps = {
     soundClass: SoundClass;
+    sampleCount: number;
+    sample?: AudioExample;
+    isBackgroundNoise: boolean;
     canRemove: boolean;
-    onAddSamples: (id: string, count: number) => void;
+    onAddSamples: (id: string, samples: AudioExample[]) => void;
+    onCaptureError: () => void;
     onRemove: (id: string) => void;
     onRemoveSample: (id: string) => void;
     onUpdate: (id: string, patch: Pick<SoundClass, 'name' | 'icon'>) => void;
@@ -25,22 +31,34 @@ type TrainingClassCardProps = {
 
 export default function TrainingClassCard({
     soundClass,
+    sampleCount,
+    sample,
+    isBackgroundNoise,
     canRemove,
     onAddSamples,
+    onCaptureError,
     onRemove,
     onRemoveSample,
     onUpdate,
 }: TrainingClassCardProps) {
     const { t } = useTranslation();
     const fileRef = useRef<HTMLInputElement>(null);
+    const recorderRef = useRef<SoundRecorder | null>(null);
+    const capturedRef = useRef<AudioExample[]>([]);
     const [editing, setEditing] = useState(false);
     const [recording, setRecording] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const [playing, setPlaying] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [draftName, setDraftName] = useState(soundClass.name);
     const [draftIcon, setDraftIcon] = useState<SoundIconKey>(soundClass.icon);
     const defaultNameKey = getSoundNameKey(soundClass.name);
     const displayName = defaultNameKey ? t(defaultNameKey) : soundClass.name;
+
+    useEffect(() => () => {
+        recorderRef.current?.stopRecording();
+        recorderRef.current?.removeAllListeners();
+    }, []);
 
     function startEditing() {
         setDraftName(displayName);
@@ -57,15 +75,73 @@ export default function TrainingClassCard({
         setEditing(false);
     }
 
-    function toggleRecording() {
-        if (recording) onAddSamples(soundClass.id, 1);
-        setRecording((value) => !value);
+    async function toggleRecording() {
+        if (recording) {
+            recorderRef.current?.stopRecording();
+            return;
+        }
+
+        setRecording(true);
+        try {
+            const recorder = await createSoundRecorder();
+            recorderRef.current = recorder;
+            capturedRef.current = [];
+            recorder.on('example', (example) => capturedRef.current.push(example));
+            recorder.on('stop', () => {
+                if (capturedRef.current.length) onAddSamples(soundClass.id, capturedRef.current);
+                capturedRef.current = [];
+                recorderRef.current = null;
+                setRecording(false);
+            });
+            recorder.on('error', onCaptureError);
+            await recorder.startRecording(
+                displayName,
+                recordingOptions(isBackgroundNoise ? 20_000 : 6_000),
+            );
+        } catch {
+            recorderRef.current = null;
+            setRecording(false);
+            onCaptureError();
+        }
     }
 
-    function handleUpload(event: ChangeEvent<HTMLInputElement>) {
-        const count = event.target.files?.length ?? 0;
-        if (count) onAddSamples(soundClass.id, count);
+    async function handleUpload(event: ChangeEvent<HTMLInputElement>) {
+        const files = Array.from(event.target.files ?? []);
         event.target.value = '';
+        if (!files.length) return;
+
+        setUploading(true);
+        try {
+            const samples: AudioExample[] = [];
+            for (const file of files) samples.push(...await extractAudioExamples(file, displayName));
+            if (samples.length) onAddSamples(soundClass.id, samples);
+        } catch {
+            onCaptureError();
+        } finally {
+            setUploading(false);
+        }
+    }
+
+    async function playSample() {
+        if (!sample?.rawAudio || playing) return;
+        setPlaying(true);
+        try {
+            const context = new AudioContext({ sampleRate: sample.rawAudio.sampleRateHz });
+            const buffer = context.createBuffer(1, sample.rawAudio.data.length, sample.rawAudio.sampleRateHz);
+            buffer.copyToChannel(new Float32Array(sample.rawAudio.data), 0);
+            const source = context.createBufferSource();
+            source.buffer = buffer;
+            source.connect(context.destination);
+            await new Promise<void>((resolve) => {
+                source.addEventListener('ended', () => resolve(), { once: true });
+                source.start();
+            });
+            await context.close();
+        } catch {
+            onCaptureError();
+        } finally {
+            setPlaying(false);
+        }
     }
 
     return (
@@ -79,7 +155,7 @@ export default function TrainingClassCard({
                 </span>
                 <div>
                     <h3>{displayName}</h3>
-                    <small>{t('train.sampleCount', { count: soundClass.sampleCount })}</small>
+                    <small>{t('train.sampleCount', { count: sampleCount })}</small>
                 </div>
                 <button
                     className="icon-button"
@@ -160,6 +236,7 @@ export default function TrainingClassCard({
                 <button
                     type="button"
                     onClick={toggleRecording}
+                    disabled={uploading}
                     aria-label={
                         recording
                             ? t('play.stopRecording')
@@ -172,6 +249,7 @@ export default function TrainingClassCard({
                 <button
                     type="button"
                     onClick={() => fileRef.current?.click()}
+                    disabled={recording || uploading}
                 >
                     <UploadRounded /> {t('train.upload')}
                 </button>
@@ -190,7 +268,8 @@ export default function TrainingClassCard({
                 <button
                     className="round-action"
                     type="button"
-                    onClick={() => setPlaying((value) => !value)}
+                    disabled={!sample?.rawAudio || playing}
+                    onClick={playSample}
                     aria-label={t(playing ? 'train.pauseSamples' : 'train.playSamples', { name: displayName })}
                 >
                     {playing ? <span className="pause-icon">Ⅱ</span> : <PlayArrowRounded />}
@@ -198,7 +277,7 @@ export default function TrainingClassCard({
                 <button
                     className="icon-button"
                     type="button"
-                    disabled={soundClass.sampleCount === 0}
+                    disabled={sampleCount === 0}
                     onClick={() => onRemoveSample(soundClass.id)}
                     aria-label={t('train.removeSample', { name: displayName })}
                 >
