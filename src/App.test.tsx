@@ -71,6 +71,23 @@ describe('sound mimic routes', () => {
         expect(screen.queryByRole('dialog', { name: 'Connect learners' })).not.toBeInTheDocument();
     });
 
+    it('opens the group menu and updates the selected group', async () => {
+        const user = userEvent.setup();
+        renderRoute('/home');
+
+        const groupButton = await screen.findByRole('button', { name: 'Group: Group 1' });
+        expect(groupButton).toHaveAttribute('aria-expanded', 'false');
+        await user.click(groupButton);
+
+        const groupList = screen.getByRole('listbox', { name: 'Group' });
+        expect(groupList).toBeInTheDocument();
+        expect(within(groupList).getAllByRole('option')).toHaveLength(2);
+
+        await user.click(within(groupList).getByRole('option', { name: 'Sound Explorers' }));
+        expect(groupButton).toHaveAttribute('aria-label', 'Group: Sound Explorers');
+        expect(groupButton).toHaveAttribute('aria-expanded', 'false');
+    });
+
     it('keeps profile settings separate and updates the host identity', async () => {
         const user = userEvent.setup();
         renderRoute('/home');

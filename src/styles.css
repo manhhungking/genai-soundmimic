@@ -1356,23 +1356,106 @@ select:focus-visible {
 }
 
 .group-select {
-    cursor: pointer;
+    position: relative;
 }
 
-.group-select select {
+.group-select__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
     width: 100%;
-    padding: 3px 0 0;
+    min-width: 0;
+    padding: 0;
+    color: inherit;
     background: transparent;
     border: 0;
-    outline: 0;
-    font-size: 16px;
-    font-weight: 750;
-    appearance: none;
+    border-radius: inherit;
+    cursor: pointer;
+    text-align: left;
 }
 
-.group-select > svg {
+.group-select__trigger > span {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.group-select__trigger small {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.group-select__trigger strong {
+    margin-top: 3px;
+    overflow: hidden;
+    font-size: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.group-select__trigger:hover {
+    color: var(--blue);
+}
+
+.group-select__chevron {
     width: 21px;
     color: var(--text-secondary);
+    transition: transform 160ms ease;
+}
+
+.group-select.is-open .group-select__chevron {
+    transform: rotate(180deg);
+}
+
+.group-select__menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 70;
+    width: max-content;
+    min-width: 100%;
+    max-width: min(320px, calc(100vw - 28px));
+    padding: 7px;
+    margin: 0;
+    overflow-y: auto;
+    color: var(--text-primary);
+    list-style: none;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow-popover);
+}
+
+.group-select__menu button {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 20px;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 38px;
+    padding: 7px 10px;
+    color: inherit;
+    background: transparent;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: left;
+}
+
+.group-select__menu button:hover,
+.group-select__menu button[aria-selected='true'] {
+    color: var(--blue-strong);
+    background: var(--surface-soft);
+}
+
+.group-select__menu button svg {
+    width: 18px;
+    height: 18px;
 }
 
 .role-switch {
@@ -2651,7 +2734,7 @@ select:focus-visible {
     }
 
     .topbar__control strong,
-    .group-select select {
+    .group-select__trigger strong {
         font-size: 16px;
     }
 

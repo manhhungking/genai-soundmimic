@@ -1,10 +1,11 @@
 import ContentCopyRounded from '@mui/icons-material/ContentCopyRounded';
+import CheckRounded from '@mui/icons-material/CheckRounded';
 import ExpandMoreRounded from '@mui/icons-material/ExpandMoreRounded';
 import GroupsRounded from '@mui/icons-material/GroupsRounded';
 import PersonRounded from '@mui/icons-material/PersonRounded';
 import QrCode2Rounded from '@mui/icons-material/QrCode2Rounded';
 import SchoolRounded from '@mui/icons-material/SchoolRounded';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { UserProfile } from '../data/profile';
 import Avatar from './Avatar';
@@ -20,7 +21,38 @@ type TopbarProps = {
 export default function Topbar({ classCode, onLeaveClass, onOpenJoinCode, onOpenProfileSettings, profile }: TopbarProps) {
     const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
+    const [groupOpen, setGroupOpen] = useState(false);
+    const [selectedGroup, setSelectedGroup] = useState('group-one');
     const [profileOpen, setProfileOpen] = useState(false);
+    const groupRef = useRef<HTMLDivElement>(null);
+    const groupTriggerRef = useRef<HTMLButtonElement>(null);
+
+    const groups = [
+        { value: 'group-one', label: t('topbar.groupOne') },
+        { value: 'sound-explorers', label: t('topbar.soundExplorers') },
+    ];
+    const currentGroup = groups.find(({ value }) => value === selectedGroup) ?? groups[0];
+
+    useEffect(() => {
+        if (!groupOpen) return;
+
+        function closeOnOutsidePress(event: PointerEvent) {
+            if (!groupRef.current?.contains(event.target as Node)) setGroupOpen(false);
+        }
+
+        function closeOnEscape(event: KeyboardEvent) {
+            if (event.key !== 'Escape') return;
+            setGroupOpen(false);
+            groupTriggerRef.current?.focus();
+        }
+
+        document.addEventListener('pointerdown', closeOnOutsidePress);
+        document.addEventListener('keydown', closeOnEscape);
+        return () => {
+            document.removeEventListener('pointerdown', closeOnOutsidePress);
+            document.removeEventListener('keydown', closeOnEscape);
+        };
+    }, [groupOpen]);
 
     async function copyClassCode() {
         await navigator.clipboard?.writeText(classCode);
@@ -58,19 +90,57 @@ export default function Topbar({ classCode, onLeaveClass, onOpenJoinCode, onOpen
                 </div>
             </div>
 
-            <label className="group-select topbar__control">
+            <div
+                className={`group-select topbar__control${groupOpen ? ' is-open' : ''}`}
+                ref={groupRef}
+            >
                 <span className="control-icon control-icon--green">
                     <GroupsRounded />
                 </span>
-                <span>
-                    <small>{t('topbar.group')}</small>
-                    <select defaultValue="group-one">
-                        <option value="group-one">{t('topbar.groupOne')}</option>
-                        <option value="sound-explorers">{t('topbar.soundExplorers')}</option>
-                    </select>
-                </span>
-                <ExpandMoreRounded aria-hidden="true" />
-            </label>
+                <button
+                    aria-expanded={groupOpen}
+                    aria-haspopup="listbox"
+                    aria-label={`${t('topbar.group')}: ${currentGroup.label}`}
+                    className="group-select__trigger"
+                    onClick={() => setGroupOpen((isOpen) => !isOpen)}
+                    ref={groupTriggerRef}
+                    type="button"
+                >
+                    <span>
+                        <small>{t('topbar.group')}</small>
+                        <strong>{currentGroup.label}</strong>
+                    </span>
+                    <ExpandMoreRounded
+                        aria-hidden="true"
+                        className="group-select__chevron"
+                    />
+                </button>
+                {groupOpen && (
+                    <ul
+                        aria-label={t('topbar.group')}
+                        className="group-select__menu"
+                        role="listbox"
+                    >
+                        {groups.map(({ value, label }) => (
+                            <li key={value} role="presentation">
+                                <button
+                                    aria-selected={value === selectedGroup}
+                                    onClick={() => {
+                                        setSelectedGroup(value);
+                                        setGroupOpen(false);
+                                        groupTriggerRef.current?.focus();
+                                    }}
+                                    role="option"
+                                    type="button"
+                                >
+                                    <span>{label}</span>
+                                    {value === selectedGroup && <CheckRounded aria-hidden="true" />}
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
 
             <div
                 className="role-switch"
