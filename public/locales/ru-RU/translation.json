@@ -197,7 +197,7 @@
     "train.trainClassifier": "Обучить классификатор",
     "train.modelSummary": "Сводка модели",
     "train.classCount": "Классов: {{count}}",
-    "train.tip": "Добавьте больше примеров, чтобы помочь модели.",
+    "train.tip": "Сначала добавьте больше примеров или классов.",
     "train.input": "Вход",
     "train.on": "Вкл.",
     "train.off": "Выкл.",

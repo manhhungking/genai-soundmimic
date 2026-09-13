@@ -197,7 +197,7 @@
     "train.trainClassifier": "Entraîner le classifieur",
     "train.modelSummary": "Résumé du modèle",
     "train.classCount": "{{count}} classes",
-    "train.tip": "Ajoute plus d’échantillons pour aider le modèle à apprendre.",
+    "train.tip": "Ajoute d’abord plus d’échantillons ou de classes.",
     "train.input": "Entrée",
     "train.on": "Activé",
     "train.off": "Désactivé",

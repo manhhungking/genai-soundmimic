@@ -214,7 +214,7 @@
     "train.trainClassifier": "Train Classifier",
     "train.modelSummary": "Model Summary",
     "train.classCount": "{{count}} classes",
-    "train.tip": "Add more samples to help your model learn.",
+    "train.tip": "Add more samples or classes first.",
     "train.input": "Input",
     "train.on": "On",
     "train.off": "Off",

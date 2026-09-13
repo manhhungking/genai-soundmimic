@@ -214,7 +214,7 @@
     "train.trainClassifier": "Sınıflandırıcıyı Eğit",
     "train.modelSummary": "Model Özeti",
     "train.classCount": "{{count}} sınıf",
-    "train.tip": "Modelinin öğrenmesine yardımcı olmak için daha fazla örnek ekle.",
+    "train.tip": "Önce daha fazla örnek veya sınıf ekle.",
     "train.input": "Giriş",
     "train.on": "Açık",
     "train.off": "Kapalı",

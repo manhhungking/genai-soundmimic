@@ -214,7 +214,7 @@
     "train.trainClassifier": "Allena il classificatore",
     "train.modelSummary": "Riepilogo del modello",
     "train.classCount": "{{count}} classi",
-    "train.tip": "Aggiungi altri campioni per aiutare il modello a imparare.",
+    "train.tip": "Aggiungi prima altri campioni o classi.",
     "train.input": "Input",
     "train.on": "Attivo",
     "train.off": "Disattivo",

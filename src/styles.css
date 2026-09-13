@@ -3170,6 +3170,7 @@ select:focus-visible {
 
 .training-stage {
     width: 340px;
+    min-height: 270px;
     margin-top: 65px;
     padding: 24px 20px;
     text-align: center;
@@ -3189,36 +3190,11 @@ select:focus-visible {
     letter-spacing: -0.5px;
 }
 
-.training-stage__brain {
-    display: grid;
-    width: 116px;
-    height: 116px;
-    margin: 30px auto 20px;
-    color: var(--accent-teal-text);
-    background: var(--surface-soft);
-    border-radius: 50%;
-    place-items: center;
-}
-
-.training-stage__brain svg {
-    width: 62px;
-    height: 62px;
-}
-
-.training-stage__brain.is-training {
-    animation: soft-pulse 900ms ease-in-out infinite alternate;
-}
-
-.training-stage > h3 {
-    font-size: 20px;
-}
-
-.training-stage > p {
-    margin-top: 13px;
-    color: var(--text-secondary);
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.45;
+.training-stage__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 190px;
 }
 
 .train-classifier-button {
@@ -3228,7 +3204,7 @@ select:focus-visible {
     gap: 8px;
     width: 100%;
     min-height: 58px;
-    margin-top: 26px;
+    margin-top: 0;
     color: var(--color-white);
     background: var(--gradient-teal-deep);
     border-radius: 9px;
@@ -3240,55 +3216,28 @@ select:focus-visible {
 
 .train-classifier-button:disabled {
     opacity: 0.62;
-    cursor: progress;
+    cursor: not-allowed;
 }
 
-.model-summary {
-    display: grid;
-    gap: 13px;
-    padding: 19px;
-    margin-top: 27px;
-    text-align: left;
-    background: var(--surface-soft);
-    border-top: 1px solid var(--line);
-    border-radius: 10px;
-}
-
-.model-summary h3 {
-    padding-bottom: 7px;
-    font-size: 15px;
-}
-
-.model-summary p {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    margin: 0;
-    color: var(--text-secondary);
-}
-
-.model-summary svg {
-    color: var(--accent-teal-text);
-}
-
-.model-summary__ready {
-    width: 19px;
-    height: 19px;
-    background: var(--color-green);
-    border-radius: 50%;
-}
-
+.training-stage .training-stage__status,
 .training-stage .training-stage__tip {
     display: flex;
     align-items: center;
     gap: 7px;
     padding: 13px;
-    margin-top: 16px;
-    color: var(--color-blue);
+    margin: 18px 0 0;
     background: var(--surface-soft);
     border-radius: 9px;
     font-size: 13px;
     text-align: left;
+}
+
+.training-stage .training-stage__tip {
+    color: var(--color-blue);
+}
+
+.training-stage .training-stage__status {
+    color: var(--color-green);
 }
 
 .training-output-column {
@@ -3567,15 +3516,6 @@ select:focus-visible {
     border-radius: 10px;
     box-shadow: var(--shadow-notice);
     font-weight: 750;
-}
-
-@keyframes soft-pulse {
-    from {
-        transform: scale(0.96);
-    }
-    to {
-        transform: scale(1.04);
-    }
 }
 
 @media (max-width: 1500px) {

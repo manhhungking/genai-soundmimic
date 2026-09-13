@@ -214,7 +214,7 @@
     "train.trainClassifier": "Huấn luyện bộ phân loại",
     "train.modelSummary": "Tóm tắt mô hình",
     "train.classCount": "{{count}} lớp",
-    "train.tip": "Thêm nhiều mẫu hơn để giúp mô hình học tốt.",
+    "train.tip": "Trước tiên, hãy thêm mẫu hoặc lớp.",
     "train.input": "Đầu vào",
     "train.on": "Bật",
     "train.off": "Tắt",

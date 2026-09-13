@@ -214,7 +214,7 @@
     "train.trainClassifier": "Opeta luokittelii",
     "train.modelSummary": "Modielun yhtevendy",
     "train.classCount": "{{count}} kluassua",
-    "train.tip": "Ližiä näyttehii, ku modielu opastuis paremmin.",
+    "train.tip": "Ližiä ensin näyttehii libo klassua.",
     "train.input": "Syöteh",
     "train.on": "Piäl",
     "train.off": "Iäre",
