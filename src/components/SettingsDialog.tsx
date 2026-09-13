@@ -1,6 +1,8 @@
 import CloseRounded from '@mui/icons-material/CloseRounded';
+import LanguageRounded from '@mui/icons-material/LanguageRounded';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { defaultLanguage, isLanguageCode, languages, setAppLanguage } from '../i18n';
 import ColorModeControl from './ColorModeControl';
 
 type SettingsDialogProps = {
@@ -9,8 +11,11 @@ type SettingsDialogProps = {
 };
 
 export default function SettingsDialog({ onClose, open }: SettingsDialogProps) {
-    const { t } = useTranslation();
+    const { i18n, t } = useTranslation();
     const closeButtonRef = useRef<HTMLButtonElement>(null);
+    const selectedLanguage = isLanguageCode(i18n.resolvedLanguage)
+        ? i18n.resolvedLanguage
+        : defaultLanguage;
 
     useEffect(() => {
         if (!open) return;
@@ -50,6 +55,30 @@ export default function SettingsDialog({ onClose, open }: SettingsDialogProps) {
                         <CloseRounded aria-hidden="true" />
                     </button>
                 </header>
+                <div className="settings-dialog__section">
+                    <h3>{t('app.language')}</h3>
+                    <label className="settings-language-control">
+                        <LanguageRounded aria-hidden="true" />
+                        <select
+                            aria-label={t('app.language')}
+                            onChange={(event) => {
+                                if (isLanguageCode(event.target.value)) {
+                                    void setAppLanguage(event.target.value);
+                                }
+                            }}
+                            value={selectedLanguage}
+                        >
+                            {languages.map(({ code, label }) => (
+                                <option
+                                    key={code}
+                                    value={code}
+                                >
+                                    {label}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+                </div>
                 <div className="settings-dialog__section">
                     <h3>{t('theme.label')}</h3>
                     <ColorModeControl />

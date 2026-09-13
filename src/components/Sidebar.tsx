@@ -6,6 +6,7 @@ import PlayCircleRounded from '@mui/icons-material/PlayCircleRounded';
 import QrCode2Rounded from '@mui/icons-material/QrCode2Rounded';
 import SettingsRounded from '@mui/icons-material/SettingsRounded';
 import TimelineRounded from '@mui/icons-material/TimelineRounded';
+import TuneRounded from '@mui/icons-material/TuneRounded';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router';
@@ -21,7 +22,7 @@ type NavItem = {
 const navItems: NavItem[] = [
     { labelKey: 'nav.home', icon: <HomeRounded />, to: '/home' },
     { labelKey: 'nav.train', icon: <TimelineRounded />, to: '/train' },
-    { labelKey: 'nav.setup', icon: <SettingsRounded />, to: '/setup' },
+    { labelKey: 'nav.setup', icon: <TuneRounded />, to: '/setup' },
     { labelKey: 'nav.play', icon: <PlayCircleRounded />, to: '/play' },
     { labelKey: 'nav.results', icon: <BarChartRounded />, to: '/results' },
 ];
@@ -89,7 +90,7 @@ export default function Sidebar({ collapsed, onOpenJoinCode, onOpenSettings, onT
                     onClick={onOpenSettings}
                     type="button"
                 >
-                    <SettingsRounded />
+                    <SettingsRounded aria-hidden="true" />
                     <span>{t('nav.settings')}</span>
                 </button>
             </div>

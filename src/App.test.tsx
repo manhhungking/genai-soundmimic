@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryRouter } from 'react-router';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
 import i18n, { i18nReady } from './i18n';
 import { routes } from './router';
@@ -163,6 +163,18 @@ describe('sound mimic routes', () => {
         expect(screen.getByRole('button', { name: 'Collapse navigation' })).toHaveAttribute('aria-expanded', 'true');
     });
 
+    it('navigates across the lazy Game Setup and Play routes without a render error', async () => {
+        const user = userEvent.setup();
+        renderRoute('/home');
+
+        await user.click(await screen.findByRole('link', { name: 'Game Setup' }));
+        expect(await screen.findByRole('heading', { level: 1, name: 'Game Setup' })).toBeInTheDocument();
+
+        await user.click(screen.getByRole('link', { name: 'Play' }));
+        expect(await screen.findByRole('heading', { level: 1, name: 'Play' })).toBeInTheDocument();
+        expect(screen.queryByText('Unexpected Application Error!')).not.toBeInTheDocument();
+    });
+
     it('switches color mode and remembers the host preference', async () => {
         const user = userEvent.setup();
         renderRoute('/home');
@@ -177,6 +189,22 @@ describe('sound mimic routes', () => {
         await user.click(screen.getByRole('button', { name: 'Use light mode' }));
         expect(document.documentElement).toHaveAttribute('data-color-mode', 'light');
         expect(window.localStorage.getItem('soundmimic-color-mode')).toBe('light');
+    });
+
+    it('switches language from settings and remembers the preference', async () => {
+        const user = userEvent.setup();
+        renderRoute('/home');
+
+        await user.click((await screen.findAllByRole('button', { name: 'Settings' }))[0]);
+        const dialog = screen.getByRole('dialog', { name: 'Settings' });
+        const languageSelect = within(dialog).getByRole('combobox', { name: 'Language' });
+
+        await user.selectOptions(languageSelect, 'vi-VN');
+
+        expect(languageSelect).toHaveValue('vi-VN');
+        expect(window.localStorage.getItem('sound-mimic-language')).toBe('vi-VN');
+        expect(document.documentElement).toHaveAttribute('lang', 'vi-VN');
+        expect(await screen.findByRole('heading', { name: 'Chào mừng!' })).toBeInTheDocument();
     });
 
     it('switches language across the app and remembers the preference', async () => {
@@ -210,6 +238,12 @@ describe('sound mimic routes', () => {
         expect(screen.getByText('You must train your classifier first.')).toBeInTheDocument();
         expect(screen.getByText('Add more samples to help your model learn.')).toBeInTheDocument();
         expect(screen.queryByLabelText('Each class needs a few clear sound examples')).not.toBeInTheDocument();
+        expect(screen.getByText('Background Noise').closest('[data-widget="class-background-noise"]'))
+            .toHaveAttribute('data-active', 'false');
+        expect(screen.getByRole('heading', { name: 'Training' }).closest('[data-widget="trainer"]'))
+            .toHaveAttribute('data-active', 'false');
+        expect(screen.getByRole('heading', { name: 'Classifier' }).closest('[data-widget="classifier"]'))
+            .toHaveAttribute('data-active', 'false');
 
         await user.click(await screen.findByRole('button', { name: 'Edit Bird class' }, { timeout: 5000 }));
         const nameInput = screen.getByRole('textbox', { name: 'Class name' });
@@ -221,6 +255,110 @@ describe('sound mimic routes', () => {
         expect(screen.getByRole('button', { name: 'Edit Robin class' })).toBeInTheDocument();
         await user.click(screen.getByRole('button', { name: 'Add a class' }));
         expect(screen.getByRole('heading', { name: 'Class 5' })).toBeInTheDocument();
+    });
+
+    it('keeps only one class editor or menu open and closes it outside Training Data', async () => {
+        const user = userEvent.setup();
+        renderRoute('/train');
+
+        const backgroundMenu = await screen.findByRole('button', { name: 'More options for Background Noise' });
+        const birdMenu = screen.getByRole('button', { name: 'More options for Bird' });
+
+        await user.click(screen.getByRole('button', { name: 'Edit Bird class' }));
+        expect(screen.getByRole('group', { name: 'Edit Bird class' })).toBeInTheDocument();
+
+        await user.click(backgroundMenu);
+        expect(screen.queryByRole('group', { name: 'Edit Bird class' })).not.toBeInTheDocument();
+        expect(screen.getAllByRole('button', { name: 'Remove class' })).toHaveLength(1);
+        expect(backgroundMenu).toHaveAttribute('aria-expanded', 'true');
+
+        await user.click(birdMenu);
+        expect(screen.getAllByRole('button', { name: 'Remove class' })).toHaveLength(1);
+        expect(backgroundMenu).toHaveAttribute('aria-expanded', 'false');
+        expect(birdMenu).toHaveAttribute('aria-expanded', 'true');
+
+        await user.click(screen.getByRole('button', { name: 'Edit Cat class' }));
+        expect(screen.queryByRole('button', { name: 'Remove class' })).not.toBeInTheDocument();
+        expect(screen.getByRole('group', { name: 'Edit Cat class' })).toBeInTheDocument();
+
+        await user.click(screen.getByRole('heading', { name: 'Training' }));
+        expect(screen.queryByRole('group', { name: 'Edit Cat class' })).not.toBeInTheDocument();
+    });
+
+    it('opens a Teachable Machine-style microphone panel before recording', async () => {
+        const user = userEvent.setup();
+        renderRoute('/train');
+
+        await user.click(await screen.findByRole('button', { name: 'Record Background Noise' }));
+
+        const panel = screen.getByText('More samples are needed').closest('.training-recording-panel');
+        expect(panel).not.toBeNull();
+        expect(within(panel as HTMLElement).getByRole('button', { name: /Microphone \(Default\)/ })).toBeInTheDocument();
+        expect(within(panel as HTMLElement).getByRole('button', { name: 'Close microphone panel' })).toBeInTheDocument();
+        expect(within(panel as HTMLElement).getByRole('button', { name: 'Record' })).toBeInTheDocument();
+
+        await user.click(screen.getByRole('heading', { name: 'Training' }));
+        expect(screen.queryByRole('button', { name: 'Close microphone panel' })).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Record Background Noise' })).toBeInTheDocument();
+    });
+
+    it('opens the input-source dropdown and selects an available microphone', async () => {
+        const user = userEvent.setup();
+        const originalMediaDevices = window.navigator.mediaDevices;
+        Object.defineProperty(window.navigator, 'mediaDevices', {
+            configurable: true,
+            value: {
+                enumerateDevices: vi.fn(async () => [
+                    {
+                        deviceId: 'default',
+                        groupId: 'built-in',
+                        kind: 'audioinput',
+                        label: 'Default microphone',
+                        toJSON: () => ({}),
+                    },
+                    {
+                        deviceId: 'usb-microphone',
+                        groupId: 'external',
+                        kind: 'audioinput',
+                        label: 'USB Microphone',
+                        toJSON: () => ({}),
+                    },
+                    {
+                        deviceId: 'camera',
+                        groupId: 'external',
+                        kind: 'videoinput',
+                        label: 'Webcam',
+                        toJSON: () => ({}),
+                    },
+                ] satisfies MediaDeviceInfo[]),
+            },
+        });
+
+        try {
+            renderRoute('/train');
+            const trigger = await screen.findByRole('button', {
+                name: 'Sound input source: Microphone (Default)',
+            });
+            const inputPanel = trigger.closest('.sound-input-panel');
+
+            await user.click(trigger);
+            expect(inputPanel).toHaveClass('is-source-menu-open');
+            const sourceList = screen.getByRole('listbox', { name: 'Sound input source' });
+            await user.click(await within(sourceList).findByRole('option', { name: 'USB Microphone' }));
+
+            expect(trigger).toHaveAttribute('aria-label', 'Sound input source: USB Microphone');
+            expect(trigger).toHaveAttribute('aria-expanded', 'false');
+            expect(inputPanel).not.toHaveClass('is-source-menu-open');
+
+            await user.click(trigger);
+            await user.click(screen.getByRole('heading', { name: 'Training' }));
+            expect(screen.queryByRole('listbox', { name: 'Sound input source' })).not.toBeInTheDocument();
+        } finally {
+            Object.defineProperty(window.navigator, 'mediaDevices', {
+                configurable: true,
+                value: originalMediaDevices,
+            });
+        }
     });
 
     it('lets the host build, edit, save, and start a game setup', async () => {

@@ -1,5 +1,7 @@
 import AutoAwesomeRounded from '@mui/icons-material/AutoAwesomeRounded';
 import BarChartRounded from '@mui/icons-material/BarChartRounded';
+import CheckRounded from '@mui/icons-material/CheckRounded';
+import ExpandMoreRounded from '@mui/icons-material/ExpandMoreRounded';
 import LightbulbRounded from '@mui/icons-material/LightbulbRounded';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import MenuRounded from '@mui/icons-material/MenuRounded';
@@ -9,7 +11,7 @@ import type { AudioExample, SoundRecorder } from '@genai-fi/classifier';
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
-import { getSoundNameKey } from '../../locales/sounds';
+import { getSoundNameKey } from '../../util/soundNames';
 import TrainingWaveform from './TrainingWaveform';
 import WorkflowNode from './WorkflowNode';
 import type { SoundClass } from './model';
@@ -25,52 +27,149 @@ type TrainingOutputColumnProps = {
 function InputPanel({ canPredict, onPredict }: Pick<TrainingOutputColumnProps, 'canPredict' | 'onPredict'>) {
     const { t } = useTranslation();
     const fileRef = useRef<HTMLInputElement>(null);
+    const microphoneMenuRef = useRef<HTMLDivElement>(null);
+    const microphoneTriggerRef = useRef<HTMLButtonElement>(null);
     const recorderRef = useRef<SoundRecorder | null>(null);
     const inputRequestedRef = useRef(false);
+    const previewSessionRef = useRef(0);
     const [enabled, setEnabled] = useState(false);
     const [tab, setTab] = useState<'mic' | 'file'>('mic');
     const [fileName, setFileName] = useState('');
+    const [microphones, setMicrophones] = useState<MediaDeviceInfo[]>([]);
+    const [microphoneMenuOpen, setMicrophoneMenuOpen] = useState(false);
+    const [selectedDeviceId, setSelectedDeviceId] = useState('');
+    const microphoneOptions = [
+        { deviceId: '', label: t('train.microphoneDefault') },
+        ...microphones
+            .filter(({ deviceId }) => deviceId && deviceId !== 'default')
+            .map((device, index) => ({
+                deviceId: device.deviceId,
+                label: device.label || `${t('train.mic')} ${index + 1}`,
+            })),
+    ];
+    const selectedMicrophone = microphoneOptions.find(({ deviceId }) => deviceId === selectedDeviceId)
+        ?? microphoneOptions[0];
 
     useEffect(() => () => {
+        inputRequestedRef.current = false;
+        previewSessionRef.current += 1;
         recorderRef.current?.stopRecording();
         recorderRef.current?.removeAllListeners();
     }, []);
 
-    async function startMicrophonePreview() {
+    useEffect(() => {
+        if (!microphoneMenuOpen) return;
+
+        function closeOnOutsidePress(event: PointerEvent) {
+            if (!microphoneMenuRef.current?.contains(event.target as Node)) setMicrophoneMenuOpen(false);
+        }
+
+        function closeOnEscape(event: KeyboardEvent) {
+            if (event.key !== 'Escape') return;
+            setMicrophoneMenuOpen(false);
+            microphoneTriggerRef.current?.focus();
+        }
+
+        document.addEventListener('pointerdown', closeOnOutsidePress);
+        document.addEventListener('keydown', closeOnEscape);
+        return () => {
+            document.removeEventListener('pointerdown', closeOnOutsidePress);
+            document.removeEventListener('keydown', closeOnEscape);
+        };
+    }, [microphoneMenuOpen]);
+
+    async function refreshMicrophones() {
+        try {
+            const devices = await navigator.mediaDevices?.enumerateDevices();
+            setMicrophones(devices?.filter(({ kind }) => kind === 'audioinput') ?? []);
+        } catch {
+            setMicrophones([]);
+        }
+    }
+
+    function stopMicrophonePreview() {
+        inputRequestedRef.current = false;
+        previewSessionRef.current += 1;
+        const recorder = recorderRef.current;
+        recorderRef.current = null;
+        recorder?.stopRecording();
+        recorder?.removeAllListeners();
+        setEnabled(false);
+    }
+
+    async function startMicrophonePreview(deviceId = selectedDeviceId) {
+        const previewSession = previewSessionRef.current + 1;
+        previewSessionRef.current = previewSession;
+        const previousRecorder = recorderRef.current;
+        recorderRef.current = null;
+        previousRecorder?.stopRecording();
+        previousRecorder?.removeAllListeners();
+
         try {
             const recorder = await createSoundRecorder();
-            if (!inputRequestedRef.current) return;
+            if (!inputRequestedRef.current || previewSessionRef.current !== previewSession) {
+                recorder.stopRecording();
+                recorder.removeAllListeners();
+                return;
+            }
             recorderRef.current = recorder;
-            recorder.on('example', (example) => void onPredict(example));
+            recorder.on('example', (example) => {
+                if (previewSessionRef.current === previewSession) void onPredict(example);
+            });
             recorder.on('stop', () => {
+                if (previewSessionRef.current !== previewSession) return;
                 inputRequestedRef.current = false;
                 recorderRef.current = null;
                 setEnabled(false);
             });
             recorder.on('error', () => {
+                if (previewSessionRef.current !== previewSession) return;
                 inputRequestedRef.current = false;
+                recorderRef.current = null;
                 setEnabled(false);
             });
-            await recorder.startRecording('preview', recordingOptions(60 * 60 * 1000, false));
-            if (!inputRequestedRef.current) recorder.stopRecording();
+            await recorder.startRecording(
+                'preview',
+                recordingOptions(60 * 60 * 1000, false, deviceId || undefined),
+            );
+            if (!inputRequestedRef.current || previewSessionRef.current !== previewSession) {
+                recorder.stopRecording();
+                recorder.removeAllListeners();
+                return;
+            }
+            void refreshMicrophones();
         } catch {
-            recorderRef.current = null;
-            setEnabled(false);
+            if (previewSessionRef.current === previewSession) {
+                recorderRef.current = null;
+                inputRequestedRef.current = false;
+                setEnabled(false);
+            }
         }
     }
 
     function setInputEnabled(next: boolean) {
-        inputRequestedRef.current = next;
-        setEnabled(next);
-        if (!next) recorderRef.current?.stopRecording();
-        else if (tab === 'mic') void startMicrophonePreview();
+        if (!next) {
+            stopMicrophonePreview();
+            return;
+        }
+        inputRequestedRef.current = true;
+        setEnabled(true);
+        if (tab === 'mic') void startMicrophonePreview();
     }
 
     function selectTab(next: 'mic' | 'file') {
-        inputRequestedRef.current = false;
-        recorderRef.current?.stopRecording();
-        setEnabled(false);
+        stopMicrophonePreview();
+        setMicrophoneMenuOpen(false);
         setTab(next);
+    }
+
+    function selectMicrophone(deviceId: string) {
+        setSelectedDeviceId(deviceId);
+        setMicrophoneMenuOpen(false);
+        microphoneTriggerRef.current?.focus();
+        if (!enabled) return;
+        inputRequestedRef.current = true;
+        void startMicrophonePreview(deviceId);
     }
 
     async function handleFile(event: ChangeEvent<HTMLInputElement>) {
@@ -89,7 +188,7 @@ function InputPanel({ canPredict, onPredict }: Pick<TrainingOutputColumnProps, '
 
     return (
         <WorkflowNode
-            className="sound-input-panel train-surface"
+            className={`sound-input-panel train-surface${microphoneMenuOpen ? ' is-source-menu-open' : ''}`}
             nodeId="input"
             active={enabled}
         >
@@ -129,9 +228,46 @@ function InputPanel({ canPredict, onPredict }: Pick<TrainingOutputColumnProps, '
             </div>
             {tab === 'mic' ? (
                 <>
-                    <button className="microphone-select" type="button">
-                        <MicRounded /> {t('train.microphoneDefault')} <span>⌄</span>
-                    </button>
+                    <div className={`microphone-source${microphoneMenuOpen ? ' is-open' : ''}`} ref={microphoneMenuRef}>
+                        <button
+                            aria-expanded={microphoneMenuOpen}
+                            aria-haspopup="listbox"
+                            aria-label={`${t('train.inputSource')}: ${selectedMicrophone.label}`}
+                            className="microphone-select"
+                            onClick={() => {
+                                const nextOpen = !microphoneMenuOpen;
+                                setMicrophoneMenuOpen(nextOpen);
+                                if (nextOpen) void refreshMicrophones();
+                            }}
+                            ref={microphoneTriggerRef}
+                            type="button"
+                        >
+                            <MicRounded aria-hidden="true" />
+                            <span>{selectedMicrophone.label}</span>
+                            <ExpandMoreRounded aria-hidden="true" />
+                        </button>
+                        {microphoneMenuOpen && (
+                            <ul
+                                aria-label={t('train.inputSource')}
+                                className="microphone-source__menu"
+                                role="listbox"
+                            >
+                                {microphoneOptions.map(({ deviceId, label }) => (
+                                    <li key={deviceId || 'default'} role="presentation">
+                                        <button
+                                            aria-selected={deviceId === selectedDeviceId}
+                                            onClick={() => selectMicrophone(deviceId)}
+                                            role="option"
+                                            type="button"
+                                        >
+                                            <span>{label}</span>
+                                            {deviceId === selectedDeviceId && <CheckRounded aria-hidden="true" />}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
                     <TrainingWaveform active={enabled} />
                 </>
             ) : (
@@ -162,7 +298,11 @@ function ClassifierPreview({
 
     if (!canPredict) {
         return (
-            <WorkflowNode className="classifier-preview classifier-preview--empty train-surface" nodeId="classifier">
+            <WorkflowNode
+                active={false}
+                className="classifier-preview classifier-preview--empty train-surface"
+                nodeId="classifier"
+            >
                 <header>
                     <h2>{t('train.classifier')}</h2>
                     <MenuRounded aria-hidden="true" />
@@ -176,7 +316,7 @@ function ClassifierPreview({
     }
 
     return (
-        <WorkflowNode className="classifier-preview train-surface" nodeId="classifier">
+        <WorkflowNode active={canPredict} className="classifier-preview train-surface" nodeId="classifier">
             <header>
                 <div>
                     <h2>{t('train.preview')}</h2>

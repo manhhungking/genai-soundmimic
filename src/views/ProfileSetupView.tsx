@@ -8,12 +8,10 @@ import ProfileEditor from '../components/ProfileEditor';
 import ProjectLinks from '../components/ProjectLinks';
 import {
     defaultStudentProfile,
-    readProfile,
-    saveProfile,
     studentProfileStorageKey,
 } from '../data/profile';
-import { setAppLanguage } from '../i18n';
-import { isLanguageCode } from '../locales/config';
+import { isLanguageCode, setAppLanguage } from '../i18n';
+import { readProfile, saveProfile } from '../util/profile';
 
 export function Component() {
     const { t } = useTranslation();

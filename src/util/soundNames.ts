@@ -1,4 +1,4 @@
-const soundNameKeys: Record<string, string> = {
+const soundNameKeys: Readonly<Record<string, string>> = {
     'Background Noise': 'sound.backgroundNoise',
     Bird: 'sound.bird',
     Cat: 'sound.cat',

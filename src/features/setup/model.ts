@@ -6,12 +6,15 @@ export type SetupTone = 'blue' | 'orange' | 'green' | 'violet';
 
 export type SetupRound = {
     challenge: ChallengeType;
+    clipAudioDataUrl?: string;
     duration: number;
     end: number;
     fileName: string;
     icon: SetupSoundIcon;
     id: string;
     name: string;
+    sourceAudioDataUrl?: string;
+    sourceDuration?: number;
     start: number;
     tone: SetupTone;
 };

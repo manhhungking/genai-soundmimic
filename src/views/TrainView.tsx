@@ -11,6 +11,7 @@ import TrainingStage, { type TrainingStatus } from '../features/training/Trainin
 import {
     classTones,
     emptySoundSamples,
+    soundClipIdSeparator,
     initialSoundClasses,
     soundIconOptions,
     type SoundClass,
@@ -26,7 +27,7 @@ import {
     trainSoundClassifier,
     type SoundPrediction,
 } from '../features/training/soundClassifier';
-import { randomId } from '../shared/genai';
+import { randomId } from '../util/randomId';
 
 export function Component() {
     const { t } = useTranslation();
@@ -37,10 +38,6 @@ export function Component() {
     const [predictions, setPredictions] = useState<SoundPrediction[]>([]);
     const [trainingStatus, setTrainingStatus] = useState<TrainingStatus>('ready');
     const [notice, setNotice] = useState('');
-    const sampleCount = useMemo(
-        () => classes.reduce((total, item) => total + (samples[item.id]?.length ?? 0), 0),
-        [classes, samples],
-    );
     const canTrain = useMemo(() => canTrainSoundClassifier(classes, samples), [classes, samples]);
     const connections = useMemo<IConnection[]>(() => [
         ...classes.map(({ id }) => ({
@@ -63,21 +60,35 @@ export function Component() {
         setNotice('');
     }
 
-    function updateClass(id: string, patch: Pick<SoundClass, 'name' | 'icon'>) {
+    function updateClass(id: string, patch: Pick<SoundClass, 'name' | 'icon' | 'tone'>) {
         setClasses((items) => items.map((item) => (item.id === id ? { ...item, ...patch } : item)));
         resetTraining();
     }
 
     function addSamples(id: string, nextSamples: AudioExample[]) {
+        const clipId = randomId();
         setSamples((items) => ({
             ...items,
-            [id]: [...(items[id] ?? []), ...nextSamples.map((data) => ({ id: randomId(), data }))],
+            [id]: [
+                ...(items[id] ?? []),
+                ...nextSamples.map((data) => ({
+                    id: `${clipId}${soundClipIdSeparator}${randomId()}`,
+                    clipId,
+                    data,
+                })),
+            ],
         }));
         resetTraining();
     }
 
-    function removeSample(id: string) {
-        setSamples((items) => ({ ...items, [id]: (items[id] ?? []).slice(0, -1) }));
+    function removeSample(id: string, clipId: string) {
+        setSamples((items) => {
+            const classSamples = items[id] ?? [];
+            return {
+                ...items,
+                [id]: classSamples.filter((sample) => sample.clipId !== clipId),
+            };
+        });
         resetTraining();
     }
 
@@ -217,7 +228,6 @@ export function Component() {
                         onUpdateClass={updateClass}
                     />
                     <TrainingStage
-                        sampleCount={sampleCount}
                         canTrain={canTrain}
                         status={trainingStatus}
                         onTrain={trainClassifier}

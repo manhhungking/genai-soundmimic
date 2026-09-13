@@ -9,7 +9,7 @@ import Avatar from '../components/Avatar';
 import type { AppOutletContext } from '../components/AppLayout';
 import { roundResults } from '../data/results';
 import RoundXaiPanel from '../features/results/RoundXaiPanel';
-import { getSoundNameKey } from '../locales/sounds';
+import { getSoundNameKey } from '../util/soundNames';
 
 const overview = [
     { labelKey: 'results.completed', value: '1', icon: <CheckCircleRounded /> },

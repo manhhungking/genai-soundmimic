@@ -9,7 +9,7 @@ import ClipEditor from '../features/setup/ClipEditor';
 import GameRulesPanel from '../features/setup/GameRulesPanel';
 import ModelSelectionPanel from '../features/setup/ModelSelectionPanel';
 import RoundBuilder from '../features/setup/RoundBuilder';
-import { randomId } from '../shared/genai';
+import { randomId } from '../util/randomId';
 import {
     defaultGameRules,
     initialSetupRounds,
@@ -130,8 +130,13 @@ export function Component() {
                     {selectedRound && (
                         <ClipEditor
                             key={selectedRound.id}
-                            onUseClip={(start, end) => {
-                                updateRound(selectedRound.id, { duration: end - start, end, start });
+                            onUseClip={(start, end, clipAudioDataUrl) => {
+                                updateRound(selectedRound.id, {
+                                    clipAudioDataUrl,
+                                    duration: end - start,
+                                    end,
+                                    start,
+                                });
                                 setNotice(t('setup.clipUpdated'));
                             }}
                             round={selectedRound}

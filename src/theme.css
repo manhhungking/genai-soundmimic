@@ -39,7 +39,8 @@
     --surface-translucent: rgba(255, 255, 255, 0.97);
     --surface-soft: #edf7ff;
     --surface-muted: #f5f9fd;
-    --training-data-background: #dde3e7;
+    --training-data-background: #e7f1f6;
+    --recording-canvas-background: #eaf5fd;
     --surface-violet: #f7f4ff;
     --field-background: #fff;
     --line: #d9e8f5;
@@ -153,6 +154,7 @@
     --surface-soft: #19384b;
     --surface-muted: #102634;
     --training-data-background: #102633;
+    --recording-canvas-background: #19384b;
     --surface-violet: #292343;
     --field-background: #102534;
     --line: #2a4a5d;

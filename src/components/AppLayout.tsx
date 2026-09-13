@@ -4,10 +4,9 @@ import { Outlet, useNavigate } from 'react-router';
 import {
     defaultHostProfile,
     hostProfileStorageKey,
-    readProfile,
-    saveProfile,
     type UserProfile,
 } from '../data/profile';
+import { readProfile, saveProfile } from '../util/profile';
 import CornerControls from './CornerControls';
 import GameControls from './GameControls';
 import JoinCodeDialog from './JoinCodeDialog';

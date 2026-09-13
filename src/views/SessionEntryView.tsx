@@ -4,8 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router';
 import Brand from '../components/Brand';
 import CornerControls from '../components/CornerControls';
 import ProjectLinks from '../components/ProjectLinks';
-import { isLanguageCode } from '../locales/config';
-import { setAppLanguage } from '../i18n';
+import { isLanguageCode, setAppLanguage } from '../i18n';
 
 export function Component() {
     const { i18n, t } = useTranslation();

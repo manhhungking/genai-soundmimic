@@ -6,8 +6,10 @@ import EditRounded from '@mui/icons-material/EditRounded';
 import MoreVertRounded from '@mui/icons-material/MoreVertRounded';
 import PauseRounded from '@mui/icons-material/PauseRounded';
 import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { AudioPlayback } from '../../util/audio';
+import { playConfiguredRound } from './audioClip';
 import SetupSoundIcon from './SetupSoundIcon';
 import SetupStepHeader from './SetupStepHeader';
 import SetupWaveform from './SetupWaveform';
@@ -52,10 +54,47 @@ export default function RoundBuilder({
     const [editingId, setEditingId] = useState<string>();
     const [draftName, setDraftName] = useState('');
     const [playingId, setPlayingId] = useState<string>();
+    const playbackRef = useRef<AudioPlayback | undefined>(undefined);
+    const playbackRequestRef = useRef(0);
+
+    useEffect(() => () => {
+        playbackRequestRef.current += 1;
+        playbackRef.current?.stop();
+    }, []);
 
     function saveName(round: SetupRound) {
         onUpdateName(round.id, draftName.trim() || getRoundName(round, t));
         setEditingId(undefined);
+    }
+
+    function stopPlayback() {
+        playbackRequestRef.current += 1;
+        playbackRef.current?.stop();
+        playbackRef.current = undefined;
+        setPlayingId(undefined);
+    }
+
+    async function togglePlayback(round: SetupRound) {
+        if (playingId === round.id) {
+            stopPlayback();
+            return;
+        }
+
+        stopPlayback();
+        const request = playbackRequestRef.current + 1;
+        playbackRequestRef.current = request;
+        setPlayingId(round.id);
+        try {
+            const playback = await playConfiguredRound(round, () => {
+                if (playbackRequestRef.current !== request) return;
+                playbackRef.current = undefined;
+                setPlayingId(undefined);
+            });
+            if (playbackRequestRef.current !== request) playback.stop();
+            else playbackRef.current = playback;
+        } catch {
+            if (playbackRequestRef.current === request) setPlayingId(undefined);
+        }
     }
 
     return (
@@ -142,7 +181,7 @@ export default function RoundBuilder({
                                     className="setup-round__play"
                                     onClick={(event) => {
                                         event.stopPropagation();
-                                        setPlayingId((current) => (current === round.id ? undefined : round.id));
+                                        void togglePlayback(round);
                                     }}
                                     type="button"
                                 >

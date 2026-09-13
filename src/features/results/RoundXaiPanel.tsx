@@ -5,7 +5,7 @@ import SearchRounded from '@mui/icons-material/SearchRounded';
 import { useTranslation } from 'react-i18next';
 import Spectrogram from '../../components/Spectrogram';
 import type { RoundResult } from '../../data/results';
-import { getSoundNameKey } from '../../locales/sounds';
+import { getSoundNameKey } from '../../util/soundNames';
 
 type RoundXaiPanelProps = {
     round: RoundResult;

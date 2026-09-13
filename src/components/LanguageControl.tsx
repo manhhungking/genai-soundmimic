@@ -3,8 +3,7 @@ import ExpandMoreRounded from '@mui/icons-material/ExpandMoreRounded';
 import LanguageRounded from '@mui/icons-material/LanguageRounded';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { setAppLanguage } from '../i18n';
-import { defaultLanguage, isLanguageCode, languages } from '../locales/config';
+import { defaultLanguage, isLanguageCode, languages, setAppLanguage } from '../i18n';
 
 export default function LanguageControl() {
     const { t, i18n } = useTranslation();

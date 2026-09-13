@@ -1,9 +1,11 @@
 import type ClassifierApp from '@genai-fi/classifier';
 import type { AudioExample, TeachableModel } from '@genai-fi/classifier';
 import type { ISample } from '@genai-fi/classifier/main/ClassifierApp';
-import { loadClassifier, randomId } from '../../shared/genai';
+import { loadClassifier } from '../../util/classifier';
+import { randomId } from '../../util/randomId';
 import {
     classTones,
+    soundClipIdSeparator,
     soundIconOptions,
     type SoundClass,
     type SoundSample,
@@ -17,7 +19,7 @@ const recorderOptions = {
     includeRawAudio: true,
     includeCanvas: true,
     warmupMillis: 200,
-    overlapFactor: 0.5,
+    overlapFactor: 0,
 } as const;
 
 export type SoundPrediction = {
@@ -25,18 +27,36 @@ export type SoundPrediction = {
     probability: number;
 };
 
-export async function createSoundRecorder() {
-    const { SoundRecorder } = await loadClassifier();
-    return new SoundRecorder();
+export const minimumSampleCount = {
+    backgroundNoise: 20,
+    soundClass: 2,
+} as const;
+
+export function hasEnoughSamplesForClass(index: number, samples: SoundSample[]) {
+    const requiredSamples = index === 0
+        ? minimumSampleCount.backgroundNoise
+        : minimumSampleCount.soundClass;
+    return samples.length >= requiredSamples;
 }
 
-export function recordingOptions(durationMillis = 20_000, keepSourceAudio = true) {
-    return {
+export async function createSoundRecorder() {
+    const { SoundRecorder } = await loadClassifier();
+    const recorder = new SoundRecorder();
+    const canvas = document.createElement('canvas');
+    canvas.width = 224;
+    canvas.height = 224;
+    recorder.canvas = canvas;
+    return recorder;
+}
+
+export function recordingOptions(durationMillis?: number, keepSourceAudio = true, deviceId?: string) {
+    const options = {
         ...recorderOptions,
-        durationMillis,
         includeRawAudio: keepSourceAudio,
         includeCanvas: keepSourceAudio,
+        ...(deviceId ? { deviceId } : {}),
     };
+    return durationMillis === undefined ? options : { ...options, durationMillis };
 }
 
 export async function extractAudioExamples(
@@ -59,7 +79,7 @@ export async function extractAudioExamples(
                 if (!failed) resolve(examples);
             });
         });
-        recorder.startRecording(label, recordingOptions(20_000, keepSourceAudio), file).catch(reject);
+        recorder.startRecording(label, recordingOptions(undefined, keepSourceAudio), file).catch(reject);
     });
 }
 
@@ -133,13 +153,19 @@ export function soundClassesFromClassifier(app: ClassifierApp): Pick<SoundClass,
 
 export function samplesFromClassifier(app: ClassifierApp): SoundSample[][] {
     return app.samples.map((samples) =>
-        samples.flatMap((sample) => isAudioExample(sample.data) ? [{ id: sample.id || randomId(), data: sample.data }] : []),
+        samples.flatMap((sample) => {
+            if (!isAudioExample(sample.data)) return [];
+            const id = sample.id || randomId();
+            const separatorIndex = id.indexOf(soundClipIdSeparator);
+            const clipId = separatorIndex >= 0 ? id.slice(0, separatorIndex) : id;
+            return [{ id, clipId, data: sample.data }];
+        }),
     );
 }
 
 export function canTrainSoundClassifier(classes: SoundClass[], samples: SoundSamplesByClass): boolean {
     return classes.length >= 2 && classes.every(
-        ({ id }, index) => (samples[id]?.length ?? 0) >= (index === 0 ? 20 : 2),
+        ({ id }, index) => hasEnoughSamplesForClass(index, samples[id] ?? []),
     );
 }
 

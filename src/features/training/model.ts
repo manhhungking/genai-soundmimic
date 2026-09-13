@@ -20,10 +20,13 @@ export type SoundClass = {
 
 export type SoundSample = {
     id: string;
+    clipId: string;
     data: AudioExample;
 };
 
 export type SoundSamplesByClass = Record<string, SoundSample[]>;
+
+export const soundClipIdSeparator = '::clip-frame::';
 
 export const initialSoundClasses: SoundClass[] = [
     { id: 'background-noise', name: 'Background Noise', icon: 'noise', tone: 'violet' },
