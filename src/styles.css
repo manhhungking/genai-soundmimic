@@ -1,7 +1,23 @@
+@font-face {
+    font-family: 'Andika';
+    src: url('https://store.gen-ai.fi/fonts/Andika-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Andika';
+    src: url('https://store.gen-ai.fi/fonts/Andika-Bold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+}
+
 :root {
     color: var(--text-primary);
     background: var(--canvas);
-    font-family: ui-rounded, 'Avenir Next', 'Nunito Sans', 'Segoe UI', sans-serif;
+    font-family: 'Andika', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     --navy-950: var(--color-sidebar);
@@ -3064,25 +3080,37 @@ select:focus-visible {
 }
 
 .training-class-card__actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    display: flex;
+    gap: 8px;
     padding: 5px 12px 10px;
 }
 
 .training-class-card__actions button {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    min-height: 43px;
+    gap: 1px;
+    width: 88px;
+    min-height: 50px;
+    padding: 5px 8px;
     color: var(--accent-teal-text);
     background: var(--surface);
-    border: 2px solid var(--color-cyan);
-    border-radius: 8px;
+    border: 1px solid var(--color-cyan);
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
-    font-weight: 800;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.training-class-card__actions button svg {
+    width: 20px;
+    height: 20px;
+}
+
+.training-class-card__actions button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .training-class-card__samples {

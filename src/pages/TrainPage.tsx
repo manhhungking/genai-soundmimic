@@ -1,19 +1,32 @@
 import FolderOpenRounded from '@mui/icons-material/FolderOpenRounded';
 import SaveRounded from '@mui/icons-material/SaveRounded';
 import { WorkflowLayout, type IConnection } from '@genai-fi/base';
-import { useMemo, useRef, useState, type ChangeEvent } from 'react';
+import type ClassifierApp from '@genai-fi/classifier';
+import type { AudioExample } from '@genai-fi/classifier';
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import TrainingDataPanel from '../features/training/TrainingDataPanel';
 import TrainingOutputColumn from '../features/training/TrainingOutputColumn';
 import TrainingStage, { type TrainingStatus } from '../features/training/TrainingStage';
 import {
     classTones,
+    emptySoundSamples,
     initialSoundClasses,
     soundIconOptions,
     type SoundClass,
-    type SoundIconKey,
+    type SoundSamplesByClass,
 } from '../features/training/model';
-import { loadClassifier, randomId } from '../shared/genai';
+import {
+    canTrainSoundClassifier,
+    loadSoundClassifier,
+    predictSound,
+    samplesFromClassifier,
+    saveSoundClassifier,
+    soundClassesFromClassifier,
+    trainSoundClassifier,
+    type SoundPrediction,
+} from '../features/training/soundClassifier';
+import { randomId } from '../shared/genai';
 
 const connections: IConnection[] = [
     { start: 'class', end: 'trainer', startPoint: 'right', endPoint: 'left' },
@@ -22,33 +35,27 @@ const connections: IConnection[] = [
     { start: 'classifier', end: 'xai-actions', startPoint: 'bottom', endPoint: 'top' },
 ];
 
-const iconKeys = new Set<SoundIconKey>(soundIconOptions.map(({ value }) => value));
-
-function isSoundClassList(value: unknown): value is SoundClass[] {
-    if (!Array.isArray(value) || value.length < 2) return false;
-    return value.every(
-        (item) =>
-            typeof item === 'object' &&
-            item !== null &&
-            typeof item.id === 'string' &&
-            typeof item.name === 'string' &&
-            typeof item.sampleCount === 'number' &&
-            typeof item.icon === 'string' &&
-            iconKeys.has(item.icon as SoundIconKey) &&
-            typeof item.tone === 'string' &&
-            classTones.includes(item.tone as SoundClass['tone'])
-    );
-}
 export function Component() {
     const { t } = useTranslation();
     const loadRef = useRef<HTMLInputElement>(null);
     const [classes, setClasses] = useState<SoundClass[]>(initialSoundClasses);
+    const [samples, setSamples] = useState<SoundSamplesByClass>(() => emptySoundSamples(initialSoundClasses));
+    const [classifier, setClassifier] = useState<ClassifierApp | null>(null);
+    const [predictions, setPredictions] = useState<SoundPrediction[]>([]);
     const [trainingStatus, setTrainingStatus] = useState<TrainingStatus>('ready');
     const [notice, setNotice] = useState('');
-    const sampleCount = useMemo(() => classes.reduce((total, item) => total + item.sampleCount, 0), [classes]);
+    const sampleCount = useMemo(
+        () => classes.reduce((total, item) => total + (samples[item.id]?.length ?? 0), 0),
+        [classes, samples],
+    );
+    const canTrain = useMemo(() => canTrainSoundClassifier(classes, samples), [classes, samples]);
+
+    useEffect(() => () => classifier?.model?.dispose(), [classifier]);
 
     function resetTraining() {
         setTrainingStatus('ready');
+        setClassifier(null);
+        setPredictions([]);
         setNotice('');
     }
 
@@ -57,19 +64,16 @@ export function Component() {
         resetTraining();
     }
 
-    function addSamples(id: string, count: number) {
-        setClasses((items) =>
-            items.map((item) => (item.id === id ? { ...item, sampleCount: item.sampleCount + count } : item))
-        );
+    function addSamples(id: string, nextSamples: AudioExample[]) {
+        setSamples((items) => ({
+            ...items,
+            [id]: [...(items[id] ?? []), ...nextSamples.map((data) => ({ id: randomId(), data }))],
+        }));
         resetTraining();
     }
 
     function removeSample(id: string) {
-        setClasses((items) =>
-            items.map((item) =>
-                item.id === id ? { ...item, sampleCount: Math.max(0, item.sampleCount - 1) } : item
-            )
-        );
+        setSamples((items) => ({ ...items, [id]: (items[id] ?? []).slice(0, -1) }));
         resetTraining();
     }
 
@@ -81,7 +85,6 @@ export function Component() {
                 id: randomId(),
                 name: t('train.defaultClass', { number: index + 1 }),
                 icon: 'music',
-                sampleCount: 0,
                 tone: classTones[index % classTones.length],
             },
         ]);
@@ -90,6 +93,7 @@ export function Component() {
 
     function removeClass(id: string) {
         setClasses((items) => (items.length > 2 ? items.filter((item) => item.id !== id) : items));
+        setSamples((items) => Object.fromEntries(Object.entries(items).filter(([classId]) => classId !== id)));
         resetTraining();
     }
 
@@ -97,8 +101,8 @@ export function Component() {
         setTrainingStatus('loading');
         setNotice(t('train.loadingNotice'));
         try {
-            await loadClassifier();
-            await new Promise((resolve) => window.setTimeout(resolve, 850));
+            const app = await trainSoundClassifier(classes, samples);
+            setClassifier(app);
             setTrainingStatus('done');
             setNotice(t('train.successNotice'));
         } catch {
@@ -107,15 +111,23 @@ export function Component() {
         }
     }
 
-    function saveModel() {
-        const blob = new Blob([JSON.stringify({ version: 1, classes }, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'sound-mimic-classes.json';
-        link.click();
-        URL.revokeObjectURL(url);
-        setNotice(t('train.savedNotice'));
+    async function saveModel() {
+        if (!classifier?.model?.isTrained()) {
+            setNotice(t('train.errorNotice'));
+            return;
+        }
+        try {
+            const blob = await saveSoundClassifier(classifier, classes, samples);
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'sound-mimic-model.zip';
+            link.click();
+            URL.revokeObjectURL(url);
+            setNotice(t('train.savedNotice'));
+        } catch {
+            setNotice(t('train.errorNotice'));
+        }
     }
 
     async function loadModel(event: ChangeEvent<HTMLInputElement>) {
@@ -123,15 +135,44 @@ export function Component() {
         event.target.value = '';
         if (!file) return;
         try {
-            const parsed: unknown = JSON.parse(await file.text());
-            const nextClasses =
-                typeof parsed === 'object' && parsed !== null && 'classes' in parsed ? parsed.classes : undefined;
-            if (!isSoundClassList(nextClasses)) throw new Error('Invalid class data');
+            setNotice(t('train.loadingNotice'));
+            const app = await loadSoundClassifier(file);
+            const modelLabels = app.getLabels();
+            const loadedSamples = samplesFromClassifier(app);
+            const storedClasses = soundClassesFromClassifier(app);
+            const labels = Array.from(
+                { length: Math.max(modelLabels.length, loadedSamples.length, storedClasses.length) },
+                (_, index) =>
+                    storedClasses[index]?.name ||
+                    loadedSamples[index]?.[0]?.data.label ||
+                    modelLabels[index] ||
+                    t('train.defaultClass', { number: index + 1 }),
+            );
+            if (labels.length < 2) throw new Error('Not enough sound classes');
+            const nextClasses = labels.map((name, index): SoundClass => ({
+                id: randomId(),
+                name,
+                icon: storedClasses[index]?.icon ?? soundIconOptions[index % soundIconOptions.length].value,
+                tone: storedClasses[index]?.tone ?? classTones[index % classTones.length],
+            }));
             setClasses(nextClasses);
-            setTrainingStatus('ready');
+            setSamples(Object.fromEntries(nextClasses.map(({ id }, index) => [id, loadedSamples[index] ?? []])));
+            setClassifier(app);
+            setPredictions([]);
+            setTrainingStatus('done');
             setNotice(t('train.loadedNotice'));
         } catch {
             setNotice(t('train.invalidNotice'));
+        }
+    }
+
+    async function predict(example: AudioExample) {
+        if (!classifier?.model?.isTrained()) return;
+        try {
+            setPredictions(await predictSound(classifier.model, example));
+        } catch {
+            setPredictions([]);
+            setNotice(t('train.errorNotice'));
         }
     }
 
@@ -152,7 +193,7 @@ export function Component() {
                     <input
                         ref={loadRef}
                         type="file"
-                        accept="application/json,.json"
+                        accept="application/zip,.zip"
                         onChange={loadModel}
                         aria-label={t('train.loadModelAria')}
                     />
@@ -163,8 +204,10 @@ export function Component() {
                 <WorkflowLayout connections={connections} columns={3}>
                     <TrainingDataPanel
                         classes={classes}
+                        samples={samples}
                         onAddClass={addClass}
                         onAddSamples={addSamples}
+                        onCaptureError={() => setNotice(t('train.errorNotice'))}
                         onRemoveClass={removeClass}
                         onRemoveSample={removeSample}
                         onUpdateClass={updateClass}
@@ -172,10 +215,16 @@ export function Component() {
                     <TrainingStage
                         classCount={classes.length}
                         sampleCount={sampleCount}
+                        canTrain={canTrain}
                         status={trainingStatus}
                         onTrain={trainClassifier}
                     />
-                    <TrainingOutputColumn classes={classes} />
+                    <TrainingOutputColumn
+                        classes={classes}
+                        canPredict={trainingStatus === 'done' && !!classifier?.model?.isTrained()}
+                        predictions={predictions}
+                        onPredict={predict}
+                    />
                 </WorkflowLayout>
             </div>
             {notice && <p className="train-notice" role="status">{notice}</p>}

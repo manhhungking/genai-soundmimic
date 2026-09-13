@@ -3,29 +3,86 @@ import BarChartRounded from '@mui/icons-material/BarChartRounded';
 import LightbulbRounded from '@mui/icons-material/LightbulbRounded';
 import MicRounded from '@mui/icons-material/MicRounded';
 import UploadFileRounded from '@mui/icons-material/UploadFileRounded';
-import { useRef, useState, type ChangeEvent } from 'react';
+import type { AudioExample, SoundRecorder } from '@genai-fi/classifier';
+import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { getSoundNameKey } from '../../locales/sounds';
 import TrainingWaveform from './TrainingWaveform';
 import WorkflowNode from './WorkflowNode';
 import type { SoundClass } from './model';
-
-const previewScores = [82, 11, 5, 2];
+import { createSoundRecorder, extractAudioExamples, recordingOptions, type SoundPrediction } from './soundClassifier';
 
 type TrainingOutputColumnProps = {
     classes: SoundClass[];
+    canPredict: boolean;
+    predictions: SoundPrediction[];
+    onPredict: (example: AudioExample) => Promise<void>;
 };
 
-function InputPanel() {
+function InputPanel({ canPredict, onPredict }: Pick<TrainingOutputColumnProps, 'canPredict' | 'onPredict'>) {
     const { t } = useTranslation();
     const fileRef = useRef<HTMLInputElement>(null);
-    const [enabled, setEnabled] = useState(true);
+    const recorderRef = useRef<SoundRecorder | null>(null);
+    const inputRequestedRef = useRef(false);
+    const [enabled, setEnabled] = useState(false);
     const [tab, setTab] = useState<'mic' | 'file'>('mic');
     const [fileName, setFileName] = useState('');
 
-    function handleFile(event: ChangeEvent<HTMLInputElement>) {
-        setFileName(event.target.files?.[0]?.name ?? '');
+    useEffect(() => () => {
+        recorderRef.current?.stopRecording();
+        recorderRef.current?.removeAllListeners();
+    }, []);
+
+    async function startMicrophonePreview() {
+        try {
+            const recorder = await createSoundRecorder();
+            if (!inputRequestedRef.current) return;
+            recorderRef.current = recorder;
+            recorder.on('example', (example) => void onPredict(example));
+            recorder.on('stop', () => {
+                inputRequestedRef.current = false;
+                recorderRef.current = null;
+                setEnabled(false);
+            });
+            recorder.on('error', () => {
+                inputRequestedRef.current = false;
+                setEnabled(false);
+            });
+            await recorder.startRecording('preview', recordingOptions(60 * 60 * 1000, false));
+            if (!inputRequestedRef.current) recorder.stopRecording();
+        } catch {
+            recorderRef.current = null;
+            setEnabled(false);
+        }
+    }
+
+    function setInputEnabled(next: boolean) {
+        inputRequestedRef.current = next;
+        setEnabled(next);
+        if (!next) recorderRef.current?.stopRecording();
+        else if (tab === 'mic') void startMicrophonePreview();
+    }
+
+    function selectTab(next: 'mic' | 'file') {
+        inputRequestedRef.current = false;
+        recorderRef.current?.stopRecording();
+        setEnabled(false);
+        setTab(next);
+    }
+
+    async function handleFile(event: ChangeEvent<HTMLInputElement>) {
+        const file = event.target.files?.[0];
+        event.target.value = '';
+        setFileName(file?.name ?? '');
+        if (!file || !canPredict) return;
+        try {
+            const examples = await extractAudioExamples(file, 'preview', false);
+            const example = examples.at(-1);
+            if (example) await onPredict(example);
+        } catch {
+            setFileName('');
+        }
     }
 
     return (
@@ -41,7 +98,8 @@ function InputPanel() {
                     <input
                         type="checkbox"
                         checked={enabled}
-                        onChange={(event) => setEnabled(event.target.checked)}
+                        disabled={!canPredict}
+                        onChange={(event) => setInputEnabled(event.target.checked)}
                         aria-label={t('train.enableInput')}
                     />
                     <i />
@@ -53,7 +111,7 @@ function InputPanel() {
                     type="button"
                     role="tab"
                     aria-selected={tab === 'mic'}
-                    onClick={() => setTab('mic')}
+                    onClick={() => selectTab('mic')}
                 >
                     {t('train.mic')}
                 </button>
@@ -62,7 +120,7 @@ function InputPanel() {
                     type="button"
                     role="tab"
                     aria-selected={tab === 'file'}
-                    onClick={() => setTab('file')}
+                    onClick={() => selectTab('file')}
                 >
                     {t('train.file')}
                 </button>
@@ -93,7 +151,7 @@ function InputPanel() {
         </WorkflowNode>
     );
 }
-function ClassifierPreview({ classes }: TrainingOutputColumnProps) {
+function ClassifierPreview({ classes, predictions }: Pick<TrainingOutputColumnProps, 'classes' | 'predictions'>) {
     const { t } = useTranslation();
 
     return (
@@ -106,8 +164,10 @@ function ClassifierPreview({ classes }: TrainingOutputColumnProps) {
                 <AutoAwesomeRounded />
             </header>
             <ul>
-                {classes.map((soundClass, index) => {
-                    const score = previewScores[index] ?? 0;
+                {classes.map((soundClass) => {
+                    const score = Math.round(
+                        (predictions.find(({ className }) => className === soundClass.name)?.probability ?? 0) * 100,
+                    );
                     const defaultNameKey = getSoundNameKey(soundClass.name);
                     return (
                         <li key={soundClass.id}>
@@ -150,11 +210,16 @@ function XaiActions() {
     );
 }
 
-export default function TrainingOutputColumn({ classes }: TrainingOutputColumnProps) {
+export default function TrainingOutputColumn({
+    classes,
+    canPredict,
+    predictions,
+    onPredict,
+}: TrainingOutputColumnProps) {
     return (
         <div className="training-output-column">
-            <InputPanel />
-            <ClassifierPreview classes={classes} />
+            <InputPanel canPredict={canPredict} onPredict={onPredict} />
+            <ClassifierPreview classes={classes} predictions={predictions} />
             <XaiActions />
         </div>
     );

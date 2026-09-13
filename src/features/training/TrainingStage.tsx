@@ -12,11 +12,12 @@ export type TrainingStatus = 'ready' | 'loading' | 'done';
 type TrainingStageProps = {
     classCount: number;
     sampleCount: number;
+    canTrain: boolean;
     status: TrainingStatus;
     onTrain: () => void;
 };
 
-export default function TrainingStage({ classCount, sampleCount, status, onTrain }: TrainingStageProps) {
+export default function TrainingStage({ classCount, sampleCount, canTrain, status, onTrain }: TrainingStageProps) {
     const { t } = useTranslation();
 
     return (
@@ -49,7 +50,7 @@ export default function TrainingStage({ classCount, sampleCount, status, onTrain
             <button
                 className="train-classifier-button"
                 type="button"
-                disabled={status === 'loading' || classCount < 2 || sampleCount === 0}
+                disabled={status === 'loading' || !canTrain}
                 onClick={onTrain}
             >
                 {status === 'done' ? <CheckCircleRounded /> : <PlayArrowRounded />}

@@ -2,12 +2,15 @@ import AddRounded from '@mui/icons-material/AddRounded';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { useTranslation } from 'react-i18next';
 import TrainingClassCard from './TrainingClassCard';
-import type { SoundClass } from './model';
+import type { AudioExample } from '@genai-fi/classifier';
+import type { SoundClass, SoundSamplesByClass } from './model';
 
 type TrainingDataPanelProps = {
     classes: SoundClass[];
+    samples: SoundSamplesByClass;
     onAddClass: () => void;
-    onAddSamples: (id: string, count: number) => void;
+    onAddSamples: (id: string, samples: AudioExample[]) => void;
+    onCaptureError: () => void;
     onRemoveClass: (id: string) => void;
     onRemoveSample: (id: string) => void;
     onUpdateClass: (id: string, patch: Pick<SoundClass, 'name' | 'icon'>) => void;
@@ -15,8 +18,10 @@ type TrainingDataPanelProps = {
 
 export default function TrainingDataPanel({
     classes,
+    samples,
     onAddClass,
     onAddSamples,
+    onCaptureError,
     onRemoveClass,
     onRemoveSample,
     onUpdateClass,
@@ -33,12 +38,16 @@ export default function TrainingDataPanel({
                 <InfoOutlined aria-label={t('train.dataInfo')} />
             </header>
             <div className="training-class-list">
-                {classes.map((soundClass) => (
+                {classes.map((soundClass, index) => (
                     <TrainingClassCard
                         key={soundClass.id}
                         soundClass={soundClass}
+                        sampleCount={samples[soundClass.id]?.length ?? 0}
+                        sample={samples[soundClass.id]?.at(-1)?.data}
+                        isBackgroundNoise={index === 0}
                         canRemove={classes.length > 2}
                         onAddSamples={onAddSamples}
+                        onCaptureError={onCaptureError}
                         onRemove={onRemoveClass}
                         onRemoveSample={onRemoveSample}
                         onUpdate={onUpdateClass}
