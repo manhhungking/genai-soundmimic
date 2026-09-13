@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import TrainingDataPanel from '../features/training/TrainingDataPanel';
 import TrainingOutputColumn from '../features/training/TrainingOutputColumn';
+import SaveModelDialog, { type SaveModelSelection } from '../features/training/SaveModelDialog';
 import TrainingStage, { type TrainingStatus } from '../features/training/TrainingStage';
 import {
     classTones,
@@ -27,6 +28,7 @@ import {
     trainSoundClassifier,
     type SoundPrediction,
 } from '../features/training/soundClassifier';
+import { downloadBlob, toZipFileName } from '../util/download';
 import { randomId } from '../util/randomId';
 
 export function Component() {
@@ -37,8 +39,10 @@ export function Component() {
     const [classifier, setClassifier] = useState<ClassifierApp | null>(null);
     const [predictions, setPredictions] = useState<SoundPrediction[]>([]);
     const [trainingStatus, setTrainingStatus] = useState<TrainingStatus>('ready');
+    const [saveDialogOpen, setSaveDialogOpen] = useState(false);
     const [notice, setNotice] = useState('');
     const canTrain = useMemo(() => canTrainSoundClassifier(classes, samples), [classes, samples]);
+    const canSave = trainingStatus === 'done' && !!classifier?.model?.isTrained();
     const connections = useMemo<IConnection[]>(() => [
         ...classes.map(({ id }) => ({
             start: `class-${id}`,
@@ -126,22 +130,16 @@ export function Component() {
         }
     }
 
-    async function saveModel() {
-        if (!classifier?.model?.isTrained()) {
-            setNotice(t('train.errorNotice'));
-            return;
-        }
+    async function saveModel(selection: SaveModelSelection) {
+        if (!classifier?.model?.isTrained()) throw new Error('Expected a trained classifier');
+
         try {
-            const blob = await saveSoundClassifier(classifier, classes, samples);
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'sound-mimic-model.zip';
-            link.click();
-            URL.revokeObjectURL(url);
+            const blob = await saveSoundClassifier(classifier, classes, samples, selection);
+            downloadBlob(blob, toZipFileName(selection.name));
             setNotice(t('train.savedNotice'));
-        } catch {
-            setNotice(t('train.errorNotice'));
+        } catch (error) {
+            setNotice(t('train.saveFailed'));
+            throw error;
         }
     }
 
@@ -202,7 +200,12 @@ export function Component() {
                     <button type="button" onClick={() => loadRef.current?.click()}>
                         <FolderOpenRounded /> {t('train.loadModel')}
                     </button>
-                    <button className="is-primary" type="button" onClick={saveModel}>
+                    <button
+                        aria-haspopup="dialog"
+                        className="is-primary"
+                        type="button"
+                        onClick={() => setSaveDialogOpen(true)}
+                    >
                         <SaveRounded /> {t('train.saveModel')}
                     </button>
                     <input
@@ -234,13 +237,21 @@ export function Component() {
                     />
                     <TrainingOutputColumn
                         classes={classes}
-                        canPredict={trainingStatus === 'done' && !!classifier?.model?.isTrained()}
+                        canPredict={canSave}
                         predictions={predictions}
                         onPredict={predict}
                     />
                 </WorkflowLayout>
             </div>
             {notice && <p className="train-notice" role="status">{notice}</p>}
+            {saveDialogOpen && (
+                <SaveModelDialog
+                    canSave={canSave}
+                    onClose={() => setSaveDialogOpen(false)}
+                    onSave={saveModel}
+                    open
+                />
+            )}
         </div>
     );
 }

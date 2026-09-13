@@ -67,6 +67,7 @@
     --shadow-toggle: 0 2px 6px rgba(19, 41, 68, 0.2);
     --shadow-notice: 0 8px 24px rgba(12, 57, 77, 0.25);
     --settings-backdrop: rgba(4, 20, 30, 0.56);
+    --save-model-backdrop: rgba(241, 247, 251, 0.86);
     --brand-glow: rgba(15, 209, 225, 0.18);
     --gradient-primary: linear-gradient(135deg, #238bed, #1664d9);
     --gradient-role: linear-gradient(135deg, #258ff1, #136bdc);
@@ -165,6 +166,7 @@
     --shadow-card-hover: 0 13px 28px rgba(0, 7, 13, 0.36);
     --shadow-workflow: 0 10px 30px rgba(0, 7, 13, 0.3);
     --settings-backdrop: rgba(0, 7, 13, 0.72);
+    --save-model-backdrop: rgba(3, 14, 21, 0.82);
     --app-background: linear-gradient(180deg, #102735, #0b1d29);
     --entry-background:
         radial-gradient(circle at 50% 62%, rgba(10, 133, 158, 0.32), transparent 38%),

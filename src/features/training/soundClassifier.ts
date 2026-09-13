@@ -27,6 +27,12 @@ export type SoundPrediction = {
     probability: number;
 };
 
+export type SaveSoundClassifierOptions = {
+    includeBehaviours: boolean;
+    includeSamples: boolean;
+    name: string;
+};
+
 export const minimumSampleCount = {
     backgroundNoise: 20,
     soundClass: 2,
@@ -121,16 +127,29 @@ export async function saveSoundClassifier(
     app: ClassifierApp,
     classes: SoundClass[],
     samples: SoundSamplesByClass,
+    options: SaveSoundClassifierOptions,
 ): Promise<Blob> {
+    if (!app.model?.isTrained()) throw new Error('Expected a trained classifier');
+
     const metadata = app.model?.getMetadata() as Record<string, unknown> | undefined;
     if (metadata) {
         metadata.soundMimic = {
-            version: 1,
+            version: 2,
+            name: options.name,
             classes: classes.map(({ name, icon, tone }) => ({ name, icon, tone })),
         };
     }
-    app.samples = toClassifierSamples(classes, samples);
-    return app.save();
+
+    app.model.setName(options.name);
+    const { default: ClassifierApp } = await loadClassifier();
+    const exportApp = new ClassifierApp(
+        app.variant,
+        app.model,
+        options.includeBehaviours ? app.behaviours : [],
+        options.includeSamples ? toClassifierSamples(classes, samples) : [],
+    );
+    exportApp.projectId = app.projectId;
+    return exportApp.save();
 }
 
 export function soundClassesFromClassifier(app: ClassifierApp): Pick<SoundClass, 'name' | 'icon' | 'tone'>[] {

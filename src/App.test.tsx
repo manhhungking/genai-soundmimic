@@ -175,6 +175,26 @@ describe('sound mimic routes', () => {
         expect(screen.queryByText('Unexpected Application Error!')).not.toBeInTheDocument();
     });
 
+    it('presents the Home workflow as a visual guide before the activity links', async () => {
+        renderRoute('/home');
+
+        const guide = await screen.findByRole('region', { name: 'How Sound Mimic works' });
+        expect(within(guide).getAllByRole('listitem')).toHaveLength(3);
+        expect(within(guide).getByRole('heading', { name: 'Teach the AI' })).toBeInTheDocument();
+        expect(within(guide).getByRole('heading', { name: 'Train your model' })).toBeInTheDocument();
+        expect(within(guide).getByRole('heading', { name: 'Play and reflect' })).toBeInTheDocument();
+        expect(within(guide).getByText('Add at least 2 samples per sound')).toBeInTheDocument();
+
+        const journey = await screen.findByRole('region', { name: 'Choose an activity' });
+        const activityLinks = within(journey).getAllByRole('link');
+
+        expect(activityLinks).toHaveLength(3);
+        expect(activityLinks[0]).toHaveAttribute('href', '/train');
+        expect(activityLinks[1]).toHaveAttribute('href', '/play');
+        expect(activityLinks[2]).toHaveAttribute('href', '/results');
+        expect(screen.queryByText('Today’s sound adventure')).not.toBeInTheDocument();
+    });
+
     it('switches color mode and remembers the host preference', async () => {
         const user = userEvent.setup();
         renderRoute('/home');
@@ -255,6 +275,24 @@ describe('sound mimic routes', () => {
         expect(screen.getByRole('button', { name: 'Edit Robin class' })).toBeInTheDocument();
         await user.click(screen.getByRole('button', { name: 'Add a class' }));
         expect(screen.getByRole('heading', { name: 'Class 5' })).toBeInTheDocument();
+    });
+
+    it('opens the model save dialog and explains when training is still required', async () => {
+        const user = userEvent.setup();
+        renderRoute('/train');
+
+        await user.click(await screen.findByRole('button', { name: 'Save Model' }));
+
+        const dialog = screen.getByRole('dialog', { name: 'Save Classifier' });
+        expect(within(dialog).getByText('You need to create a classifier first.')).toBeInTheDocument();
+        expect(within(dialog).getByRole('textbox', { name: 'Name' })).toHaveValue('My Model');
+        expect(within(dialog).getByRole('checkbox', { name: 'Save Samples' })).toBeChecked();
+        expect(within(dialog).getByRole('checkbox', { name: 'Save Classifier' })).toBeDisabled();
+        expect(within(dialog).getByRole('checkbox', { name: 'Save Behaviors' })).toBeDisabled();
+        expect(within(dialog).getByRole('button', { name: 'Save' })).toBeDisabled();
+
+        await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+        expect(screen.queryByRole('dialog', { name: 'Save Classifier' })).not.toBeInTheDocument();
     });
 
     it('keeps only one class editor or menu open and closes it outside Training Data', async () => {
