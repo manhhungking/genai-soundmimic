@@ -189,6 +189,11 @@ describe('sound mimic routes', () => {
         const user = userEvent.setup();
         renderRoute('/train');
 
+        expect(await screen.findByRole('heading', { name: 'Classifier' })).toBeInTheDocument();
+        expect(screen.getByText('You must train your classifier first.')).toBeInTheDocument();
+        expect(screen.getByText('Add more samples to help your model learn.')).toBeInTheDocument();
+        expect(screen.queryByLabelText('Each class needs a few clear sound examples')).not.toBeInTheDocument();
+
         await user.click(await screen.findByRole('button', { name: 'Edit Bird class' }, { timeout: 5000 }));
         const nameInput = screen.getByRole('textbox', { name: 'Class name' });
         await user.clear(nameInput);

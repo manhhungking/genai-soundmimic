@@ -1,6 +1,8 @@
 import AutoAwesomeRounded from '@mui/icons-material/AutoAwesomeRounded';
 import BarChartRounded from '@mui/icons-material/BarChartRounded';
 import LightbulbRounded from '@mui/icons-material/LightbulbRounded';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import MenuRounded from '@mui/icons-material/MenuRounded';
 import MicRounded from '@mui/icons-material/MicRounded';
 import UploadFileRounded from '@mui/icons-material/UploadFileRounded';
 import type { AudioExample, SoundRecorder } from '@genai-fi/classifier';
@@ -151,8 +153,27 @@ function InputPanel({ canPredict, onPredict }: Pick<TrainingOutputColumnProps, '
         </WorkflowNode>
     );
 }
-function ClassifierPreview({ classes, predictions }: Pick<TrainingOutputColumnProps, 'classes' | 'predictions'>) {
+function ClassifierPreview({
+    classes,
+    canPredict,
+    predictions,
+}: Pick<TrainingOutputColumnProps, 'classes' | 'canPredict' | 'predictions'>) {
     const { t } = useTranslation();
+
+    if (!canPredict) {
+        return (
+            <WorkflowNode className="classifier-preview classifier-preview--empty train-surface" nodeId="classifier">
+                <header>
+                    <h2>{t('train.classifier')}</h2>
+                    <MenuRounded aria-hidden="true" />
+                </header>
+                <p className="classifier-preview__empty-message">
+                    <InfoOutlined aria-hidden="true" />
+                    <span>{t('train.mustTrainFirst')}</span>
+                </p>
+            </WorkflowNode>
+        );
+    }
 
     return (
         <WorkflowNode className="classifier-preview train-surface" nodeId="classifier">
@@ -219,7 +240,7 @@ export default function TrainingOutputColumn({
     return (
         <div className="training-output-column">
             <InputPanel canPredict={canPredict} onPredict={onPredict} />
-            <ClassifierPreview classes={classes} predictions={predictions} />
+            <ClassifierPreview classes={classes} canPredict={canPredict} predictions={predictions} />
             <XaiActions />
         </div>
     );

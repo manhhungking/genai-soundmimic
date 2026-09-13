@@ -263,27 +263,29 @@ export default function TrainingClassCard({
                 />
             </div>
 
-            <div className="training-class-card__samples">
-                <TrainingWaveform active={recording || playing} />
-                <button
-                    className="round-action"
-                    type="button"
-                    disabled={!sample?.rawAudio || playing}
-                    onClick={playSample}
-                    aria-label={t(playing ? 'train.pauseSamples' : 'train.playSamples', { name: displayName })}
-                >
-                    {playing ? <span className="pause-icon">Ⅱ</span> : <PlayArrowRounded />}
-                </button>
-                <button
-                    className="icon-button"
-                    type="button"
-                    disabled={sampleCount === 0}
-                    onClick={() => onRemoveSample(soundClass.id)}
-                    aria-label={t('train.removeSample', { name: displayName })}
-                >
-                    <DeleteOutlineRounded />
-                </button>
-            </div>
+            {(sampleCount > 0 || recording) && (
+                <div className="training-class-card__samples">
+                    <TrainingWaveform active={recording || playing} />
+                    <button
+                        className="round-action"
+                        type="button"
+                        disabled={!sample?.rawAudio || playing}
+                        onClick={playSample}
+                        aria-label={t(playing ? 'train.pauseSamples' : 'train.playSamples', { name: displayName })}
+                    >
+                        {playing ? <span className="pause-icon">Ⅱ</span> : <PlayArrowRounded />}
+                    </button>
+                    <button
+                        className="icon-button"
+                        type="button"
+                        disabled={sampleCount === 0}
+                        onClick={() => onRemoveSample(soundClass.id)}
+                        aria-label={t('train.removeSample', { name: displayName })}
+                    >
+                        <DeleteOutlineRounded />
+                    </button>
+                </div>
+            )}
         </WorkflowNode>
     );
 }

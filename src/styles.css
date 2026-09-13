@@ -2819,10 +2819,10 @@ select:focus-visible {
 }
 
 .train-workflow > div > div {
-    grid-template-columns: 470px 340px 500px !important;
+    grid-template-columns: 420px 290px 400px !important;
     align-items: start;
     justify-content: center;
-    gap: 56px;
+    gap: 38px;
     width: 100%;
     min-width: 100%;
     min-height: 0;
@@ -2852,36 +2852,35 @@ select:focus-visible {
 }
 
 .training-data-panel {
-    width: 470px;
-    padding: 20px;
+    width: 420px;
+    padding: 14px;
+    background: var(--training-data-background);
+    border-radius: 10px;
+    box-shadow: none;
 }
 
 .training-data-panel__heading {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    padding: 0 4px 18px;
+    padding: 1px 2px 12px;
 }
 
 .training-data-panel__heading h2 {
-    font-size: 23px;
-    letter-spacing: -0.6px;
+    font-size: 20px;
+    letter-spacing: -0.4px;
 }
 
 .training-data-panel__heading p {
-    margin-top: 5px;
+    margin-top: 3px;
     color: var(--text-secondary);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-}
-
-.training-data-panel__heading > svg {
-    color: var(--color-blue);
 }
 
 .training-class-list {
     display: grid;
-    gap: 15px;
+    gap: 10px;
 }
 
 .training-class-card {
@@ -2890,8 +2889,8 @@ select:focus-visible {
     position: relative;
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 13px;
-    box-shadow: 0 3px 12px var(--shadow-color);
+    border-radius: 8px;
+    box-shadow: 0 3px 9px var(--shadow-color);
 }
 
 .training-class-card--blue {
@@ -2911,16 +2910,16 @@ select:focus-visible {
 
 .training-class-card__header {
     display: grid;
-    grid-template-columns: 58px minmax(0, 1fr) 38px 38px;
+    grid-template-columns: 46px minmax(0, 1fr) 32px 32px;
     align-items: center;
-    gap: 9px;
-    padding: 10px 11px 8px;
+    gap: 6px;
+    padding: 8px 9px 5px;
 }
 
 .training-class-card__icon {
     display: grid;
-    width: 56px;
-    height: 56px;
+    width: 44px;
+    height: 44px;
     color: var(--class-accent);
     background: var(--class-soft);
     border-radius: 50%;
@@ -2928,13 +2927,13 @@ select:focus-visible {
 }
 
 .training-class-card__icon svg {
-    width: 34px;
-    height: 34px;
+    width: 27px;
+    height: 27px;
 }
 
 .training-class-card__header h3 {
     overflow: hidden;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.2;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -2942,13 +2941,14 @@ select:focus-visible {
 
 .training-class-card__header small {
     display: block;
-    margin-top: 4px;
+    margin-top: 2px;
     color: var(--text-secondary);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
 }
 
-.icon-button,
+.training-class-card .icon-button,
+.training-stage .icon-button,
 .round-action {
     display: grid;
     color: var(--text-secondary);
@@ -2958,18 +2958,21 @@ select:focus-visible {
     place-items: center;
 }
 
-.icon-button {
-    width: 38px;
-    height: 38px;
+.training-class-card .icon-button,
+.training-stage .icon-button {
+    width: 32px;
+    height: 32px;
 }
 
-.icon-button:hover,
+.training-class-card .icon-button:hover,
+.training-stage .icon-button:hover,
 .round-action:hover {
     color: var(--blue);
     background: var(--surface-soft);
 }
 
-.icon-button:disabled {
+.training-class-card .icon-button:disabled,
+.training-stage .icon-button:disabled {
     opacity: 0.35;
     cursor: not-allowed;
 }
@@ -3081,8 +3084,8 @@ select:focus-visible {
 
 .training-class-card__actions {
     display: flex;
-    gap: 8px;
-    padding: 5px 12px 10px;
+    gap: 6px;
+    padding: 3px 9px 7px;
 }
 
 .training-class-card__actions button {
@@ -3091,21 +3094,21 @@ select:focus-visible {
     align-items: center;
     justify-content: center;
     gap: 1px;
-    width: 88px;
-    min-height: 50px;
-    padding: 5px 8px;
+    width: 78px;
+    min-height: 42px;
+    padding: 3px 7px;
     color: var(--accent-teal-text);
     background: var(--surface);
     border: 1px solid var(--color-cyan);
     border-radius: 6px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
 }
 
 .training-class-card__actions button svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
 }
 
 .training-class-card__actions button:disabled {
@@ -3115,16 +3118,16 @@ select:focus-visible {
 
 .training-class-card__samples {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 42px 38px;
+    grid-template-columns: minmax(0, 1fr) 36px 32px;
     align-items: center;
-    gap: 8px;
-    min-height: 66px;
-    padding: 5px 11px 9px;
+    gap: 6px;
+    min-height: 52px;
+    padding: 2px 9px 7px;
 }
 
 .round-action {
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 36px;
     background: var(--surface-soft);
     border: 1px solid var(--line);
 }
@@ -3132,9 +3135,9 @@ select:focus-visible {
 .training-waveform {
     display: flex;
     align-items: center;
-    gap: 3px;
+    gap: 2px;
     width: 100%;
-    height: 46px;
+    height: 38px;
     overflow: hidden;
 }
 
@@ -3157,22 +3160,22 @@ select:focus-visible {
     justify-content: center;
     gap: 7px;
     width: 100%;
-    min-height: 52px;
-    margin-top: 16px;
+    min-height: 44px;
+    margin-top: 12px;
     color: var(--color-blue);
     background: var(--surface-soft);
-    border: 2px solid var(--color-cyan);
-    border-radius: 9px;
+    border: 1px solid var(--color-cyan);
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 800;
 }
 
 .training-stage {
-    width: 340px;
-    min-height: 270px;
-    margin-top: 65px;
-    padding: 24px 20px;
+    width: 290px;
+    min-height: 210px;
+    margin-top: 56px;
+    padding: 19px 16px;
     text-align: center;
 }
 
@@ -3186,15 +3189,15 @@ select:focus-visible {
 
 .training-stage h2,
 .train-surface h2 {
-    font-size: 22px;
-    letter-spacing: -0.5px;
+    font-size: 20px;
+    letter-spacing: -0.35px;
 }
 
 .training-stage__body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: 190px;
+    min-height: 145px;
 }
 
 .train-classifier-button {
@@ -3203,14 +3206,14 @@ select:focus-visible {
     justify-content: center;
     gap: 8px;
     width: 100%;
-    min-height: 58px;
+    min-height: 52px;
     margin-top: 0;
     color: var(--color-white);
     background: var(--gradient-teal-deep);
     border-radius: 9px;
     box-shadow: var(--shadow-teal-action);
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 800;
 }
 
@@ -3224,11 +3227,11 @@ select:focus-visible {
     display: flex;
     align-items: center;
     gap: 7px;
-    padding: 13px;
-    margin: 18px 0 0;
+    padding: 11px;
+    margin: 14px 0 0;
     background: var(--surface-soft);
     border-radius: 9px;
-    font-size: 13px;
+    font-size: 12px;
     text-align: left;
 }
 
@@ -3242,22 +3245,23 @@ select:focus-visible {
 
 .training-output-column {
     display: grid;
-    gap: 20px;
-    width: 500px;
+    gap: 14px;
+    width: 400px;
 }
 
 .train-surface {
-    padding: 20px;
+    padding: 16px;
 }
 
 .sound-input-panel {
-    min-height: 330px;
+    min-height: 250px;
 }
 
 .input-switch {
     display: flex;
     align-items: center;
-    gap: 9px;
+    gap: 7px;
+    font-size: 13px;
     cursor: pointer;
     font-weight: 700;
 }
@@ -3269,18 +3273,18 @@ select:focus-visible {
 
 .input-switch i {
     position: relative;
-    width: 52px;
-    height: 28px;
+    width: 46px;
+    height: 24px;
     background: var(--track);
     border-radius: 99px;
 }
 
 .input-switch i::after {
     position: absolute;
-    top: 4px;
-    left: 4px;
-    width: 20px;
-    height: 20px;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
     background: var(--surface);
     border-radius: 50%;
     box-shadow: var(--shadow-toggle);
@@ -3293,25 +3297,25 @@ select:focus-visible {
 }
 
 .input-switch input:checked + i::after {
-    transform: translateX(24px);
+    transform: translateX(22px);
 }
 
 .input-tabs {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    width: 245px;
-    margin-top: 18px;
+    width: 210px;
+    margin-top: 14px;
     background: var(--surface-soft);
     border-radius: 9px;
 }
 
 .input-tabs button {
-    min-height: 47px;
+    min-height: 40px;
     color: var(--text-secondary);
     background: transparent;
     border-radius: 9px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 800;
 }
 
@@ -3322,13 +3326,13 @@ select:focus-visible {
 
 .microphone-select {
     display: grid;
-    grid-template-columns: 26px 1fr auto;
+    grid-template-columns: 22px 1fr auto;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     width: 100%;
-    min-height: 52px;
-    padding: 0 15px;
-    margin-top: 14px;
+    min-height: 46px;
+    padding: 0 12px;
+    margin-top: 12px;
     color: var(--navy);
     background: var(--surface);
     border: 1px solid var(--line-strong);
@@ -3340,14 +3344,14 @@ select:focus-visible {
 
 .sound-input-panel .training-waveform {
     --class-accent: var(--color-blue);
-    height: 92px;
-    margin-top: 20px;
+    height: 70px;
+    margin-top: 14px;
 }
 
 .input-file-state {
     display: grid;
-    min-height: 165px;
-    margin-top: 15px;
+    min-height: 128px;
+    margin-top: 12px;
     color: var(--text-secondary);
     background: var(--surface-muted);
     border: 2px dashed var(--control-border);
@@ -3358,14 +3362,14 @@ select:focus-visible {
 }
 
 .input-file-state > svg {
-    width: 38px;
-    height: 38px;
+    width: 32px;
+    height: 32px;
     color: var(--color-blue);
 }
 
 .input-file-state p {
     max-width: 270px;
-    margin: 8px 0 12px;
+    margin: 6px 0 10px;
     overflow-wrap: anywhere;
 }
 
@@ -3379,9 +3383,9 @@ select:focus-visible {
 }
 
 .classifier-preview > header p {
-    margin-top: 4px;
+    margin-top: 3px;
     color: var(--text-secondary);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
 }
 
@@ -3391,17 +3395,18 @@ select:focus-visible {
 
 .classifier-preview ul {
     display: grid;
-    gap: 16px;
+    gap: 11px;
     padding: 0;
-    margin: 20px 0 0;
+    margin: 14px 0 0;
     list-style: none;
 }
 
 .classifier-preview li {
     display: grid;
-    grid-template-columns: minmax(90px, 120px) minmax(0, 1fr) 48px;
+    grid-template-columns: minmax(78px, 100px) minmax(0, 1fr) 40px;
     align-items: center;
-    gap: 12px;
+    gap: 9px;
+    font-size: 13px;
 }
 
 .classifier-preview li > strong {
@@ -3417,7 +3422,7 @@ select:focus-visible {
 }
 
 .classifier-preview__bar {
-    height: 20px;
+    height: 16px;
     overflow: hidden;
     background: var(--track);
     border-radius: 99px;
@@ -3440,6 +3445,34 @@ select:focus-visible {
 
 .classifier-preview__bar--violet span {
     background: var(--color-violet);
+}
+
+.classifier-preview--empty {
+    min-height: 165px;
+}
+
+.classifier-preview--empty > header > svg {
+    color: var(--text-secondary);
+}
+
+.classifier-preview__empty-message {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    min-height: 74px;
+    padding: 13px;
+    margin: 18px 0 0;
+    color: var(--text-primary);
+    background: var(--surface-soft);
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.classifier-preview__empty-message svg {
+    color: var(--color-blue);
 }
 
 .training-xai-actions {
@@ -3520,25 +3553,24 @@ select:focus-visible {
 
 @media (max-width: 1500px) {
     .train-workflow > div > div {
-        grid-template-columns: 410px 300px 400px !important;
-        gap: 28px;
+        grid-template-columns: 370px 270px 350px !important;
+        gap: 24px;
     }
 
     .training-data-panel {
-        width: 410px;
+        width: 370px;
     }
 
     .training-stage {
-        width: 300px;
+        width: 270px;
     }
 
     .training-output-column {
-        width: 400px;
+        width: 350px;
     }
 
     .training-class-card__header {
-        grid-template-columns: 54px minmax(0, 1fr) 34px 34px;
-        gap: 6px;
+        grid-template-columns: 44px minmax(0, 1fr) 32px 32px;
     }
 }
 

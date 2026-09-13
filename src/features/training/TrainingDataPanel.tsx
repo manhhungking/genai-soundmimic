@@ -1,5 +1,4 @@
 import AddRounded from '@mui/icons-material/AddRounded';
-import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { useTranslation } from 'react-i18next';
 import TrainingClassCard from './TrainingClassCard';
 import type { AudioExample } from '@genai-fi/classifier';
@@ -35,7 +34,6 @@ export default function TrainingDataPanel({
                     <h2>{t('train.dataTitle')}</h2>
                     <p>{t('train.dataDescription')}</p>
                 </div>
-                <InfoOutlined aria-label={t('train.dataInfo')} />
             </header>
             <div className="training-class-list">
                 {classes.map((soundClass, index) => (
