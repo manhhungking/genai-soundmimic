@@ -9,6 +9,7 @@ import ClipEditor from '../features/setup/ClipEditor';
 import GameRulesPanel from '../features/setup/GameRulesPanel';
 import ModelSelectionPanel from '../features/setup/ModelSelectionPanel';
 import RoundBuilder from '../features/setup/RoundBuilder';
+import SetupWaveform from '../features/setup/SetupWaveform';
 import { randomId } from '../shared/genai';
 import {
     defaultGameRules,
@@ -86,11 +87,14 @@ export function Component() {
     return (
         <div className="setup-page">
             <header className="setup-hero">
-                <div>
+                <div className="setup-hero__copy">
                     <h1>{t('setup.title')}</h1>
                     <p>{t('setup.description')}</p>
                 </div>
-                <strong>{t('setup.slogan')}</strong>
+                <div className="setup-hero__slogan">
+                    <strong>{t('setup.slogan')}</strong>
+                    <SetupWaveform tone="blue" />
+                </div>
             </header>
 
             <div className="setup-workflow">

@@ -4337,11 +4337,10 @@ select:focus-visible {
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     min-height: 134px;
     padding: 20px 28px;
     overflow: hidden;
-    background: var(--surface-soft);
+    background: linear-gradient(90deg, var(--surface-soft) 0 78%, var(--setup-hero-caption));
     border: 1px solid var(--line);
     border-radius: 16px;
 }
@@ -4349,21 +4348,23 @@ select:focus-visible {
 .setup-hero::after {
     position: absolute;
     top: 0;
-    right: 2%;
-    width: 70%;
+    right: 170px;
+    width: 63%;
     height: 100%;
-    background:
-        linear-gradient(90deg, var(--surface-soft) 0 22%, transparent 60%),
-        linear-gradient(270deg, var(--surface-soft) 0, transparent 14%),
-        url('/assets/students-at-mic-hero.jpg') right 47% center / auto 240% no-repeat;
+    background: url('/assets/students-at-mic-hero.jpg') right 47% center / 100% auto no-repeat;
     content: '';
+    mask-image: linear-gradient(90deg, transparent, black 22%, black 100%);
     pointer-events: none;
 }
 
-.setup-hero > div,
-.setup-hero > strong {
+.setup-hero__copy,
+.setup-hero__slogan {
     position: relative;
     z-index: 1;
+}
+
+.setup-hero__copy {
+    width: 54%;
 }
 
 .setup-hero h1,
@@ -4384,12 +4385,23 @@ select:focus-visible {
     font-size: 15px;
 }
 
-.setup-hero > strong {
-    max-width: 145px;
+.setup-hero__slogan {
+    display: grid;
+    width: 132px;
+    gap: 7px;
+    margin-left: auto;
+}
+
+.setup-hero__slogan strong {
     color: var(--text-primary);
     font-size: 14px;
     line-height: 1.25;
     white-space: pre-line;
+}
+
+.setup-hero__slogan .setup-waveform {
+    width: 118px;
+    height: 22px;
 }
 
 .setup-workflow {
@@ -5306,6 +5318,7 @@ select:focus-visible {
     .setup-hero::after {
         right: -22%;
         width: 82%;
+        background-size: auto 240%;
         opacity: 0.5;
     }
 
@@ -5318,7 +5331,11 @@ select:focus-visible {
         font-size: 13px;
     }
 
-    .setup-hero > strong {
+    .setup-hero__copy {
+        width: 100%;
+    }
+
+    .setup-hero__slogan {
         display: none;
     }
 
