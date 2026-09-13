@@ -214,7 +214,7 @@
     "train.trainClassifier": "වර්ගීකරණය පුහුණු කරන්න",
     "train.modelSummary": "ආකෘති සාරාංශය",
     "train.classCount": "වර්ග {{count}}",
-    "train.tip": "ආකෘතියට ඉගෙනීමට තවත් සාම්පල එක් කරන්න.",
+    "train.tip": "පළමුව තවත් සාම්පල හෝ පන්ති එක් කරන්න.",
     "train.input": "ආදානය",
     "train.on": "සක්‍රිය",
     "train.off": "අක්‍රිය",

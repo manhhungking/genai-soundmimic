@@ -195,7 +195,7 @@
     "train.trainClassifier": "분류기 학습",
     "train.modelSummary": "모델 요약",
     "train.classCount": "클래스 {{count}}개",
-    "train.tip": "샘플을 더 추가하면 모델이 더 잘 배워요.",
+    "train.tip": "먼저 샘플이나 클래스를 더 추가하세요.",
     "train.input": "입력",
     "train.on": "켜짐",
     "train.off": "꺼짐",

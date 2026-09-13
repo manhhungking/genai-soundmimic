@@ -213,7 +213,6 @@ export function Component() {
                         onUpdateClass={updateClass}
                     />
                     <TrainingStage
-                        classCount={classes.length}
                         sampleCount={sampleCount}
                         canTrain={canTrain}
                         status={trainingStatus}

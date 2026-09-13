@@ -214,7 +214,7 @@
     "train.trainClassifier": "Opeta luokittelija",
     "train.modelSummary": "Mallin yhteenveto",
     "train.classCount": "{{count}} luokkaa",
-    "train.tip": "Lisää näytteitä, jotta mallisi oppii paremmin.",
+    "train.tip": "Lisää ensin näytteitä tai luokkia.",
     "train.input": "Syöte",
     "train.on": "Päällä",
     "train.off": "Pois",

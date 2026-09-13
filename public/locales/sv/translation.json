@@ -214,7 +214,7 @@
     "train.trainClassifier": "Träna klassificeraren",
     "train.modelSummary": "Modellsammanfattning",
     "train.classCount": "{{count}} klasser",
-    "train.tip": "Lägg till fler exempel för att hjälpa modellen att lära sig.",
+    "train.tip": "Lägg först till fler exempel eller klasser.",
     "train.input": "Inmatning",
     "train.on": "På",
     "train.off": "Av",

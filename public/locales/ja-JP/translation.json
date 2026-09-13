@@ -203,7 +203,7 @@
     "train.trainClassifier": "分類器を学習",
     "train.modelSummary": "モデルの概要",
     "train.classCount": "{{count}} クラス",
-    "train.tip": "サンプルを増やすと、モデルが学びやすくなります。",
+    "train.tip": "まずサンプルまたはクラスを追加してください。",
     "train.input": "入力",
     "train.on": "オン",
     "train.off": "オフ",
