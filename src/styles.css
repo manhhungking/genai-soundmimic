@@ -2930,7 +2930,7 @@ select:focus-visible {
     z-index: 1;
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 16px;
+    border-radius: 8px;
     box-shadow: 0 9px 27px var(--shadow-color);
 }
 
@@ -2938,7 +2938,7 @@ select:focus-visible {
     width: 420px;
     padding: 14px;
     background: var(--training-data-background);
-    border-radius: 10px;
+    border-radius: 8px;
     box-shadow: none;
 }
 
@@ -3208,6 +3208,22 @@ select:focus-visible {
     padding: 2px 9px 7px;
 }
 
+.training-spectrogram {
+    display: block;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.training-class-card__sample-strip {
+    display: flex;
+    gap: 4px;
+    min-width: 0;
+    overflow: hidden;
+}
+
 .round-action {
     width: 36px;
     height: 36px;
@@ -3257,7 +3273,8 @@ select:focus-visible {
 .training-stage {
     width: 290px;
     min-height: 210px;
-    margin-top: 56px;
+    align-self: center;
+    margin-top: 0;
     padding: 19px 16px;
     text-align: center;
 }

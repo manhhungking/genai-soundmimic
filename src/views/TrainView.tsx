@@ -28,13 +28,6 @@ import {
 } from '../features/training/soundClassifier';
 import { randomId } from '../shared/genai';
 
-const connections: IConnection[] = [
-    { start: 'class', end: 'trainer', startPoint: 'right', endPoint: 'left' },
-    { start: 'trainer', end: 'input', startPoint: 'right', endPoint: 'left' },
-    { start: 'input', end: 'classifier', startPoint: 'bottom', endPoint: 'top' },
-    { start: 'classifier', end: 'xai-actions', startPoint: 'bottom', endPoint: 'top' },
-];
-
 export function Component() {
     const { t } = useTranslation();
     const loadRef = useRef<HTMLInputElement>(null);
@@ -49,6 +42,17 @@ export function Component() {
         [classes, samples],
     );
     const canTrain = useMemo(() => canTrainSoundClassifier(classes, samples), [classes, samples]);
+    const connections = useMemo<IConnection[]>(() => [
+        ...classes.map(({ id }) => ({
+            start: `class-${id}`,
+            end: 'trainer',
+            startPoint: 'right' as const,
+            endPoint: 'left' as const,
+        })),
+        { start: 'trainer', end: 'input', startPoint: 'right', endPoint: 'left' },
+        { start: 'input', end: 'classifier', startPoint: 'bottom', endPoint: 'top' },
+        { start: 'classifier', end: 'xai-actions', startPoint: 'bottom', endPoint: 'top' },
+    ], [classes]);
 
     useEffect(() => () => classifier?.model?.dispose(), [classifier]);
 

@@ -41,7 +41,7 @@ export default function TrainingDataPanel({
                         key={soundClass.id}
                         soundClass={soundClass}
                         sampleCount={samples[soundClass.id]?.length ?? 0}
-                        sample={samples[soundClass.id]?.at(-1)?.data}
+                        samples={samples[soundClass.id] ?? []}
                         isBackgroundNoise={index === 0}
                         canRemove={classes.length > 2}
                         onAddSamples={onAddSamples}

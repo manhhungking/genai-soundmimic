@@ -7,19 +7,19 @@ import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
 import StopRounded from '@mui/icons-material/StopRounded';
 import UploadRounded from '@mui/icons-material/UploadRounded';
 import type { AudioExample, SoundRecorder } from '@genai-fi/classifier';
-import { useEffect, useRef, useState, type ChangeEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getSoundNameKey } from '../../locales/sounds';
 import SoundClassIcon from './SoundClassIcon';
 import TrainingWaveform from './TrainingWaveform';
 import WorkflowNode from './WorkflowNode';
-import { soundIconOptions, type SoundClass, type SoundIconKey } from './model';
+import { soundIconOptions, type SoundClass, type SoundIconKey, type SoundSample } from './model';
 import { createSoundRecorder, extractAudioExamples, recordingOptions } from './soundClassifier';
 
 type TrainingClassCardProps = {
     soundClass: SoundClass;
     sampleCount: number;
-    sample?: AudioExample;
+    samples: SoundSample[];
     isBackgroundNoise: boolean;
     canRemove: boolean;
     onAddSamples: (id: string, samples: AudioExample[]) => void;
@@ -32,7 +32,7 @@ type TrainingClassCardProps = {
 export default function TrainingClassCard({
     soundClass,
     sampleCount,
-    sample,
+    samples,
     isBackgroundNoise,
     canRemove,
     onAddSamples,
@@ -54,6 +54,18 @@ export default function TrainingClassCard({
     const [draftIcon, setDraftIcon] = useState<SoundIconKey>(soundClass.icon);
     const defaultNameKey = getSoundNameKey(soundClass.name);
     const displayName = defaultNameKey ? t(defaultNameKey) : soundClass.name;
+    const latestSample = samples.at(-1)?.data;
+    const spectrograms = useMemo(
+        () => samples.flatMap(({ id, data }) => {
+            if (!data.spectrogramCanvas) return [];
+            try {
+                return [{ id, url: data.spectrogramCanvas.toDataURL('image/png') }];
+            } catch {
+                return [];
+            }
+        }),
+        [samples],
+    );
 
     useEffect(() => () => {
         recorderRef.current?.stopRecording();
@@ -123,12 +135,12 @@ export default function TrainingClassCard({
     }
 
     async function playSample() {
-        if (!sample?.rawAudio || playing) return;
+        if (!latestSample?.rawAudio || playing) return;
         setPlaying(true);
         try {
-            const context = new AudioContext({ sampleRate: sample.rawAudio.sampleRateHz });
-            const buffer = context.createBuffer(1, sample.rawAudio.data.length, sample.rawAudio.sampleRateHz);
-            buffer.copyToChannel(new Float32Array(sample.rawAudio.data), 0);
+            const context = new AudioContext({ sampleRate: latestSample.rawAudio.sampleRateHz });
+            const buffer = context.createBuffer(1, latestSample.rawAudio.data.length, latestSample.rawAudio.sampleRateHz);
+            buffer.copyToChannel(new Float32Array(latestSample.rawAudio.data), 0);
             const source = context.createBufferSource();
             source.buffer = buffer;
             source.connect(context.destination);
@@ -147,7 +159,7 @@ export default function TrainingClassCard({
     return (
         <WorkflowNode
             className={`training-class-card training-class-card--${soundClass.tone}`}
-            nodeId="class"
+            nodeId={`class-${soundClass.id}`}
         >
             <header className="training-class-card__header">
                 <span className="training-class-card__icon">
@@ -265,11 +277,24 @@ export default function TrainingClassCard({
 
             {(sampleCount > 0 || recording) && (
                 <div className="training-class-card__samples">
-                    <TrainingWaveform active={recording || playing} />
+                    {spectrograms.length ? (
+                        <div className="training-class-card__sample-strip">
+                            {spectrograms.map(({ id, url }) => (
+                                <img
+                                    alt={t('media.spectrogram')}
+                                    className="training-spectrogram"
+                                    key={id}
+                                    src={url}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <TrainingWaveform active={recording || playing} />
+                    )}
                     <button
                         className="round-action"
                         type="button"
-                        disabled={!sample?.rawAudio || playing}
+                        disabled={!latestSample?.rawAudio || playing}
                         onClick={playSample}
                         aria-label={t(playing ? 'train.pauseSamples' : 'train.playSamples', { name: displayName })}
                     >
