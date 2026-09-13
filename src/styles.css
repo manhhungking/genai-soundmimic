@@ -4368,7 +4368,7 @@ select:focus-visible {
     min-height: 134px;
     padding: 20px 28px;
     overflow: hidden;
-    background: linear-gradient(90deg, var(--surface-soft) 0 78%, var(--setup-hero-caption));
+    background: var(--surface-soft);
     border: 1px solid var(--line);
     border-radius: 16px;
 }
@@ -4376,17 +4376,16 @@ select:focus-visible {
 .setup-hero::after {
     position: absolute;
     top: 0;
-    right: 170px;
-    width: 63%;
+    right: 0;
+    width: 72%;
     height: 100%;
-    background: url('/assets/students-at-mic-hero.jpg') right 47% center / 100% auto no-repeat;
+    background: url('/assets/students-at-mic-hero.jpg') center 47% / 100% auto no-repeat;
     content: '';
-    mask-image: linear-gradient(90deg, transparent, black 22%, black 100%);
+    mask-image: linear-gradient(90deg, transparent 0 25%, black 50%, black 100%);
     pointer-events: none;
 }
 
-.setup-hero__copy,
-.setup-hero__slogan {
+.setup-hero__copy {
     position: relative;
     z-index: 1;
 }
@@ -4411,25 +4410,6 @@ select:focus-visible {
     margin-top: 9px;
     color: var(--text-secondary);
     font-size: 15px;
-}
-
-.setup-hero__slogan {
-    display: grid;
-    width: 132px;
-    gap: 7px;
-    margin-left: auto;
-}
-
-.setup-hero__slogan strong {
-    color: var(--text-primary);
-    font-size: 14px;
-    line-height: 1.25;
-    white-space: pre-line;
-}
-
-.setup-hero__slogan .setup-waveform {
-    width: 118px;
-    height: 22px;
 }
 
 .setup-workflow {
@@ -5344,8 +5324,8 @@ select:focus-visible {
     }
 
     .setup-hero::after {
-        right: -22%;
-        width: 82%;
+        right: -18%;
+        width: 94%;
         background-size: auto 240%;
         opacity: 0.5;
     }
@@ -5361,10 +5341,6 @@ select:focus-visible {
 
     .setup-hero__copy {
         width: 100%;
-    }
-
-    .setup-hero__slogan {
-        display: none;
     }
 
     .setup-workflow,
