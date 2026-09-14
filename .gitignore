@@ -13,4 +13,10 @@ yarn-error.log*
 # Blender auto-save backups and the avatar build script's local run summary
 *.blend1
 *.blend2
+__pycache__/
 scripts/avatars/_last_build_result.json
+
+# Staged avatar GLBs awaiting verification (see scripts/avatars/publish.py) — never
+# the runtime asset directly; public/assets/avatars/*.glb only gets a file after it
+# passes the reload/animation/render check.
+/.build-staging/

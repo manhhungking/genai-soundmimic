@@ -20,15 +20,17 @@ import json
 from mathutils import Vector, Euler
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-GLB_DIR = os.path.join(REPO_ROOT, "public", "assets", "avatars")
+# GLBs are exported to a staging area first — NOT public/ — so they can be reloaded and
+# verified (mesh/skin/animation checks, a second independent GLTFLoader parse, and visual
+# comparison against the character sheets) before anything touches the runtime asset.
+# publish.py copies staged files into public/assets/avatars/ only after that check passes.
+STAGING_DIR = os.path.join(REPO_ROOT, ".build-staging", "avatars")
 ASSETS_SRC_DIR = os.path.join(REPO_ROOT, "assets-src", "avatars")
-THUMB_DIR = os.path.join(REPO_ROOT, "public", "assets", "avatars", "thumbnails")
+PREVIEW_DIR = os.path.join(REPO_ROOT, "docs", "avatars", "previews")
 
 
 def avatar_src_dir(avatar_id):
-    """assets-src/avatars/{id}/ — holds the .blend source and the QA turnaround
-    renders (front/side/back) of the *generated* model. These are build-verification
-    renders, not concept reference art — the concept art lives under docs/avatars/references/."""
+    """assets-src/avatars/{id}/ — holds only the .blend source (kept for future edits)."""
     d = os.path.join(ASSETS_SRC_DIR, avatar_id)
     os.makedirs(d, exist_ok=True)
     return d
@@ -44,61 +46,75 @@ CHARACTERS = {
     # "Color Palette" swatch panel (see docs/avatars/avatar-manifest.json palette.status =
     # "measured_from_character_sheet"). A few unlabeled swatches (marked below) were not
     # legible and are kept as best-effort approximations.
+    # "sleeve" controls arm coverage — every reference wears sleeves of some length except
+    # bare-armed styles that don't apply here; color defaults to the top color unless a
+    # contrasting sleeve color is called out on the character sheet (e.g. Liam).
     "leo": {
         "gender": "male", "skin": "#F6C9A8", "hair": "#5B3A2E", "eyes": "#2E1E16",
         "top": "#2563EB", "trim": "#FFFFFF", "bottom": "#374151", "shoe": "#3B82F6",
         "hair_style": "short_swoop", "top_style": "hoodie_closed", "accessory": None,
+        "sleeve": {"length": "long"},
     },
     "liam": {
         "gender": "male", "skin": "#FFD7C2", "hair": "#FBCF7D", "eyes": "#3274A5",  # eyes: approx (not swatched)
         "top": "#F8F9FC", "trim": "#2563EB", "bottom": "#4B5563", "shoe": "#3B82F6",
         "hair_style": "short_messy", "top_style": "tee_sleeve_contrast", "accessory": "headphones_neck",
         "accessory_color": "#2D2D2D",
+        "sleeve": {"length": "long", "color": "#2563EB"},  # contrast blue sleeve over white torso
     },
     "noah": {
         "gender": "male", "skin": "#8B5A3C", "hair": "#2E1F16", "eyes": "#3B2E1F",
         "top": "#22A05A", "trim": "#FFFFFF", "bottom": "#4B5563", "shoe": "#16A34A",
         "hair_style": "short_curly", "top_style": "hoodie_closed", "accessory": None,
+        "sleeve": {"length": "long"},
     },
     "kai": {
         "gender": "male", "skin": "#FCD7C4", "hair": "#D35400", "eyes": "#3B78A5",  # eyes: approx (not swatched)
         "top": "#E53935", "trim": "#FFFFFF", "bottom": "#374151", "shoe": "#E53935",
         "hair_style": "short_swoop", "top_style": "hoodie_closed", "accessory": "cap",
         "accessory_color": "#2563EB", "accessory_color2": "#E8F0FF",
+        "sleeve": {"length": "long"},
     },
     "hung": {
         "gender": "male", "skin": "#F6C9AB", "hair": "#2D2A28", "eyes": "#392419",
         "top": "#1E63E9", "trim": "#FFFFFF", "bottom": "#374151", "shoe": "#1E63E9",
         "hair_style": "short_side_part", "top_style": "hoodie_open_star", "accessory": None,
         "star_color": "#2563EB",
+        # Sleeves for the open hoodie are built specially in build_clothing (they need to
+        # sit over the tee, not under it) — no generic "sleeve" entry needed here.
     },
     "maya": {
         "gender": "female", "skin": "#F9D8E0", "hair": "#1F1F1F", "eyes": "#35231C",  # eyes: approx (not swatched)
         "top": "#8B5CF6", "trim": "#F3E8FF", "bottom": "#6B7280", "shoe": "#8B5CF6",
         "hair_style": "long_straight", "top_style": "hoodie_closed_heart", "accessory": "headphones_head",
         "accessory_color": "#A855F7",
+        "sleeve": {"length": "long"},
     },
     "zoe": {
         "gender": "female", "skin": "#FDDCC3", "hair": "#FBD37A", "eyes": "#6DA5FF",
         "top": "#FF7E73", "trim": "#FFFFFF", "bottom": "#5B8CCB", "shoe": "#FF7E73",
         "hair_style": "long_wavy", "top_style": "hoodie_closed", "accessory": None,
+        "sleeve": {"length": "long"},
     },
     "aisha": {
         "gender": "female", "skin": "#8B5A3C", "hair": "#3E2A1F", "eyes": "#2D1B12",
         "top": "#F7C839", "trim": "#FBC02D", "bottom": "#3B82F6", "shoe": "#F7C839",
         "hair_style": "long_curly", "top_style": "overalls", "accessory": "headband",
         "accessory_color": "#FBC02D",
+        "sleeve": {"length": "short"},  # short-sleeve yellow tee under the overalls
     },
     "emma": {
         "gender": "female", "skin": "#F7D7C4", "hair": "#E86B3C", "eyes": "#657A90",  # eyes: approx (not swatched)
         "top": "#FDCB3B", "trim": "#FFFDF7", "bottom": "#4F7BC4", "shoe": "#F4B400",
         "hair_style": "long_wavy", "top_style": "hoodie_closed", "accessory": "glasses",
         "accessory_color": "#2D1F1A",
+        "sleeve": {"length": "long"},
     },
     "hana": {
         "gender": "female", "skin": "#F3C9A6", "hair": "#3E2D1F", "eyes": "#3A2419",  # eyes: approx (not swatched)
         "top": "#FFFFFF", "trim": "#2E6CC5", "bottom": "#2E6CC5", "shoe": "#A7B4CC",
         "hair_style": "long_straight", "top_style": "overalls", "accessory": "beanie_bear",
+        "sleeve": {"length": "long"},  # long-sleeve white/cream shirt under the overalls
         "accessory_color": "#F8F5EE", "accessory_color2": "#D4A574",
     },
 }
@@ -192,6 +208,11 @@ def bevel_and_subsurf(obj, bevel_width=0.006, subsurf_levels=2):
 def join_objects(objs, name):
     if not objs:
         return None
+    if len(objs) == 1:
+        # bpy.ops.object.join() logs a harmless "No mesh data to join" warning when given
+        # a single object (nothing to merge into it) — skip the no-op call entirely.
+        objs[0].name = name
+        return objs[0]
     bpy.ops.object.select_all(action="DESELECT")
     for o in objs:
         o.select_set(True)
@@ -439,6 +460,30 @@ def build_star(color, size=0.045):
     return obj
 
 
+def build_heart(color, size=0.032):
+    """Classic parametric heart-curve silhouette, solidified into a thin logo patch."""
+    mesh = bpy.data.meshes.new("HeartMesh")
+    bm = bmesh.new()
+    verts = []
+    steps = 24
+    scale = size / 16.0
+    for i in range(steps):
+        t = (i / steps) * math.tau
+        x = 16 * math.sin(t) ** 3
+        y = 13 * math.cos(t) - 5 * math.cos(2 * t) - 2 * math.cos(3 * t) - math.cos(4 * t)
+        verts.append(bm.verts.new((x * scale, y * scale, 0)))
+    bm.faces.new(verts)
+    bmesh.ops.solidify(bm, geom=bm.faces[:], thickness=0.005)
+    bm.to_mesh(mesh)
+    bm.free()
+    obj = bpy.data.objects.new("Heart", mesh)
+    bpy.context.collection.objects.link(obj)
+    bpy.ops.object.shade_smooth()
+    mat = make_material("HeartMat", color, roughness=0.4)
+    assign_material(obj, mat)
+    return obj
+
+
 def build_clothing(cfg):
     top_mat = make_material("Top", cfg["top"])
     trim_mat = make_material("Trim", cfg.get("trim", "#FFFFFF"))
@@ -459,7 +504,6 @@ def build_clothing(cfg):
             parts_top.append(panel)
         tee = add_cylinder("TeeShirt", P["torso_r"] * 1.02, P["torso_len"] * 0.85,
                             (0, -0.01, Z_HIP + P["torso_len"] * 0.5))
-        assign_material_later = tee
         bevel_and_subsurf(tee, bevel_width=0.008, subsurf_levels=1)
         assign_material(tee, trim_mat)
         star = build_star(cfg.get("star_color", "#2563EB"))
@@ -480,31 +524,55 @@ def build_clothing(cfg):
                                       (0, 0, Z_HIP + P["torso_len"] * 0.5))
         parts_top.append(torso_garment)
         parts_top_extra = []
-        if style == "tee_sleeve_contrast":
-            pass  # base color is the trim/sleeve color, sleeves added below in main color
 
+    overalls_objs = []
     if style == "overalls":
-        # Bib overalls: a front panel + two shoulder straps over a plain top.
+        # Bib overalls: a plain shirt (top color) UNDER a denim bib + straps (bottom/denim
+        # color). These two pieces must stay separate meshes with separate materials — an
+        # earlier version joined the bib into the shirt mesh and painted both with the
+        # shirt's single material, making the denim bib invisible.
         undertop = add_cylinder("UnderTop", P["torso_r"] * 1.05, P["torso_len"] * 0.9,
                                  (0, 0, Z_HIP + P["torso_len"] * 0.5))
         parts_top.append(("under", undertop))
         bib = add_cube("Bib", (P["torso_r"] * 1.1, 0.02, P["torso_len"] * 0.4),
                         (0, -P["torso_r"] * 0.9, Z_CHEST - P["torso_len"] * 0.15))
+        overalls_objs.append(bib)
         for side, sx in (("L", -1), ("R", 1)):
             strap = add_cube(f"Strap.{side}", (0.02, 0.02, P["torso_len"] * 0.35),
                               (sx * P["torso_r"] * 0.55, -P["torso_r"] * 0.6, Z_SHOULDER - 0.02))
-            parts_top.append(strap)
-        parts_top.append(bib)
+            overalls_objs.append(strap)
+        denim_mat = make_material("Denim", cfg["bottom"])
+        for obj in overalls_objs:
+            bevel_and_subsurf(obj, bevel_width=0.006, subsurf_levels=1)
+            assign_material(obj, denim_mat)
 
+    heart_obj = None
     if style == "hoodie_closed_heart":
-        heart_color = cfg.get("trim", "#FFFFFF")
+        heart_obj = build_heart(cfg.get("trim", "#FFFFFF"))
+        # Small logo on the wearer's left chest, sitting just proud of the closed hoodie surface.
+        heart_obj.location = (-P["torso_r"] * 0.45, -P["torso_r"] * 1.08 - 0.004, Z_CHEST - 0.05)
+        heart_obj.rotation_euler = (math.radians(90), 0, 0)
 
-    # Sleeves (thin cylinders over the upper arm) for tee-with-contrast-sleeve style.
-    if style == "tee_sleeve_contrast":
+    # Generic sleeves, driven by cfg["sleeve"] (every non-open-hoodie style needs this — the
+    # open hoodie builds its own sleeves above, over the tee rather than the bare torso).
+    # Built as their own object(s) with their own material rather than merged into top_objs,
+    # so a contrasting sleeve color (e.g. Liam's blue-on-white) actually survives — merging
+    # differently-colored parts into one joined mesh before a single assign_material() call
+    # was the earlier bug that made contrast sleeves invisible.
+    sleeve_objs = []
+    sleeve_cfg = cfg.get("sleeve")
+    if sleeve_cfg:
+        is_long = sleeve_cfg.get("length") == "long"
+        sleeve_color = sleeve_cfg.get("color", cfg["top"])
+        length = (P["upper_arm_len"] + P["forearm_len"]) * 0.92 if is_long else P["upper_arm_len"] * 0.55
         for side, sx in (("L", -1), ("R", 1)):
-            sleeve = add_cylinder(f"Sleeve.{side}", P["limb_r"] * 0.95, P["upper_arm_len"] * 0.55,
-                                   (sx * P["shoulder_width"], 0, Z_SHOULDER - P["upper_arm_len"] * 0.3))
-            parts_top.append(("sleeve", sleeve))
+            sleeve = add_cylinder(f"Sleeve.{side}", P["limb_r"] * 1.05, length,
+                                   (sx * P["shoulder_width"], 0, Z_SHOULDER - length / 2))
+            sleeve_objs.append(sleeve)
+        sleeve_mat = make_material(f"SleeveMat.{sleeve_color}", sleeve_color)
+        for obj in sleeve_objs:
+            bevel_and_subsurf(obj, bevel_width=0.006, subsurf_levels=1)
+            assign_material(obj, sleeve_mat)
 
     # Pants (two leg cylinders over the thighs+shins).
     for side, sx in (("L", -1), ("R", 1)):
@@ -541,6 +609,10 @@ def build_clothing(cfg):
         extras.append(parts_top_extra[0])  # tee
         star_obj = parts_top_extra[1]
         extras.append(star_obj)
+    if heart_obj:
+        extras.append(heart_obj)
+    extras += sleeve_objs
+    extras += overalls_objs
 
     return {"top": top_mesh, "bottom": bottom_mesh, "shoes": shoe_mesh, "extras": extras}
 
@@ -955,9 +1027,9 @@ def build_avatar(avatar_id):
     # Rename top-level objects for a clean outliner / clear glTF node names.
     armature.name = "Armature"
 
-    # --- Export GLB ---
-    os.makedirs(GLB_DIR, exist_ok=True)
-    glb_path = os.path.join(GLB_DIR, f"{avatar_id}.glb")
+    # --- Export GLB to staging (NOT public/) — publish.py copies it over after verification ---
+    os.makedirs(STAGING_DIR, exist_ok=True)
+    glb_path = os.path.join(STAGING_DIR, f"{avatar_id}.glb")
     bpy.ops.object.select_all(action="SELECT")
     export_kwargs = dict(
         filepath=glb_path,
@@ -972,11 +1044,17 @@ def build_avatar(avatar_id):
     bpy.ops.export_scene.gltf(**export_kwargs)
 
     # --- Render QA-turnaround previews of the generated model (not concept reference art) ---
-    src_dir = avatar_src_dir(avatar_id)
+    # Force the rest pose for these stills: clearing animation_data.action does NOT stop the
+    # pushed-down NLA tracks from still influencing the armature, so without this the preview
+    # renders a blended/mid-animation pose instead of a clean neutral A-pose. This only affects
+    # the renders below — the GLB was already exported above with its NLA tracks intact.
+    armature.data.pose_position = "REST"
+    os.makedirs(PREVIEW_DIR, exist_ok=True)
     cam = setup_render()
-    render_previews(avatar_id, cam, src_dir)
+    render_previews(avatar_id, cam, PREVIEW_DIR)
 
     # --- Save .blend source ---
+    src_dir = avatar_src_dir(avatar_id)
     blend_path = os.path.join(src_dir, f"{avatar_id}.blend")
     bpy.ops.wm.save_as_mainfile(filepath=blend_path)
 

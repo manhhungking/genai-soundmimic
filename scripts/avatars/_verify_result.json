@@ -1,0 +1,342 @@
+[
+  {
+    "id": "leo",
+    "status": "loaded_ok",
+    "sizeBytes": 1434452,
+    "meshes": 15,
+    "triangles": 36424,
+    "hasSkinnedMesh": true,
+    "boneCount": 19,
+    "morphTargets": [
+      "MouthOpen",
+      "Blink"
+    ],
+    "clips": [
+      {
+        "name": "idle",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      },
+      {
+        "name": "walk",
+        "duration": 1,
+        "tracks": 57,
+        "maxLoopDelta": 1.1102230246251565e-16
+      },
+      {
+        "name": "perform",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      }
+    ],
+    "hasAllRequiredClips": true
+  },
+  {
+    "id": "liam",
+    "status": "loaded_ok",
+    "sizeBytes": 1510136,
+    "meshes": 18,
+    "triangles": 39936,
+    "hasSkinnedMesh": true,
+    "boneCount": 19,
+    "morphTargets": [
+      "MouthOpen",
+      "Blink"
+    ],
+    "clips": [
+      {
+        "name": "idle",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      },
+      {
+        "name": "walk",
+        "duration": 1,
+        "tracks": 57,
+        "maxLoopDelta": 1.1102230246251565e-16
+      },
+      {
+        "name": "perform",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      }
+    ],
+    "hasAllRequiredClips": true
+  },
+  {
+    "id": "noah",
+    "status": "loaded_ok",
+    "sizeBytes": 1648216,
+    "meshes": 15,
+    "triangles": 42504,
+    "hasSkinnedMesh": true,
+    "boneCount": 19,
+    "morphTargets": [
+      "MouthOpen",
+      "Blink"
+    ],
+    "clips": [
+      {
+        "name": "idle",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      },
+      {
+        "name": "walk",
+        "duration": 1,
+        "tracks": 57,
+        "maxLoopDelta": 1.1102230246251565e-16
+      },
+      {
+        "name": "perform",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      }
+    ],
+    "hasAllRequiredClips": true
+  },
+  {
+    "id": "kai",
+    "status": "loaded_ok",
+    "sizeBytes": 1450592,
+    "meshes": 17,
+    "triangles": 37044,
+    "hasSkinnedMesh": true,
+    "boneCount": 19,
+    "morphTargets": [
+      "MouthOpen",
+      "Blink"
+    ],
+    "clips": [
+      {
+        "name": "idle",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      },
+      {
+        "name": "walk",
+        "duration": 1,
+        "tracks": 57,
+        "maxLoopDelta": 1.1102230246251565e-16
+      },
+      {
+        "name": "perform",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      }
+    ],
+    "hasAllRequiredClips": true
+  },
+  {
+    "id": "hung",
+    "status": "loaded_ok",
+    "sizeBytes": 1680668,
+    "meshes": 15,
+    "triangles": 43348,
+    "hasSkinnedMesh": true,
+    "boneCount": 19,
+    "morphTargets": [
+      "MouthOpen",
+      "Blink"
+    ],
+    "clips": [
+      {
+        "name": "idle",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      },
+      {
+        "name": "walk",
+        "duration": 1,
+        "tracks": 57,
+        "maxLoopDelta": 1.1102230246251565e-16
+      },
+      {
+        "name": "perform",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      }
+    ],
+    "hasAllRequiredClips": true
+  },
+  {
+    "id": "hana",
+    "status": "loaded_ok",
+    "sizeBytes": 1372888,
+    "meshes": 21,
+    "triangles": 35624,
+    "hasSkinnedMesh": true,
+    "boneCount": 19,
+    "morphTargets": [
+      "MouthOpen",
+      "Blink"
+    ],
+    "clips": [
+      {
+        "name": "idle",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      },
+      {
+        "name": "walk",
+        "duration": 1,
+        "tracks": 57,
+        "maxLoopDelta": 1.1102230246251565e-16
+      },
+      {
+        "name": "perform",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      }
+    ],
+    "hasAllRequiredClips": true
+  },
+  {
+    "id": "zoe",
+    "status": "loaded_ok",
+    "sizeBytes": 1216892,
+    "meshes": 15,
+    "triangles": 30208,
+    "hasSkinnedMesh": true,
+    "boneCount": 19,
+    "morphTargets": [
+      "MouthOpen",
+      "Blink"
+    ],
+    "clips": [
+      {
+        "name": "idle",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      },
+      {
+        "name": "walk",
+        "duration": 1,
+        "tracks": 57,
+        "maxLoopDelta": 1.1102230246251565e-16
+      },
+      {
+        "name": "perform",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      }
+    ],
+    "hasAllRequiredClips": true
+  },
+  {
+    "id": "aisha",
+    "status": "loaded_ok",
+    "sizeBytes": 1934428,
+    "meshes": 19,
+    "triangles": 50688,
+    "hasSkinnedMesh": true,
+    "boneCount": 19,
+    "morphTargets": [
+      "MouthOpen",
+      "Blink"
+    ],
+    "clips": [
+      {
+        "name": "idle",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      },
+      {
+        "name": "walk",
+        "duration": 1,
+        "tracks": 57,
+        "maxLoopDelta": 1.1102230246251565e-16
+      },
+      {
+        "name": "perform",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      }
+    ],
+    "hasAllRequiredClips": true
+  },
+  {
+    "id": "emma",
+    "status": "loaded_ok",
+    "sizeBytes": 1261344,
+    "meshes": 18,
+    "triangles": 32380,
+    "hasSkinnedMesh": true,
+    "boneCount": 19,
+    "morphTargets": [
+      "MouthOpen",
+      "Blink"
+    ],
+    "clips": [
+      {
+        "name": "idle",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      },
+      {
+        "name": "walk",
+        "duration": 1,
+        "tracks": 57,
+        "maxLoopDelta": 1.1102230246251565e-16
+      },
+      {
+        "name": "perform",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      }
+    ],
+    "hasAllRequiredClips": true
+  },
+  {
+    "id": "maya",
+    "status": "loaded_ok",
+    "sizeBytes": 1309812,
+    "meshes": 19,
+    "triangles": 33812,
+    "hasSkinnedMesh": true,
+    "boneCount": 19,
+    "morphTargets": [
+      "MouthOpen",
+      "Blink"
+    ],
+    "clips": [
+      {
+        "name": "idle",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      },
+      {
+        "name": "walk",
+        "duration": 1,
+        "tracks": 57,
+        "maxLoopDelta": 1.1102230246251565e-16
+      },
+      {
+        "name": "perform",
+        "duration": 2,
+        "tracks": 57,
+        "maxLoopDelta": 0
+      }
+    ],
+    "hasAllRequiredClips": true
+  }
+]

@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0.0",
   "project": "SoundMimic",
-  "status": "design_specification_only",
-  "note": "Không có GLB, rig, animation hoặc thumbnail tách riêng được cung cấp/kiểm thử trong gói này. Không thay asset hợp lệ của repo bằng trạng thái dưới đây mà chưa kiểm tra.",
+  "status": "assets_generated_and_verified",
+  "note": "Cả 10 avatar có GLB thật (mesh + humanoid rig + skinning + 3 animation clips idle/walk/perform + morph targets MouthOpen/Blink), đã publish vào public/assets/avatars/ sau khi qua scripts/avatars/verify_glb.mjs (independent three.js GLTFLoader parse). Đây là geometry PROCEDURAL dựng bằng Blender Python (scripts/avatars/build.py), không phải sculpt/rig thủ công theo character sheet — mức khớp ngoại hình là 'đúng màu/đúng phụ kiện theo cấu hình danh tính', KHÔNG đạt độ chi tiết như tranh concept (xem docs/avatars/BUILD_REPORT.md để biết từng khoảng cách còn lại). Không có texture ảnh (chỉ base color phẳng).",
   "sourcePriority": [
     "Tên cuối cùng do người dùng chốt",
     "Ảnh avatar-lineup.png cho diện mạo hiện tại",
@@ -105,19 +105,23 @@
         "status": "not_provided_or_verified_in_this_package"
       },
       "animationClipMap": {
-        "idle": null,
-        "walk": null,
-        "perform": null,
+        "idle": "idle",
+        "walk": "walk",
+        "perform": "perform",
         "wave": null,
         "cheer": null,
         "thinking": null
       },
       "runtimeVerification": {
-        "modelLoaded": null,
-        "rigChecked": null,
-        "texturesChecked": null,
-        "animationPlaybackChecked": null,
-        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+        "modelLoaded": true,
+        "loadedWith": "three.js GLTFLoader (scripts/avatars/verify_glb.mjs), independent of the Blender export step",
+        "rigChecked": true,
+        "rigNote": "Humanoid armature, 19 bones, SkinnedMesh confirmed present.",
+        "texturesChecked": "no_image_textures",
+        "texturesNote": "Flat Principled BSDF base colors only — no baked/image textures embedded. Not tested with real photographic textures.",
+        "animationPlaybackChecked": true,
+        "animationNote": "All 3 required clips (idle/walk/perform) present; first-vs-last-keyframe pose delta is 0.0000 on every clip (see scripts/avatars/_verify_result.json), i.e. each clip loops without a pop. Frame-by-frame clipping/interpenetration was spot-checked visually (renders under docs/avatars/previews/), not exhaustively reviewed frame-by-frame for all 10 characters.",
+        "verificationScope": "Verified: mesh/skin/bone counts, all 3 clip names + loop continuity via an independent three.js GLTFLoader parse (not just Blender re-import), and visual front/side/back comparison against the character sheet for each avatar. NOT verified: behavior inside the actual running SoundMimic 3D stage (PlayStage/StageScene), multi-avatar-at-once playback, or performance/FPS on real hardware."
       },
       "notes": "Leo và Hung đều có màu xanh dương, nhưng phải phân biệt bằng tóc và cấu trúc áo.",
       "assets": {
@@ -133,8 +137,20 @@
           "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
         },
         "glb": {
-          "path": null,
-          "status": "missing"
+          "path": "public/assets/avatars/leo.glb",
+          "status": "verified",
+          "sizeBytes": 1434452,
+          "triangles": 36424,
+          "boneCount": 19,
+          "clips": [
+            "idle",
+            "perform",
+            "walk"
+          ],
+          "morphTargets": [
+            "MouthOpen",
+            "Blink"
+          ]
         },
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/leo.png",
@@ -142,15 +158,15 @@
           "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
-          "front": null,
-          "side": null,
-          "back": null,
-          "status": "missing",
+          "front": "docs/avatars/previews/leo-front.png",
+          "side": "docs/avatars/previews/leo-side.png",
+          "back": "docs/avatars/previews/leo-back.png",
+          "status": "available",
           "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
         },
         "blendSource": {
-          "path": null,
-          "status": "missing"
+          "path": "assets-src/avatars/leo/leo.blend",
+          "status": "available"
         }
       }
     },
@@ -206,19 +222,23 @@
         "status": "not_provided_or_verified_in_this_package"
       },
       "animationClipMap": {
-        "idle": null,
-        "walk": null,
-        "perform": null,
+        "idle": "idle",
+        "walk": "walk",
+        "perform": "perform",
         "wave": null,
         "cheer": null,
         "thinking": null
       },
       "runtimeVerification": {
-        "modelLoaded": null,
-        "rigChecked": null,
-        "texturesChecked": null,
-        "animationPlaybackChecked": null,
-        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+        "modelLoaded": true,
+        "loadedWith": "three.js GLTFLoader (scripts/avatars/verify_glb.mjs), independent of the Blender export step",
+        "rigChecked": true,
+        "rigNote": "Humanoid armature, 19 bones, SkinnedMesh confirmed present.",
+        "texturesChecked": "no_image_textures",
+        "texturesNote": "Flat Principled BSDF base colors only — no baked/image textures embedded. Not tested with real photographic textures.",
+        "animationPlaybackChecked": true,
+        "animationNote": "All 3 required clips (idle/walk/perform) present; first-vs-last-keyframe pose delta is 0.0000 on every clip (see scripts/avatars/_verify_result.json), i.e. each clip loops without a pop. Frame-by-frame clipping/interpenetration was spot-checked visually (renders under docs/avatars/previews/), not exhaustively reviewed frame-by-frame for all 10 characters.",
+        "verificationScope": "Verified: mesh/skin/bone counts, all 3 clip names + loop continuity via an independent three.js GLTFLoader parse (not just Blender re-import), and visual front/side/back comparison against the character sheet for each avatar. NOT verified: behavior inside the actual running SoundMimic 3D stage (PlayStage/StageScene), multi-avatar-at-once playback, or performance/FPS on real hardware."
       },
       "notes": "Tai nghe là dấu hiệu nhận diện chính và cần hiện rõ ở thumbnail.",
       "assets": {
@@ -234,8 +254,20 @@
           "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
         },
         "glb": {
-          "path": null,
-          "status": "missing"
+          "path": "public/assets/avatars/liam.glb",
+          "status": "verified",
+          "sizeBytes": 1510136,
+          "triangles": 39936,
+          "boneCount": 19,
+          "clips": [
+            "idle",
+            "perform",
+            "walk"
+          ],
+          "morphTargets": [
+            "MouthOpen",
+            "Blink"
+          ]
         },
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/liam.png",
@@ -243,15 +275,15 @@
           "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
-          "front": null,
-          "side": null,
-          "back": null,
-          "status": "missing",
+          "front": "docs/avatars/previews/liam-front.png",
+          "side": "docs/avatars/previews/liam-side.png",
+          "back": "docs/avatars/previews/liam-back.png",
+          "status": "available",
           "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
         },
         "blendSource": {
-          "path": null,
-          "status": "missing"
+          "path": "assets-src/avatars/liam/liam.blend",
+          "status": "available"
         }
       }
     },
@@ -307,19 +339,23 @@
         "status": "not_provided_or_verified_in_this_package"
       },
       "animationClipMap": {
-        "idle": null,
-        "walk": null,
-        "perform": null,
+        "idle": "idle",
+        "walk": "walk",
+        "perform": "perform",
         "wave": null,
         "cheer": null,
         "thinking": null
       },
       "runtimeVerification": {
-        "modelLoaded": null,
-        "rigChecked": null,
-        "texturesChecked": null,
-        "animationPlaybackChecked": null,
-        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+        "modelLoaded": true,
+        "loadedWith": "three.js GLTFLoader (scripts/avatars/verify_glb.mjs), independent of the Blender export step",
+        "rigChecked": true,
+        "rigNote": "Humanoid armature, 19 bones, SkinnedMesh confirmed present.",
+        "texturesChecked": "no_image_textures",
+        "texturesNote": "Flat Principled BSDF base colors only — no baked/image textures embedded. Not tested with real photographic textures.",
+        "animationPlaybackChecked": true,
+        "animationNote": "All 3 required clips (idle/walk/perform) present; first-vs-last-keyframe pose delta is 0.0000 on every clip (see scripts/avatars/_verify_result.json), i.e. each clip loops without a pop. Frame-by-frame clipping/interpenetration was spot-checked visually (renders under docs/avatars/previews/), not exhaustively reviewed frame-by-frame for all 10 characters.",
+        "verificationScope": "Verified: mesh/skin/bone counts, all 3 clip names + loop continuity via an independent three.js GLTFLoader parse (not just Blender re-import), and visual front/side/back comparison against the character sheet for each avatar. NOT verified: behavior inside the actual running SoundMimic 3D stage (PlayStage/StageScene), multi-avatar-at-once playback, or performance/FPS on real hardware."
       },
       "notes": "Giữ nhóm màu da tương ứng Aisha theo ý đồ lineup, không cần làm hai gương mặt giống nhau.",
       "assets": {
@@ -335,8 +371,20 @@
           "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
         },
         "glb": {
-          "path": null,
-          "status": "missing"
+          "path": "public/assets/avatars/noah.glb",
+          "status": "verified",
+          "sizeBytes": 1648216,
+          "triangles": 42504,
+          "boneCount": 19,
+          "clips": [
+            "idle",
+            "perform",
+            "walk"
+          ],
+          "morphTargets": [
+            "MouthOpen",
+            "Blink"
+          ]
         },
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/noah.png",
@@ -344,15 +392,15 @@
           "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
-          "front": null,
-          "side": null,
-          "back": null,
-          "status": "missing",
+          "front": "docs/avatars/previews/noah-front.png",
+          "side": "docs/avatars/previews/noah-side.png",
+          "back": "docs/avatars/previews/noah-back.png",
+          "status": "available",
           "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
         },
         "blendSource": {
-          "path": null,
-          "status": "missing"
+          "path": "assets-src/avatars/noah/noah.blend",
+          "status": "available"
         }
       }
     },
@@ -410,19 +458,23 @@
         "status": "not_provided_or_verified_in_this_package"
       },
       "animationClipMap": {
-        "idle": null,
-        "walk": null,
-        "perform": null,
+        "idle": "idle",
+        "walk": "walk",
+        "perform": "perform",
         "wave": null,
         "cheer": null,
         "thinking": null
       },
       "runtimeVerification": {
-        "modelLoaded": null,
-        "rigChecked": null,
-        "texturesChecked": null,
-        "animationPlaybackChecked": null,
-        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+        "modelLoaded": true,
+        "loadedWith": "three.js GLTFLoader (scripts/avatars/verify_glb.mjs), independent of the Blender export step",
+        "rigChecked": true,
+        "rigNote": "Humanoid armature, 19 bones, SkinnedMesh confirmed present.",
+        "texturesChecked": "no_image_textures",
+        "texturesNote": "Flat Principled BSDF base colors only — no baked/image textures embedded. Not tested with real photographic textures.",
+        "animationPlaybackChecked": true,
+        "animationNote": "All 3 required clips (idle/walk/perform) present; first-vs-last-keyframe pose delta is 0.0000 on every clip (see scripts/avatars/_verify_result.json), i.e. each clip loops without a pop. Frame-by-frame clipping/interpenetration was spot-checked visually (renders under docs/avatars/previews/), not exhaustively reviewed frame-by-frame for all 10 characters.",
+        "verificationScope": "Verified: mesh/skin/bone counts, all 3 clip names + loop continuity via an independent three.js GLTFLoader parse (not just Blender re-import), and visual front/side/back comparison against the character sheet for each avatar. NOT verified: behavior inside the actual running SoundMimic 3D stage (PlayStage/StageScene), multi-avatar-at-once playback, or performance/FPS on real hardware."
       },
       "notes": "Mắt xanh là thông số tạm cho bản neutral, không phải chi tiết đã xác nhận từ ảnh nhắm mắt.",
       "assets": {
@@ -438,8 +490,20 @@
           "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
         },
         "glb": {
-          "path": null,
-          "status": "missing"
+          "path": "public/assets/avatars/kai.glb",
+          "status": "verified",
+          "sizeBytes": 1450592,
+          "triangles": 37044,
+          "boneCount": 19,
+          "clips": [
+            "idle",
+            "perform",
+            "walk"
+          ],
+          "morphTargets": [
+            "MouthOpen",
+            "Blink"
+          ]
         },
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/kai.png",
@@ -447,15 +511,15 @@
           "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
-          "front": null,
-          "side": null,
-          "back": null,
-          "status": "missing",
+          "front": "docs/avatars/previews/kai-front.png",
+          "side": "docs/avatars/previews/kai-side.png",
+          "back": "docs/avatars/previews/kai-back.png",
+          "status": "available",
           "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
         },
         "blendSource": {
-          "path": null,
-          "status": "missing"
+          "path": "assets-src/avatars/kai/kai.blend",
+          "status": "available"
         }
       }
     },
@@ -516,19 +580,23 @@
         "status": "not_provided_or_verified_in_this_package"
       },
       "animationClipMap": {
-        "idle": null,
-        "walk": null,
-        "perform": null,
+        "idle": "idle",
+        "walk": "walk",
+        "perform": "perform",
         "wave": null,
         "cheer": null,
         "thinking": null
       },
       "runtimeVerification": {
-        "modelLoaded": null,
-        "rigChecked": null,
-        "texturesChecked": null,
-        "animationPlaybackChecked": null,
-        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+        "modelLoaded": true,
+        "loadedWith": "three.js GLTFLoader (scripts/avatars/verify_glb.mjs), independent of the Blender export step",
+        "rigChecked": true,
+        "rigNote": "Humanoid armature, 19 bones, SkinnedMesh confirmed present.",
+        "texturesChecked": "no_image_textures",
+        "texturesNote": "Flat Principled BSDF base colors only — no baked/image textures embedded. Not tested with real photographic textures.",
+        "animationPlaybackChecked": true,
+        "animationNote": "All 3 required clips (idle/walk/perform) present; first-vs-last-keyframe pose delta is 0.0000 on every clip (see scripts/avatars/_verify_result.json), i.e. each clip loops without a pop. Frame-by-frame clipping/interpenetration was spot-checked visually (renders under docs/avatars/previews/), not exhaustively reviewed frame-by-frame for all 10 characters.",
+        "verificationScope": "Verified: mesh/skin/bone counts, all 3 clip names + loop continuity via an independent three.js GLTFLoader parse (not just Blender re-import), and visual front/side/back comparison against the character sheet for each avatar. NOT verified: behavior inside the actual running SoundMimic 3D stage (PlayStage/StageScene), multi-avatar-at-once playback, or performance/FPS on real hardware."
       },
       "notes": "Hung là tên avatar chính thức. Jin chỉ là alias cũ phục vụ kiểm tra/migration tham chiếu avatar nếu cần. Palette cập nhật theo hung-character-sheet.png (hex đo được trực tiếp).",
       "assets": {
@@ -545,7 +613,19 @@
         },
         "glb": {
           "path": "public/assets/avatars/hung.glb",
-          "status": "generated_unverified"
+          "status": "verified",
+          "sizeBytes": 1680668,
+          "triangles": 43348,
+          "boneCount": 19,
+          "clips": [
+            "idle",
+            "perform",
+            "walk"
+          ],
+          "morphTargets": [
+            "MouthOpen",
+            "Blink"
+          ]
         },
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/hung.png",
@@ -553,9 +633,9 @@
           "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
-          "front": "assets-src/avatars/hung/hung-front.png",
-          "side": "assets-src/avatars/hung/hung-side.png",
-          "back": "assets-src/avatars/hung/hung-back.png",
+          "front": "docs/avatars/previews/hung-front.png",
+          "side": "docs/avatars/previews/hung-side.png",
+          "back": "docs/avatars/previews/hung-back.png",
           "status": "available",
           "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
         },
@@ -617,19 +697,23 @@
         "status": "not_provided_or_verified_in_this_package"
       },
       "animationClipMap": {
-        "idle": null,
-        "walk": null,
-        "perform": null,
+        "idle": "idle",
+        "walk": "walk",
+        "perform": "perform",
         "wave": null,
         "cheer": null,
         "thinking": null
       },
       "runtimeVerification": {
-        "modelLoaded": null,
-        "rigChecked": null,
-        "texturesChecked": null,
-        "animationPlaybackChecked": null,
-        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+        "modelLoaded": true,
+        "loadedWith": "three.js GLTFLoader (scripts/avatars/verify_glb.mjs), independent of the Blender export step",
+        "rigChecked": true,
+        "rigNote": "Humanoid armature, 19 bones, SkinnedMesh confirmed present.",
+        "texturesChecked": "no_image_textures",
+        "texturesNote": "Flat Principled BSDF base colors only — no baked/image textures embedded. Not tested with real photographic textures.",
+        "animationPlaybackChecked": true,
+        "animationNote": "All 3 required clips (idle/walk/perform) present; first-vs-last-keyframe pose delta is 0.0000 on every clip (see scripts/avatars/_verify_result.json), i.e. each clip loops without a pop. Frame-by-frame clipping/interpenetration was spot-checked visually (renders under docs/avatars/previews/), not exhaustively reviewed frame-by-frame for all 10 characters.",
+        "verificationScope": "Verified: mesh/skin/bone counts, all 3 clip names + loop continuity via an independent three.js GLTFLoader parse (not just Blender re-import), and visual front/side/back comparison against the character sheet for each avatar. NOT verified: behavior inside the actual running SoundMimic 3D stage (PlayStage/StageScene), multi-avatar-at-once playback, or performance/FPS on real hardware."
       },
       "notes": "Tai nghe và tóc là phụ kiện hình học/mesh riêng hoặc cấu trúc tương đương, nhưng phải theo đầu ổn định.",
       "assets": {
@@ -645,8 +729,20 @@
           "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
         },
         "glb": {
-          "path": null,
-          "status": "missing"
+          "path": "public/assets/avatars/maya.glb",
+          "status": "verified",
+          "sizeBytes": 1309812,
+          "triangles": 33812,
+          "boneCount": 19,
+          "clips": [
+            "idle",
+            "perform",
+            "walk"
+          ],
+          "morphTargets": [
+            "MouthOpen",
+            "Blink"
+          ]
         },
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/maya.png",
@@ -654,15 +750,15 @@
           "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
-          "front": null,
-          "side": null,
-          "back": null,
-          "status": "missing",
+          "front": "docs/avatars/previews/maya-front.png",
+          "side": "docs/avatars/previews/maya-side.png",
+          "back": "docs/avatars/previews/maya-back.png",
+          "status": "available",
           "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
         },
         "blendSource": {
-          "path": null,
-          "status": "missing"
+          "path": "assets-src/avatars/maya/maya.blend",
+          "status": "available"
         }
       }
     },
@@ -718,19 +814,23 @@
         "status": "not_provided_or_verified_in_this_package"
       },
       "animationClipMap": {
-        "idle": null,
-        "walk": null,
-        "perform": null,
+        "idle": "idle",
+        "walk": "walk",
+        "perform": "perform",
         "wave": null,
         "cheer": null,
         "thinking": null
       },
       "runtimeVerification": {
-        "modelLoaded": null,
-        "rigChecked": null,
-        "texturesChecked": null,
-        "animationPlaybackChecked": null,
-        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+        "modelLoaded": true,
+        "loadedWith": "three.js GLTFLoader (scripts/avatars/verify_glb.mjs), independent of the Blender export step",
+        "rigChecked": true,
+        "rigNote": "Humanoid armature, 19 bones, SkinnedMesh confirmed present.",
+        "texturesChecked": "no_image_textures",
+        "texturesNote": "Flat Principled BSDF base colors only — no baked/image textures embedded. Not tested with real photographic textures.",
+        "animationPlaybackChecked": true,
+        "animationNote": "All 3 required clips (idle/walk/perform) present; first-vs-last-keyframe pose delta is 0.0000 on every clip (see scripts/avatars/_verify_result.json), i.e. each clip loops without a pop. Frame-by-frame clipping/interpenetration was spot-checked visually (renders under docs/avatars/previews/), not exhaustively reviewed frame-by-frame for all 10 characters.",
+        "verificationScope": "Verified: mesh/skin/bone counts, all 3 clip names + loop continuity via an independent three.js GLTFLoader parse (not just Blender re-import), and visual front/side/back comparison against the character sheet for each avatar. NOT verified: behavior inside the actual running SoundMimic 3D stage (PlayStage/StageScene), multi-avatar-at-once playback, or performance/FPS on real hardware."
       },
       "notes": "Đây là bản Zoe mới thay thế bản tóc búi cũ, không phải avatar thứ 11.",
       "assets": {
@@ -746,8 +846,20 @@
           "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
         },
         "glb": {
-          "path": null,
-          "status": "missing"
+          "path": "public/assets/avatars/zoe.glb",
+          "status": "verified",
+          "sizeBytes": 1216892,
+          "triangles": 30208,
+          "boneCount": 19,
+          "clips": [
+            "idle",
+            "perform",
+            "walk"
+          ],
+          "morphTargets": [
+            "MouthOpen",
+            "Blink"
+          ]
         },
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/zoe.png",
@@ -755,15 +867,15 @@
           "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
-          "front": null,
-          "side": null,
-          "back": null,
-          "status": "missing",
+          "front": "docs/avatars/previews/zoe-front.png",
+          "side": "docs/avatars/previews/zoe-side.png",
+          "back": "docs/avatars/previews/zoe-back.png",
+          "status": "available",
           "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
         },
         "blendSource": {
-          "path": null,
-          "status": "missing"
+          "path": "assets-src/avatars/zoe/zoe.blend",
+          "status": "available"
         }
       }
     },
@@ -819,19 +931,23 @@
         "status": "not_provided_or_verified_in_this_package"
       },
       "animationClipMap": {
-        "idle": null,
-        "walk": null,
-        "perform": null,
+        "idle": "idle",
+        "walk": "walk",
+        "perform": "perform",
         "wave": null,
         "cheer": null,
         "thinking": null
       },
       "runtimeVerification": {
-        "modelLoaded": null,
-        "rigChecked": null,
-        "texturesChecked": null,
-        "animationPlaybackChecked": null,
-        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+        "modelLoaded": true,
+        "loadedWith": "three.js GLTFLoader (scripts/avatars/verify_glb.mjs), independent of the Blender export step",
+        "rigChecked": true,
+        "rigNote": "Humanoid armature, 19 bones, SkinnedMesh confirmed present.",
+        "texturesChecked": "no_image_textures",
+        "texturesNote": "Flat Principled BSDF base colors only — no baked/image textures embedded. Not tested with real photographic textures.",
+        "animationPlaybackChecked": true,
+        "animationNote": "All 3 required clips (idle/walk/perform) present; first-vs-last-keyframe pose delta is 0.0000 on every clip (see scripts/avatars/_verify_result.json), i.e. each clip loops without a pop. Frame-by-frame clipping/interpenetration was spot-checked visually (renders under docs/avatars/previews/), not exhaustively reviewed frame-by-frame for all 10 characters.",
+        "verificationScope": "Verified: mesh/skin/bone counts, all 3 clip names + loop continuity via an independent three.js GLTFLoader parse (not just Blender re-import), and visual front/side/back comparison against the character sheet for each avatar. NOT verified: behavior inside the actual running SoundMimic 3D stage (PlayStage/StageScene), multi-avatar-at-once playback, or performance/FPS on real hardware."
       },
       "notes": "Phần dưới của yếm và giày là phần hoàn thiện đề xuất từ outfit chân dung.",
       "assets": {
@@ -847,8 +963,20 @@
           "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
         },
         "glb": {
-          "path": null,
-          "status": "missing"
+          "path": "public/assets/avatars/aisha.glb",
+          "status": "verified",
+          "sizeBytes": 1934428,
+          "triangles": 50688,
+          "boneCount": 19,
+          "clips": [
+            "idle",
+            "perform",
+            "walk"
+          ],
+          "morphTargets": [
+            "MouthOpen",
+            "Blink"
+          ]
         },
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/aisha.png",
@@ -856,15 +984,15 @@
           "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
-          "front": null,
-          "side": null,
-          "back": null,
-          "status": "missing",
+          "front": "docs/avatars/previews/aisha-front.png",
+          "side": "docs/avatars/previews/aisha-side.png",
+          "back": "docs/avatars/previews/aisha-back.png",
+          "status": "available",
           "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
         },
         "blendSource": {
-          "path": null,
-          "status": "missing"
+          "path": "assets-src/avatars/aisha/aisha.blend",
+          "status": "available"
         }
       }
     },
@@ -920,19 +1048,23 @@
         "status": "not_provided_or_verified_in_this_package"
       },
       "animationClipMap": {
-        "idle": null,
-        "walk": null,
-        "perform": null,
+        "idle": "idle",
+        "walk": "walk",
+        "perform": "perform",
         "wave": null,
         "cheer": null,
         "thinking": null
       },
       "runtimeVerification": {
-        "modelLoaded": null,
-        "rigChecked": null,
-        "texturesChecked": null,
-        "animationPlaybackChecked": null,
-        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+        "modelLoaded": true,
+        "loadedWith": "three.js GLTFLoader (scripts/avatars/verify_glb.mjs), independent of the Blender export step",
+        "rigChecked": true,
+        "rigNote": "Humanoid armature, 19 bones, SkinnedMesh confirmed present.",
+        "texturesChecked": "no_image_textures",
+        "texturesNote": "Flat Principled BSDF base colors only — no baked/image textures embedded. Not tested with real photographic textures.",
+        "animationPlaybackChecked": true,
+        "animationNote": "All 3 required clips (idle/walk/perform) present; first-vs-last-keyframe pose delta is 0.0000 on every clip (see scripts/avatars/_verify_result.json), i.e. each clip loops without a pop. Frame-by-frame clipping/interpenetration was spot-checked visually (renders under docs/avatars/previews/), not exhaustively reviewed frame-by-frame for all 10 characters.",
+        "verificationScope": "Verified: mesh/skin/bone counts, all 3 clip names + loop continuity via an independent three.js GLTFLoader parse (not just Blender re-import), and visual front/side/back comparison against the character sheet for each avatar. NOT verified: behavior inside the actual running SoundMimic 3D stage (PlayStage/StageScene), multi-avatar-at-once playback, or performance/FPS on real hardware."
       },
       "notes": "Kính không phải phụ kiện trang trí có thể tự xóa trong outfit mặc định.",
       "assets": {
@@ -948,8 +1080,20 @@
           "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
         },
         "glb": {
-          "path": null,
-          "status": "missing"
+          "path": "public/assets/avatars/emma.glb",
+          "status": "verified",
+          "sizeBytes": 1261344,
+          "triangles": 32380,
+          "boneCount": 19,
+          "clips": [
+            "idle",
+            "perform",
+            "walk"
+          ],
+          "morphTargets": [
+            "MouthOpen",
+            "Blink"
+          ]
         },
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/emma.png",
@@ -957,15 +1101,15 @@
           "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
-          "front": null,
-          "side": null,
-          "back": null,
-          "status": "missing",
+          "front": "docs/avatars/previews/emma-front.png",
+          "side": "docs/avatars/previews/emma-side.png",
+          "back": "docs/avatars/previews/emma-back.png",
+          "status": "available",
           "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
         },
         "blendSource": {
-          "path": null,
-          "status": "missing"
+          "path": "assets-src/avatars/emma/emma.blend",
+          "status": "available"
         }
       }
     },
@@ -1021,19 +1165,23 @@
         "status": "not_provided_or_verified_in_this_package"
       },
       "animationClipMap": {
-        "idle": null,
-        "walk": null,
-        "perform": null,
+        "idle": "idle",
+        "walk": "walk",
+        "perform": "perform",
         "wave": null,
         "cheer": null,
         "thinking": null
       },
       "runtimeVerification": {
-        "modelLoaded": null,
-        "rigChecked": null,
-        "texturesChecked": null,
-        "animationPlaybackChecked": null,
-        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+        "modelLoaded": true,
+        "loadedWith": "three.js GLTFLoader (scripts/avatars/verify_glb.mjs), independent of the Blender export step",
+        "rigChecked": true,
+        "rigNote": "Humanoid armature, 19 bones, SkinnedMesh confirmed present.",
+        "texturesChecked": "no_image_textures",
+        "texturesNote": "Flat Principled BSDF base colors only — no baked/image textures embedded. Not tested with real photographic textures.",
+        "animationPlaybackChecked": true,
+        "animationNote": "All 3 required clips (idle/walk/perform) present; first-vs-last-keyframe pose delta is 0.0000 on every clip (see scripts/avatars/_verify_result.json), i.e. each clip loops without a pop. Frame-by-frame clipping/interpenetration was spot-checked visually (renders under docs/avatars/previews/), not exhaustively reviewed frame-by-frame for all 10 characters.",
+        "verificationScope": "Verified: mesh/skin/bone counts, all 3 clip names + loop continuity via an independent three.js GLTFLoader parse (not just Blender re-import), and visual front/side/back comparison against the character sheet for each avatar. NOT verified: behavior inside the actual running SoundMimic 3D stage (PlayStage/StageScene), multi-avatar-at-once playback, or performance/FPS on real hardware."
       },
       "notes": "Hana và Aisha cùng dùng yếm jean nhưng phải khác rõ tóc, phụ kiện đầu và màu áo trong.",
       "assets": {
@@ -1049,8 +1197,20 @@
           "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
         },
         "glb": {
-          "path": null,
-          "status": "missing"
+          "path": "public/assets/avatars/hana.glb",
+          "status": "verified",
+          "sizeBytes": 1372888,
+          "triangles": 35624,
+          "boneCount": 19,
+          "clips": [
+            "idle",
+            "perform",
+            "walk"
+          ],
+          "morphTargets": [
+            "MouthOpen",
+            "Blink"
+          ]
         },
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/hana.png",
@@ -1058,15 +1218,15 @@
           "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
-          "front": null,
-          "side": null,
-          "back": null,
-          "status": "missing",
+          "front": "docs/avatars/previews/hana-front.png",
+          "side": "docs/avatars/previews/hana-side.png",
+          "back": "docs/avatars/previews/hana-back.png",
+          "status": "available",
           "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
         },
         "blendSource": {
-          "path": null,
-          "status": "missing"
+          "path": "assets-src/avatars/hana/hana.blend",
+          "status": "available"
         }
       }
     }
