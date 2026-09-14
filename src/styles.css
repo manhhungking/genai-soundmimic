@@ -1945,10 +1945,11 @@ select:focus-visible {
 .avatar {
     display: inline-block;
     flex: 0 0 auto;
-    background-image: url('/assets/student-avatars.png');
     background-repeat: no-repeat;
-    /* Zoom the portrait atlas while preserving its aspect ratio so faces fill circular thumbnails. */
-    background-size: 625% auto;
+    background-position: center;
+    /* Each avatar has its own square thumbnail (public/assets/avatars/thumbnails/), so a
+       plain cover-fit is enough — no sprite-sheet percentage math to keep in sync. */
+    background-size: cover;
     border: 3px solid var(--color-white);
     border-radius: 50%;
     box-shadow: var(--shadow-avatar);
@@ -1970,43 +1971,43 @@ select:focus-visible {
 }
 
 .avatar--leo {
-    background-position: 2.38% 8.33%;
+    background-image: url('/assets/avatars/thumbnails/leo.png');
 }
 
 .avatar--maya {
-    background-position: 97.62% 91.67%;
+    background-image: url('/assets/avatars/thumbnails/maya.png');
 }
 
 .avatar--noah {
-    background-position: 50% 8.33%;
+    background-image: url('/assets/avatars/thumbnails/noah.png');
 }
 
 .avatar--emma {
-    background-position: 73.81% 91.67%;
+    background-image: url('/assets/avatars/thumbnails/emma.png');
 }
 
 .avatar--kai {
-    background-position: 73.81% 8.33%;
+    background-image: url('/assets/avatars/thumbnails/kai.png');
 }
 
 .avatar--zoe {
-    background-position: 26.19% 91.67%;
+    background-image: url('/assets/avatars/thumbnails/zoe.png');
 }
 
 .avatar--liam {
-    background-position: 26.19% 8.33%;
+    background-image: url('/assets/avatars/thumbnails/liam.png');
 }
 
 .avatar--hana {
-    background-position: 2.38% 91.67%;
+    background-image: url('/assets/avatars/thumbnails/hana.png');
 }
 
 .avatar--aisha {
-    background-position: 50% 91.67%;
+    background-image: url('/assets/avatars/thumbnails/aisha.png');
 }
 
 .avatar--hung {
-    background-position: 97.62% 8.33%;
+    background-image: url('/assets/avatars/thumbnails/hung.png');
 }
 
 .waveform {

@@ -14,7 +14,7 @@
 | 4   | Kai (`kai`)   | Emma (`emma`)   |
 | 5   | Hung (`hung`) | Maya (`maya`)   |
 
-(Hàng nữ đã đổi cột 1↔5 so với bản trước: `public/assets/student-avatars.png` được người dùng upload lại với thứ tự Maya/Hana hoán đổi — Zoe/Aisha/Emma giữ nguyên cột 2–4.)
+(Hàng nữ đã đổi cột 1↔5 so với bản trước: người dùng upload lại lineup gốc với thứ tự Maya/Hana hoán đổi — Zoe/Aisha/Emma giữ nguyên cột 2–4. Bản lineup hiện lưu tại `references/avatar-lineup.png`; không còn bản sao trong `public/`.)
 
 **Hung là tên chính thức của avatar tóc đen, hoodie xanh mở khóa, áo thun trắng có ngôi sao. Không dùng Jin làm tên hiển thị mới.** `jin` chỉ là alias cũ để xử lý tham chiếu avatar cũ khi thực sự cần; không tự đổi tên người chơi hoặc sửa dữ liệu người dùng có nickname Jin.
 

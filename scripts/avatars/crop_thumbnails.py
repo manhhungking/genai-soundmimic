@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""One-time crop of public/assets/student-avatars.png (the 5x2 portrait lineup) into
-10 individual square thumbnails at public/assets/avatars/thumbnails/{id}.png.
+"""One-time crop of docs/avatars/references/avatar-lineup.png (the 5x2 portrait lineup)
+into 10 individual square thumbnails at public/assets/avatars/thumbnails/{id}.png.
 
 Grid mapping (locked, see docs/avatars/AVATAR_SPEC.md section 1):
     Row 1 (top):    leo, liam, noah, kai, hung
@@ -13,7 +13,7 @@ import os
 from PIL import Image
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-SOURCE = os.path.join(REPO_ROOT, "public", "assets", "student-avatars.png")
+SOURCE = os.path.join(REPO_ROOT, "docs", "avatars", "references", "avatar-lineup.png")
 OUT_DIR = os.path.join(REPO_ROOT, "public", "assets", "avatars", "thumbnails")
 
 GRID = [

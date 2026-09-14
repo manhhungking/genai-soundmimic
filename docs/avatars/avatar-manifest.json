@@ -139,7 +139,7 @@
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/leo.png",
           "status": "available",
-          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+          "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
           "front": null,
@@ -240,7 +240,7 @@
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/liam.png",
           "status": "available",
-          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+          "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
           "front": null,
@@ -341,7 +341,7 @@
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/noah.png",
           "status": "available",
-          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+          "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
           "front": null,
@@ -444,7 +444,7 @@
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/kai.png",
           "status": "available",
-          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+          "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
           "front": null,
@@ -550,7 +550,7 @@
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/hung.png",
           "status": "available",
-          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+          "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
           "front": "assets-src/avatars/hung/hung-front.png",
@@ -651,7 +651,7 @@
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/maya.png",
           "status": "available",
-          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+          "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
           "front": null,
@@ -752,7 +752,7 @@
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/zoe.png",
           "status": "available",
-          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+          "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
           "front": null,
@@ -853,7 +853,7 @@
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/aisha.png",
           "status": "available",
-          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+          "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
           "front": null,
@@ -954,7 +954,7 @@
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/emma.png",
           "status": "available",
-          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+          "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
           "front": null,
@@ -1055,7 +1055,7 @@
         "thumbnail": {
           "path": "public/assets/avatars/thumbnails/hana.png",
           "status": "available",
-          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+          "source": "Cropped from docs/avatars/references/avatar-lineup.png via scripts/avatars/crop_thumbnails.py"
         },
         "qaRenders": {
           "front": null,
