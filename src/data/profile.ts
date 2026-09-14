@@ -8,7 +8,7 @@ export const avatarOptions = [
     'liam',
     'hana',
     'aisha',
-    'jin',
+    'hung',
 ] as const;
 
 export type AvatarVariant = (typeof avatarOptions)[number];

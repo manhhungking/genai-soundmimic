@@ -12,7 +12,7 @@ export const avatarAssetManifest: Record<AvatarVariant, AvatarAssetDefinition> =
     aisha: { modelUrl: '/assets/avatars/aisha.glb' },
     emma: { modelUrl: '/assets/avatars/emma.glb' },
     hana: { modelUrl: '/assets/avatars/hana.glb' },
-    jin: { modelUrl: '/assets/avatars/jin.glb' },
+    hung: { modelUrl: '/assets/avatars/hung.glb' },
     kai: { modelUrl: '/assets/avatars/kai.glb' },
     leo: { modelUrl: '/assets/avatars/leo.glb' },
     liam: { modelUrl: '/assets/avatars/liam.glb' },

@@ -11,7 +11,7 @@ Place one production-ready GLB file here for each profile avatar:
 - `liam.glb`
 - `hana.glb`
 - `aisha.glb`
-- `jin.glb`
+- `hung.glb`
 
 Each GLB must contain a full-body, rigged character and animation clips whose names include:
 
