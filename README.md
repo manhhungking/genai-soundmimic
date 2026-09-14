@@ -22,11 +22,45 @@ Use `npm run build`, `npm run lint`, and `npm test` before shipping changes.
 - `/` — join a class or create a teacher session.
 - `/home` — child-friendly product overview and activity map.
 - `/train` — editable sound classes, sample collection, classifier training, and live preview.
-- `/play` — student recording, playback, turn order, and AI guess view.
+- `/play` — host stage, turn controls, recording playback, and real classifier predictions.
+- `/join/play?code=…` — full-screen student stage connected to the host session.
 - `/results` — per-round AI predictions, with optional XAI evidence controlled by the host.
 - `/xai` — redirects to `/results` for backwards compatibility.
 
-The current workspace is the teacher/host experience. The streamlined student experience will be implemented separately.
+The host and student play surfaces share an authoritative game snapshot over the existing
+`@genai-fi/base` PeerJS/WebRTC transport. Student recording actions include a per-connection
+session token and are accepted only for the connected player whose turn is active. The host
+remains the game authority whether or not they join the turn rotation.
+
+### Play connectivity
+
+The checked-in defaults use the same public signaling host and key as GenAI Teachable Machine.
+Deployments can override them with:
+
+```bash
+VITE_APP_PEER_SERVER=
+VITE_APP_PEER_SECURE=1
+VITE_APP_PEER_PORT=443
+VITE_APP_PEER_KEY=
+VITE_APP_ICE_URLS=stun:stun.l.google.com:19302
+VITE_APP_ICE_USERNAME=
+VITE_APP_ICE_CREDENTIAL=
+```
+
+Provide a TURN URL and credentials through the ICE variables for school networks that block
+direct WebRTC. This repository does not contain an application backend or identity provider;
+permission checks are therefore enforced by the authoritative host client. A deployment that
+requires durable server-side access control or audit logs must add an authenticated backend.
+
+### Character assets
+
+The Play stage uses rigged GLB characters through Three.js `AnimationMixer`; it intentionally
+does not render capsule or static-image stand-ins. Add the ten character files documented in
+[`public/assets/avatars/README.md`](./public/assets/avatars/README.md). Each model must include
+compatible `Idle`, `Walk`, and `Perform` (or a supported speaking/singing alias) animation clips.
+The loader caches source models, clones their skeletons per player, normalizes their height, and
+crossfades between waiting, walking, and performing. Until a required model or clip is supplied,
+the stage keeps the production layout and shows a compact asset notice instead of a dummy actor.
 
 Colors are managed through reusable design tokens in `src/theme.css`. The Light/Dark selector follows the learner's system preference on first visit and remembers later changes locally.
 

@@ -193,6 +193,23 @@ export async function predictSound(model: TeachableModel, example: AudioExample)
     return result.predictions;
 }
 
+export async function predictSoundRecording(model: TeachableModel, recording: Blob): Promise<SoundPrediction[]> {
+    const examples = await extractAudioExamples(recording, 'recording', false);
+    if (!examples.length) throw new Error('The recording did not contain any audio examples');
+
+    const totals = new Map<string, number>();
+    for (const example of examples) {
+        const predictions = await predictSound(model, example);
+        for (const prediction of predictions) {
+            totals.set(prediction.className, (totals.get(prediction.className) ?? 0) + prediction.probability);
+        }
+    }
+    return Array.from(totals, ([className, total]) => ({
+        className,
+        probability: total / examples.length,
+    })).sort((left, right) => right.probability - left.probability);
+}
+
 function isAudioExample(value: ISample['data']): value is AudioExample {
     return !(value instanceof HTMLCanvasElement) && 'spectrogram' in value;
 }

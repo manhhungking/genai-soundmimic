@@ -6,8 +6,8 @@ export type Student = {
 };
 
 export const students: Student[] = [
-    { name: 'Leo', avatar: 'ethan' },
-    { name: 'Maya', avatar: 'sophia' },
-    { name: 'Noah', avatar: 'maya' },
-    { name: 'Emma', avatar: 'leo' },
+    { name: 'Leo', avatar: 'leo' },
+    { name: 'Maya', avatar: 'maya' },
+    { name: 'Noah', avatar: 'noah' },
+    { name: 'Emma', avatar: 'emma' },
 ];

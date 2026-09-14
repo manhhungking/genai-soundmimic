@@ -3,12 +3,16 @@ import SaveRounded from '@mui/icons-material/SaveRounded';
 import { WorkflowLayout, type IConnection } from '@genai-fi/base';
 import type ClassifierApp from '@genai-fi/classifier';
 import type { AudioExample } from '@genai-fi/classifier';
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
+import { useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import TrainingDataPanel from '../features/training/TrainingDataPanel';
 import TrainingOutputColumn from '../features/training/TrainingOutputColumn';
 import SaveModelDialog, { type SaveModelSelection } from '../features/training/SaveModelDialog';
 import TrainingStage, { type TrainingStatus } from '../features/training/TrainingStage';
+import {
+    clearActiveSoundClassifier,
+    setActiveSoundClassifier,
+} from '../features/training/activeClassifier';
 import {
     classTones,
     emptySoundSamples,
@@ -55,9 +59,8 @@ export function Component() {
         { start: 'classifier', end: 'xai-actions', startPoint: 'bottom', endPoint: 'top' },
     ], [classes]);
 
-    useEffect(() => () => classifier?.model?.dispose(), [classifier]);
-
     function resetTraining() {
+        clearActiveSoundClassifier();
         setTrainingStatus('ready');
         setClassifier(null);
         setPredictions([]);
@@ -121,6 +124,7 @@ export function Component() {
         setNotice(t('train.loadingNotice'));
         try {
             const app = await trainSoundClassifier(classes, samples);
+            setActiveSoundClassifier(app, classes);
             setClassifier(app);
             setTrainingStatus('done');
             setNotice(t('train.successNotice'));
@@ -170,6 +174,7 @@ export function Component() {
             }));
             setClasses(nextClasses);
             setSamples(Object.fromEntries(nextClasses.map(({ id }, index) => [id, loadedSamples[index] ?? []])));
+            setActiveSoundClassifier(app, nextClasses);
             setClassifier(app);
             setPredictions([]);
             setTrainingStatus('done');

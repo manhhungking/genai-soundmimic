@@ -16,6 +16,9 @@ import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 
 export type AppOutletContext = {
+    classCode: string;
+    paused: boolean;
+    profile: UserProfile;
     xaiEnabled: boolean;
 };
 
@@ -27,6 +30,7 @@ export function Component() {
     const [profileOpen, setProfileOpen] = useState(false);
     const [profile, setProfile] = useState(() => readProfile(hostProfileStorageKey, defaultHostProfile));
     const [xaiEnabled, setXaiEnabled] = useState(false);
+    const [paused, setPaused] = useState(false);
     const classCode = useID(8);
 
     return (
@@ -48,10 +52,12 @@ export function Component() {
                     onOpenProfileSettings={() => setProfileOpen(true)}
                     profile={profile}
                 />
-                <Outlet context={{ xaiEnabled } satisfies AppOutletContext} />
+                <Outlet context={{ classCode, paused, profile, xaiEnabled } satisfies AppOutletContext} />
             </main>
             <GameControls
+                paused={paused}
                 xaiEnabled={xaiEnabled}
+                onTogglePause={() => setPaused((isPaused) => !isPaused)}
                 onToggleXai={() => setXaiEnabled((enabled) => !enabled)}
             />
             <CornerControls onOpenSettings={() => setSettingsOpen(true)} />

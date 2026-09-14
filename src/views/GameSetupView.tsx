@@ -32,6 +32,7 @@ export function Component() {
     const [rounds, setRounds] = useState<SetupRound[]>(savedSetup?.rounds ?? initialSetupRounds);
     const [selectedRoundId, setSelectedRoundId] = useState((savedSetup?.rounds ?? initialSetupRounds)[0].id);
     const [rules, setRules] = useState<GameRules>(savedSetup?.rules ?? defaultGameRules);
+    const [hostParticipates, setHostParticipates] = useState(savedSetup?.hostParticipates ?? false);
     const [notice, setNotice] = useState('');
     const selectedRound = useMemo(
         () => rounds.find((round) => round.id === selectedRoundId) ?? rounds[0],
@@ -73,7 +74,7 @@ export function Component() {
     function persistSetup() {
         window.localStorage.setItem(
             setupStorageKey,
-            JSON.stringify({ modelMode, rounds, rules, selectedStudent, version: 1 })
+            JSON.stringify({ hostParticipates, modelMode, rounds, rules, selectedStudent, version: 2 })
         );
         setNotice(t('setup.saved'));
     }
@@ -118,10 +119,15 @@ export function Component() {
                 <span className="setup-connector"><ArrowForwardRounded /></span>
                 <div className="setup-workflow__right">
                     <GameRulesPanel
+                        hostParticipates={hostParticipates}
                         mode={modelMode}
                         modelCount={modelMode === 'rotate' ? 4 : 1}
                         onChange={(nextRules) => {
                             setRules(nextRules);
+                            setNotice('');
+                        }}
+                        onHostParticipatesChange={(participates) => {
+                            setHostParticipates(participates);
                             setNotice('');
                         }}
                         roundCount={rounds.length}

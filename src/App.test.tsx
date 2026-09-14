@@ -41,9 +41,10 @@ describe('sound mimic routes', () => {
         await user.click(screen.getByRole('radio', { name: 'Choose avatar 3' }));
         await user.click(screen.getByRole('button', { name: 'Join class' }));
 
-        expect(screen.getByRole('heading', { name: 'You’re ready, Alex!' })).toBeInTheDocument();
+        expect(await screen.findByRole('heading', { name: 'Joining the stage…' }, { timeout: 5000 })).toBeInTheDocument();
+        expect(screen.queryByRole('navigation', { name: 'Main navigation' })).not.toBeInTheDocument();
         expect(JSON.parse(window.localStorage.getItem('soundmimic-student-profile') ?? '{}')).toEqual({
-            avatar: 'sophia',
+            avatar: 'noah',
             name: 'Alex',
         });
     });
@@ -97,6 +98,7 @@ describe('sound mimic routes', () => {
         await user.click(screen.getByRole('button', { name: 'Profile settings' }));
 
         const dialog = screen.getByRole('dialog', { name: 'Profile settings' });
+        expect(within(dialog).getAllByRole('radio')).toHaveLength(10);
         const nameInput = within(dialog).getByLabelText('Display name');
         await user.clear(nameInput);
         await user.type(nameInput, 'Ms Rivera');
@@ -105,7 +107,7 @@ describe('sound mimic routes', () => {
 
         expect(screen.getByRole('button', { name: 'Open profile menu for Ms Rivera' })).toBeInTheDocument();
         expect(JSON.parse(window.localStorage.getItem('soundmimic-host-profile') ?? '{}')).toEqual({
-            avatar: 'sophia',
+            avatar: 'noah',
             name: 'Ms Rivera',
         });
 
@@ -124,12 +126,28 @@ describe('sound mimic routes', () => {
         expect(screen.getByRole('button', { name: 'Bắt đầu khám phá' })).toBeInTheDocument();
     });
 
-    it('supports the student recording control', async () => {
+    it('uses the shared stage without inventing a prediction when no classifier is loaded', async () => {
         const user = userEvent.setup();
+        window.localStorage.setItem('soundmimic-game-setup', JSON.stringify({
+            hostParticipates: true,
+            modelMode: 'single',
+            rounds: [{
+                challenge: 'match', duration: 1, end: 1, fileName: 'bird.wav', icon: 'bird',
+                id: 'bird', name: 'Bird', start: 0, tone: 'blue',
+            }],
+            rules: {
+                attempts: 1, customRecordingSeconds: 3, playReference: false,
+                recordingTime: 'three', revealGuess: true, showConfidence: true,
+            },
+            selectedStudent: 0,
+            version: 2,
+        }));
         renderRoute('/play');
 
-        await user.click(await screen.findByRole('button', { name: 'Stop recording' }));
-        expect(screen.getByRole('button', { name: 'Record again' })).toBeInTheDocument();
+        expect(await screen.findByRole('region', { name: 'Sound Mimic game stage' })).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Begin turn' }));
+        expect(screen.getByRole('alert')).toHaveTextContent('Train or load a classifier');
+        expect(screen.queryByText('82%')).not.toBeInTheDocument();
     });
 
     it('shows predictions first and adds XAI results only when the host enables them', async () => {
@@ -410,6 +428,8 @@ describe('sound mimic routes', () => {
         await user.click(screen.getByRole('button', { name: /Maya’s Model/ }));
         expect(screen.getByText('Selected Model')).toBeInTheDocument();
 
+        await user.click(screen.getByRole('checkbox', { name: 'Join the game as a player' }));
+
         await user.click(screen.getByRole('button', { name: 'Change the challenge for round 1' }));
         expect(screen.getAllByText('Break').length).toBeGreaterThan(1);
 
@@ -431,7 +451,12 @@ describe('sound mimic routes', () => {
 
         await user.click(screen.getByRole('button', { name: 'Save Setup' }));
         const savedSetup = JSON.parse(window.localStorage.getItem('soundmimic-game-setup') ?? '{}');
-        expect(savedSetup).toMatchObject({ modelMode: 'single', selectedStudent: 1, version: 1 });
+        expect(savedSetup).toMatchObject({
+            hostParticipates: true,
+            modelMode: 'single',
+            selectedStudent: 1,
+            version: 2,
+        });
         expect(savedSetup.rounds).toHaveLength(5);
 
         await router.navigate('/home');

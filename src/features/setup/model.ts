@@ -21,6 +21,7 @@ export type SetupRound = {
 
 export type GameRules = {
     attempts: 1 | 2;
+    customRecordingSeconds: number;
     playReference: boolean;
     recordingTime: RecordingTime;
     revealGuess: boolean;
@@ -28,11 +29,12 @@ export type GameRules = {
 };
 
 export type SavedGameSetup = {
+    hostParticipates: boolean;
     modelMode: ModelMode;
     rounds: SetupRound[];
     rules: GameRules;
     selectedStudent: number;
-    version: 1;
+    version: 2;
 };
 
 export const initialSetupRounds: SetupRound[] = [
@@ -84,6 +86,7 @@ export const initialSetupRounds: SetupRound[] = [
 
 export const defaultGameRules: GameRules = {
     attempts: 1,
+    customRecordingSeconds: 5,
     playReference: true,
     recordingTime: 'three',
     revealGuess: true,
@@ -92,24 +95,60 @@ export const defaultGameRules: GameRules = {
 
 export const setupStorageKey = 'soundmimic-game-setup';
 
+export const defaultGameSetup: SavedGameSetup = {
+    hostParticipates: false,
+    modelMode: 'single',
+    rounds: initialSetupRounds,
+    rules: defaultGameRules,
+    selectedStudent: 0,
+    version: 2,
+};
+
 export function readGameSetup(): SavedGameSetup | undefined {
     if (typeof window === 'undefined') return undefined;
     try {
-        const saved = JSON.parse(window.localStorage.getItem(setupStorageKey) ?? 'null') as SavedGameSetup | null;
+        const saved = JSON.parse(window.localStorage.getItem(setupStorageKey) ?? 'null') as
+            | (Omit<Partial<SavedGameSetup>, 'version'> & { version?: number })
+            | null;
+        const selectedStudent = saved?.selectedStudent;
         if (
-            saved?.version === 1
+            (saved?.version === 1 || saved?.version === 2)
             && (saved.modelMode === 'rotate' || saved.modelMode === 'single')
-            && Number.isInteger(saved.selectedStudent)
-            && saved.selectedStudent >= 0
-            && saved.selectedStudent < 4
+            && Number.isInteger(selectedStudent)
+            && typeof selectedStudent === 'number'
+            && selectedStudent >= 0
+            && selectedStudent < 4
             && Array.isArray(saved.rounds)
             && saved.rounds.length > 0
             && saved.rounds.every((round) => typeof round.id === 'string' && typeof round.name === 'string')
             && saved.rules !== null
             && typeof saved.rules === 'object'
-        ) return saved;
+        ) {
+            const rules = saved.rules as Partial<GameRules>;
+            return {
+                hostParticipates: saved.hostParticipates === true,
+                modelMode: saved.modelMode,
+                rounds: saved.rounds,
+                rules: {
+                    ...defaultGameRules,
+                    ...rules,
+                    customRecordingSeconds: typeof rules.customRecordingSeconds === 'number'
+                        ? Math.max(1, Math.min(30, rules.customRecordingSeconds))
+                        : defaultGameRules.customRecordingSeconds,
+                },
+                selectedStudent,
+                version: 2,
+            };
+        }
     } catch {
         // Ignore stale or malformed local setup data.
     }
     return undefined;
+}
+
+export function getRecordingDuration(setup: SavedGameSetup, roundIndex: number) {
+    const round = setup.rounds[roundIndex] ?? setup.rounds[0];
+    if (setup.rules.recordingTime === 'clip') return round?.duration ?? 3;
+    if (setup.rules.recordingTime === 'custom') return setup.rules.customRecordingSeconds;
+    return 3;
 }

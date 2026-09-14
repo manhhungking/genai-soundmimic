@@ -2,18 +2,18 @@ import BarChartRounded from '@mui/icons-material/BarChartRounded';
 import LightbulbRounded from '@mui/icons-material/LightbulbRounded';
 import PauseRounded from '@mui/icons-material/PauseRounded';
 import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router';
 
 type GameControlsProps = {
+    paused: boolean;
+    onTogglePause: () => void;
     xaiEnabled: boolean;
     onToggleXai: () => void;
 };
 
-export default function GameControls({ xaiEnabled, onToggleXai }: GameControlsProps) {
+export default function GameControls({ paused, xaiEnabled, onTogglePause, onToggleXai }: GameControlsProps) {
     const { t } = useTranslation();
-    const [paused, setPaused] = useState(false);
     const { pathname } = useLocation();
 
     if (pathname.startsWith('/setup')) return null;
@@ -28,7 +28,7 @@ export default function GameControls({ xaiEnabled, onToggleXai }: GameControlsPr
                 aria-label={t(paused ? 'game.resume' : 'game.pause')}
                 aria-pressed={paused}
                 className={paused ? 'is-active' : ''}
-                onClick={() => setPaused((isPaused) => !isPaused)}
+                onClick={onTogglePause}
                 title={t(paused ? 'game.resume' : 'game.pause')}
                 type="button"
             >

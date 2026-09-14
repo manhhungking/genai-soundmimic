@@ -13,6 +13,10 @@ export const routes = createRoutesFromElements(
             path="join/profile"
             lazy={() => import('./views/ProfileSetupView')}
         />
+        <Route
+            path="join/play"
+            lazy={() => import('./views/StudentPlayView')}
+        />
         <Route lazy={() => import('./components/AppLayout')}>
             <Route
                 path="home"

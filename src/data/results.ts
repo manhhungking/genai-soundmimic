@@ -17,10 +17,10 @@ export const roundResults: RoundResult[] = [
         id: 1,
         soundSet: 'Everyday Sounds',
         predictions: [
-            { name: 'Leo', avatar: 'ethan', prediction: 'Bird', emoji: '🐦', confidence: 82 },
-            { name: 'Maya', avatar: 'sophia', prediction: 'Clap', emoji: '👏', confidence: 77 },
-            { name: 'Noah', avatar: 'maya', prediction: 'Cat', emoji: '🐱', confidence: 74 },
-            { name: 'Emma', avatar: 'leo', prediction: 'Bell', emoji: '🔔', confidence: 68 },
+            { name: 'Leo', avatar: 'leo', prediction: 'Bird', emoji: '🐦', confidence: 82 },
+            { name: 'Maya', avatar: 'maya', prediction: 'Clap', emoji: '👏', confidence: 77 },
+            { name: 'Noah', avatar: 'noah', prediction: 'Cat', emoji: '🐱', confidence: 74 },
+            { name: 'Emma', avatar: 'emma', prediction: 'Bell', emoji: '🔔', confidence: 68 },
         ],
     },
 ];

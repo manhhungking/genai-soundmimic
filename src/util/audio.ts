@@ -69,6 +69,12 @@ export function blobToDataUrl(blob: Blob) {
     });
 }
 
+export async function dataUrlToBlob(dataUrl: string) {
+    const response = await fetch(dataUrl);
+    if (!response.ok) throw new Error('Unable to read recorded audio');
+    return response.blob();
+}
+
 export async function startAudioPlayback(
     context: AudioContext,
     buffer: AudioBuffer,

@@ -7,9 +7,11 @@ import SetupStepHeader from './SetupStepHeader';
 import type { GameRules, ModelMode, RecordingTime } from './model';
 
 type GameRulesPanelProps = {
+    hostParticipates: boolean;
     mode: ModelMode;
     modelCount: number;
     onChange: (rules: GameRules) => void;
+    onHostParticipatesChange: (participates: boolean) => void;
     roundCount: number;
     rules: GameRules;
 };
@@ -34,7 +36,15 @@ function ToggleRow({ checked, label, onChange }: ToggleRowProps) {
     );
 }
 
-export default function GameRulesPanel({ mode, modelCount, onChange, roundCount, rules }: GameRulesPanelProps) {
+export default function GameRulesPanel({
+    hostParticipates,
+    mode,
+    modelCount,
+    onChange,
+    onHostParticipatesChange,
+    roundCount,
+    rules,
+}: GameRulesPanelProps) {
     const { t } = useTranslation();
     const recordingOptions: RecordingTime[] = ['three', 'clip', 'custom'];
 
@@ -63,6 +73,23 @@ export default function GameRulesPanel({ mode, modelCount, onChange, roundCount,
                         </label>
                     ))}
                 </div>
+                {rules.recordingTime === 'custom' && (
+                    <label className="setup-custom-duration">
+                        <span>{t('setup.customDuration')}</span>
+                        <input
+                            aria-label={t('setup.customDuration')}
+                            max="30"
+                            min="1"
+                            onChange={(event) => onChange({
+                                ...rules,
+                                customRecordingSeconds: Math.max(1, Math.min(30, Number(event.target.value) || 1)),
+                            })}
+                            type="number"
+                            value={rules.customRecordingSeconds}
+                        />
+                        <span>{t('setup.seconds')}</span>
+                    </label>
+                )}
             </fieldset>
 
             <fieldset className="setup-rules-fieldset">
@@ -85,6 +112,11 @@ export default function GameRulesPanel({ mode, modelCount, onChange, roundCount,
 
             <div className="setup-toggle-list">
                 <ToggleRow
+                    checked={hostParticipates}
+                    label={t('setup.hostParticipates')}
+                    onChange={onHostParticipatesChange}
+                />
+                <ToggleRow
                     checked={rules.playReference}
                     label={t('setup.playReference')}
                     onChange={(playReference) => onChange({ ...rules, playReference })}
@@ -105,6 +137,7 @@ export default function GameRulesPanel({ mode, modelCount, onChange, roundCount,
                 <h3>{t('setup.sessionSummary')}</h3>
                 <p><GridViewRounded /> {t('setup.roundCount', { count: roundCount })}</p>
                 <p><GroupsRounded /> {t(mode === 'rotate' ? 'setup.rotatingModelCount' : 'setup.singleModelCount', { count: modelCount })}</p>
+                <p><GroupsRounded /> {t(hostParticipates ? 'setup.hostPlaying' : 'setup.hostFacilitating')}</p>
                 <p><ScheduleRounded /> {t(`setup.recordingSummary.${rules.recordingTime}`)}</p>
                 <p><BarChartRounded /> {t('setup.challengeSummary')}</p>
             </div>
