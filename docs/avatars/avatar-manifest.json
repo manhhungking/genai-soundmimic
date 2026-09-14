@@ -1,0 +1,1074 @@
+{
+  "schemaVersion": "1.0.0",
+  "project": "SoundMimic",
+  "status": "design_specification_only",
+  "note": "Không có GLB, rig, animation hoặc thumbnail tách riêng được cung cấp/kiểm thử trong gói này. Không thay asset hợp lệ của repo bằng trạng thái dưới đây mà chưa kiểm tra.",
+  "sourcePriority": [
+    "Tên cuối cùng do người dùng chốt",
+    "Ảnh avatar-lineup.png cho diện mạo hiện tại",
+    "hung-character-sheet.png cho chi tiết toàn thân của Hung",
+    "Phần bổ sung được đánh dấu proposed"
+  ],
+  "referenceFiles": {
+    "lineup": "references/avatar-lineup.png",
+    "hungSheet": "references/hung-character-sheet.png"
+  },
+  "grid": {
+    "rows": 2,
+    "columns": 5,
+    "indexBase": 1,
+    "maleRow": [
+      "leo",
+      "liam",
+      "noah",
+      "kai",
+      "hung"
+    ],
+    "femaleRow": [
+      "hana",
+      "zoe",
+      "aisha",
+      "emma",
+      "maya"
+    ],
+    "pairingMeaning": "Chỉ là thứ tự hiển thị theo cột; không hàm ý quan hệ gia đình, quốc tịch hoặc hạn chế người được chọn avatar."
+  },
+  "designDefaults": {
+    "apparentAgeRange": "10–12 (mục tiêu thiết kế)",
+    "style": "3D cartoon bán hiện thực, cùng style chân dung cuối cùng, không capsule/chibi cực đoan",
+    "suggestedHeightMeters": 1.35,
+    "heightStatus": "proposed_scene_normalization_target",
+    "colorStatus": "approximate_design_swatches_not_measured_texture_values",
+    "requiredRuntimeActions": [
+      "idle",
+      "walk",
+      "perform"
+    ],
+    "optionalRuntimeActions": [
+      "wave",
+      "cheer",
+      "thinking"
+    ],
+    "clipNamesMustBeInspected": true,
+    "mouthAndBlinkControls": "Yêu cầu mong muốn; phải kiểm tra riêng, không suy ra từ việc có body rig."
+  },
+  "avatars": [
+    {
+      "id": "leo",
+      "displayName": "Leo",
+      "legacyAliases": [],
+      "characterGender": "male",
+      "gridPosition": {
+        "row": 1,
+        "column": 1
+      },
+      "pairedAvatarId": "hana",
+      "signature": "Tóc nâu bồng, hoodie xanh dương mặc kín, dây rút trắng.",
+      "appearance": {
+        "face": "Da sáng ấm, má tròn nhẹ, mắt nâu đậm mở rõ, lông mày nâu tự nhiên. Giữ nụ cười thân thiện của ảnh tham chiếu, không phóng đại mắt hoặc đầu thêm.",
+        "hair": "Tóc nâu hạt dẻ, ngắn và dày; nhiều lọn hất lên và sang bên tạo đỉnh tóc bồng. Không đổi thành tóc đen của Hung hoặc tóc đỏ của Kai.",
+        "upperClothing": "Hoodie xanh dương mặc kín phía trước, mũ nằm sau gáy, dây rút trắng. Theo ảnh lineup cuối cùng, dùng mặt áo trơn; không tự thêm hình gấu hoặc ngôi sao từ các bản concept cũ.",
+        "accessories": "Không có mũ, kính hoặc tai nghe trong thiết kế mặc định.",
+        "lowerClothing": "Quần cargo kaki be sáng, hai túi đùi nhỏ, ống gọn và không chạm đất.",
+        "footwear": "Sneaker xanh dương và trắng, đế trắng thấp, không logo thương mại.",
+        "lowerBodyStatus": "proposed",
+        "eyeColorStatus": "reference",
+        "neutralPose": "Đứng thoải mái, mắt mở, cười khép miệng nhẹ; một lần vẫy tay ngắn có thể dùng ở màn chọn avatar.",
+        "preserve": [
+          "Tóc nâu bồng",
+          "Hoodie kín xanh dương",
+          "Dây rút trắng",
+          "Không có ngôi sao trên ngực"
+        ],
+        "avoid": [
+          "Không đổi Leo thành Hung.",
+          "Không dùng áo khoác mở kéo khóa để lộ áo sao."
+        ]
+      },
+      "palette": {
+        "status": "measured_from_character_sheet",
+        "colors": {
+          "skin": "#F6C9A8",
+          "hair": "#5B3A2E",
+          "eyes": "#2E1E16",
+          "top": "#2563EB",
+          "trim": "#FFFFFF",
+          "bottom": "#374151",
+          "shoeMain": "#3B82F6",
+          "shoeSole": "#E5E7EB"
+        },
+        "note": "Đo trực tiếp từ ô Color Palette trên docs/avatars/references/leo-character-sheet.png. Thay thế các giá trị approximate_starting_points trước đó."
+      },
+      "expectedAssets": {
+        "modelUrl": "/assets/avatars/leo.glb",
+        "portraitUrl": "/assets/avatars/leo.png",
+        "status": "not_provided_or_verified_in_this_package"
+      },
+      "animationClipMap": {
+        "idle": null,
+        "walk": null,
+        "perform": null,
+        "wave": null,
+        "cheer": null,
+        "thinking": null
+      },
+      "runtimeVerification": {
+        "modelLoaded": null,
+        "rigChecked": null,
+        "texturesChecked": null,
+        "animationPlaybackChecked": null,
+        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+      },
+      "notes": "Leo và Hung đều có màu xanh dương, nhưng phải phân biệt bằng tóc và cấu trúc áo.",
+      "assets": {
+        "characterSheet": {
+          "path": "docs/avatars/references/leo-character-sheet.png",
+          "status": "available"
+        },
+        "sourceViews": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
+        },
+        "glb": {
+          "path": null,
+          "status": "missing"
+        },
+        "thumbnail": {
+          "path": "public/assets/avatars/thumbnails/leo.png",
+          "status": "available",
+          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+        },
+        "qaRenders": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
+        },
+        "blendSource": {
+          "path": null,
+          "status": "missing"
+        }
+      }
+    },
+    {
+      "id": "liam",
+      "displayName": "Liam",
+      "legacyAliases": [],
+      "characterGender": "male",
+      "gridPosition": {
+        "row": 1,
+        "column": 2
+      },
+      "pairedAvatarId": "zoe",
+      "signature": "Tóc vàng ngắn, mắt xanh, tai nghe đen quanh cổ, áo trắng tay xanh.",
+      "appearance": {
+        "face": "Da sáng, mắt xanh dương, má hồng nhẹ và tàn nhang mảnh nếu thấy trong ảnh. Lông mày vàng nâu, nụ cười tự nhiên.",
+        "hair": "Tóc vàng mật ong, ngắn, nhiều lọn hơi dựng và rối tự nhiên. Giữ chân tóc, độ phồng và sắc vàng rõ ràng.",
+        "upperClothing": "Áo thun thân trắng, tay và phần vai xanh dương. Không thay bằng hoodie; không thêm số 01 hoặc họa tiết thể thao từ bản cũ.",
+        "accessories": "Tai nghe over-ear màu đen/charcoal đeo quanh cổ, hai chụp nằm hai bên xương quai xanh. Không đội lên đầu như Maya.",
+        "lowerClothing": "Quần cargo xanh olive, túi đùi vừa phải, ống gọn.",
+        "footwear": "Sneaker xanh dương và trắng, chi tiết gọn.",
+        "lowerBodyStatus": "proposed",
+        "eyeColorStatus": "reference",
+        "neutralPose": "Mắt mở, cười nhẹ; đứng thả lỏng vai, tay không xuyên vào chụp tai nghe.",
+        "preserve": [
+          "Tóc vàng",
+          "Mắt xanh",
+          "Tai nghe đen ở cổ",
+          "Thân áo trắng, tay xanh"
+        ],
+        "avoid": [
+          "Không bỏ tai nghe.",
+          "Không đổi áo thun thành hoodie xanh."
+        ]
+      },
+      "palette": {
+        "status": "measured_from_character_sheet",
+        "colors": {
+          "skin": "#FFD7C2",
+          "hair": "#FBCF7D",
+          "top": "#F8F9FC",
+          "sleeves": "#2563EB",
+          "headphones": "#2D2D2D",
+          "bottom": "#4B5563",
+          "shoeBlue": "#3B82F6",
+          "shoeWhite": "#FFFFFF"
+        },
+        "note": "Đo trực tiếp từ ô Color Palette trên docs/avatars/references/liam-character-sheet.png. Thay thế các giá trị approximate_starting_points trước đó."
+      },
+      "expectedAssets": {
+        "modelUrl": "/assets/avatars/liam.glb",
+        "portraitUrl": "/assets/avatars/liam.png",
+        "status": "not_provided_or_verified_in_this_package"
+      },
+      "animationClipMap": {
+        "idle": null,
+        "walk": null,
+        "perform": null,
+        "wave": null,
+        "cheer": null,
+        "thinking": null
+      },
+      "runtimeVerification": {
+        "modelLoaded": null,
+        "rigChecked": null,
+        "texturesChecked": null,
+        "animationPlaybackChecked": null,
+        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+      },
+      "notes": "Tai nghe là dấu hiệu nhận diện chính và cần hiện rõ ở thumbnail.",
+      "assets": {
+        "characterSheet": {
+          "path": "docs/avatars/references/liam-character-sheet.png",
+          "status": "available"
+        },
+        "sourceViews": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
+        },
+        "glb": {
+          "path": null,
+          "status": "missing"
+        },
+        "thumbnail": {
+          "path": "public/assets/avatars/thumbnails/liam.png",
+          "status": "available",
+          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+        },
+        "qaRenders": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
+        },
+        "blendSource": {
+          "path": null,
+          "status": "missing"
+        }
+      }
+    },
+    {
+      "id": "noah",
+      "displayName": "Noah",
+      "legacyAliases": [],
+      "characterGender": "male",
+      "gridPosition": {
+        "row": 1,
+        "column": 3
+      },
+      "pairedAvatarId": "aisha",
+      "signature": "Da nâu, tóc xoăn ngắn, hoodie xanh lá.",
+      "appearance": {
+        "face": "Da nâu ấm, mắt nâu đậm, má đầy nhẹ, lông mày đậm và nụ cười tươi. Giữ chất lượng chi tiết và ánh sáng da tương đương các avatar khác, không tự làm sáng màu da.",
+        "hair": "Tóc nâu rất đậm, xoăn ngắn tạo silhouette tròn, có các cụm lọn xoăn tự nhiên. Tránh biến thành các viên cầu đều nhau hoặc hạt nhựa rời.",
+        "upperClothing": "Hoodie xanh lá, mặt trước kín, dây rút trắng và mũ sau gáy. Túi kangaroo thấp có thể dùng cho bản toàn thân.",
+        "accessories": "Không có phụ kiện đầu hoặc cổ trong bản mặc định.",
+        "lowerClothing": "Quần jogger/cargo charcoal, túi nhỏ và ống gọn.",
+        "footwear": "Sneaker xanh lá và trắng, đế trắng.",
+        "lowerBodyStatus": "proposed",
+        "eyeColorStatus": "reference",
+        "neutralPose": "Mắt mở, cười nhẹ; tư thế đứng cân bằng. Có thể gật đầu nhẹ khi chờ, không mặc định nhảy liên tục.",
+        "preserve": [
+          "Màu da nâu ấm",
+          "Tóc xoăn ngắn",
+          "Hoodie xanh lá",
+          "Dây rút trắng"
+        ],
+        "avoid": [
+          "Không đổi tóc thành kiểu thẳng.",
+          "Không gắn thêm mũ hoặc tai nghe làm che tóc mặc định."
+        ]
+      },
+      "palette": {
+        "status": "measured_from_character_sheet",
+        "colors": {
+          "skin": "#8B5A3C",
+          "hair": "#2E1F16",
+          "eyes": "#3B2E1F",
+          "top": "#22A05A",
+          "trim": "#FFFFFF",
+          "bottom": "#4B5563",
+          "shoe": "#16A34A",
+          "shoeSole": "#F4D7C6"
+        },
+        "note": "Đo trực tiếp từ ô Color Palette trên docs/avatars/references/noah-character-sheet.png. Thay thế các giá trị approximate_starting_points trước đó."
+      },
+      "expectedAssets": {
+        "modelUrl": "/assets/avatars/noah.glb",
+        "portraitUrl": "/assets/avatars/noah.png",
+        "status": "not_provided_or_verified_in_this_package"
+      },
+      "animationClipMap": {
+        "idle": null,
+        "walk": null,
+        "perform": null,
+        "wave": null,
+        "cheer": null,
+        "thinking": null
+      },
+      "runtimeVerification": {
+        "modelLoaded": null,
+        "rigChecked": null,
+        "texturesChecked": null,
+        "animationPlaybackChecked": null,
+        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+      },
+      "notes": "Giữ nhóm màu da tương ứng Aisha theo ý đồ lineup, không cần làm hai gương mặt giống nhau.",
+      "assets": {
+        "characterSheet": {
+          "path": "docs/avatars/references/noah-character-sheet.png",
+          "status": "available"
+        },
+        "sourceViews": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
+        },
+        "glb": {
+          "path": null,
+          "status": "missing"
+        },
+        "thumbnail": {
+          "path": "public/assets/avatars/thumbnails/noah.png",
+          "status": "available",
+          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+        },
+        "qaRenders": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
+        },
+        "blendSource": {
+          "path": null,
+          "status": "missing"
+        }
+      }
+    },
+    {
+      "id": "kai",
+      "displayName": "Kai",
+      "legacyAliases": [],
+      "characterGender": "male",
+      "gridPosition": {
+        "row": 1,
+        "column": 4
+      },
+      "pairedAvatarId": "emma",
+      "signature": "Tóc đỏ/cam, mũ bóng chày xanh–trắng, hoodie đỏ.",
+      "appearance": {
+        "face": "Da sáng ấm với tàn nhang trên sống mũi và má. Ảnh lineup dùng biểu cảm cười nhắm mắt; neutral vẫn phải có mắt mở. Màu mắt xanh dương cho neutral là đề xuất cần duyệt, vì ảnh hiện tại không cho thấy tròng mắt.",
+        "hair": "Tóc đỏ đồng/cam, mái hơi rối lộ dưới mũ. Đây là phiên bản tóc đỏ hiện tại, không quay về Kai tóc đen trong lineup cũ.",
+        "upperClothing": "Hoodie đỏ san hô đậm, mặc kín, dây rút trắng. Mũ áo nằm sau lưng, không chồng lên mũ bóng chày.",
+        "accessories": "Mũ bóng chày đội hướng trước, lưỡi trai xanh dương, thân mũ trắng và các mảng xanh. Không logo thương mại.",
+        "lowerClothing": "Quần dài charcoal, form jogger/cargo gọn.",
+        "footwear": "Sneaker đỏ và trắng, đế trắng.",
+        "lowerBodyStatus": "proposed",
+        "eyeColorStatus": "proposed",
+        "neutralPose": "Mắt mở và cười khép miệng nhẹ; cười nhắm mắt là expression riêng, không phải mắt dính kín vĩnh viễn trên model.",
+        "preserve": [
+          "Tóc đỏ",
+          "Tàn nhang",
+          "Mũ xanh–trắng",
+          "Hoodie đỏ"
+        ],
+        "avoid": [
+          "Không lấy mái tóc đen từ bản Kai cũ.",
+          "Không dùng khuôn mặt chỉ có mắt nhắm trong tất cả trạng thái."
+        ]
+      },
+      "palette": {
+        "status": "measured_from_character_sheet",
+        "colors": {
+          "skin": "#FCD7C4",
+          "hair": "#D35400",
+          "freckles": "#8B4513",
+          "top": "#E53935",
+          "trim": "#FFFFFF",
+          "capBlue": "#2563EB",
+          "capWhite": "#E8F0FF",
+          "bottom": "#374151",
+          "shoeBase": "#FFFFFF",
+          "shoeAccent": "#2563EB"
+        },
+        "note": "Đo trực tiếp từ ô Color Palette trên docs/avatars/references/kai-character-sheet.png. Thay thế các giá trị approximate_starting_points trước đó."
+      },
+      "expectedAssets": {
+        "modelUrl": "/assets/avatars/kai.glb",
+        "portraitUrl": "/assets/avatars/kai.png",
+        "status": "not_provided_or_verified_in_this_package"
+      },
+      "animationClipMap": {
+        "idle": null,
+        "walk": null,
+        "perform": null,
+        "wave": null,
+        "cheer": null,
+        "thinking": null
+      },
+      "runtimeVerification": {
+        "modelLoaded": null,
+        "rigChecked": null,
+        "texturesChecked": null,
+        "animationPlaybackChecked": null,
+        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+      },
+      "notes": "Mắt xanh là thông số tạm cho bản neutral, không phải chi tiết đã xác nhận từ ảnh nhắm mắt.",
+      "assets": {
+        "characterSheet": {
+          "path": "docs/avatars/references/kai-character-sheet.png",
+          "status": "available"
+        },
+        "sourceViews": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
+        },
+        "glb": {
+          "path": null,
+          "status": "missing"
+        },
+        "thumbnail": {
+          "path": "public/assets/avatars/thumbnails/kai.png",
+          "status": "available",
+          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+        },
+        "qaRenders": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
+        },
+        "blendSource": {
+          "path": null,
+          "status": "missing"
+        }
+      }
+    },
+    {
+      "id": "hung",
+      "displayName": "Hung",
+      "legacyAliases": [
+        "jin"
+      ],
+      "characterGender": "male",
+      "gridPosition": {
+        "row": 1,
+        "column": 5
+      },
+      "pairedAvatarId": "maya",
+      "signature": "Tóc đen, áo khoác hoodie xanh mở khóa, áo thun trắng có ngôi sao xanh.",
+      "appearance": {
+        "face": "Da sáng ấm, mắt nâu đậm theo character sheet riêng, lông mày đen nâu và khuôn mặt tròn nhẹ. Neutral mắt mở; giữ biểu cảm cười nhắm mắt của lineup dưới dạng expression riêng.",
+        "hair": "Tóc đen nâu, dày, ngắn vừa, mái rẽ lệch và vài lọn rơi trước trán. Độ bồng vừa phải, không đổi sang tóc nâu sáng của Leo.",
+        "upperClothing": "Hoodie xanh dương có khóa kéo, mặc MỞ để nhìn thấy áo thun trắng bên trong. Một ngôi sao xanh dương năm cánh ở giữa ngực áo thun. Dây rút trắng, hood ở sau gáy.",
+        "accessories": "Không có mũ, kính hoặc tai nghe. Ngôi sao trên áo là chi tiết nhận diện bắt buộc.",
+        "lowerClothing": "Quần cargo dài charcoal/xám đậm, túi hộp nhỏ hai bên đùi, ống gọn theo character sheet.",
+        "footwear": "Sneaker xanh dương và trắng theo character sheet; bỏ mọi dấu hiệu giống logo thương mại, không thêm thương hiệu.",
+        "lowerBodyStatus": "reference_character_sheet",
+        "eyeColorStatus": "reference_character_sheet",
+        "neutralPose": "Mắt mở, cười nhẹ, hai tay thả lỏng. Khi perform, cử chỉ nhỏ, đứng trước micro rời của sân khấu.",
+        "preserve": [
+          "Tên Hung",
+          "Tóc đen",
+          "Hoodie xanh mở khóa",
+          "Áo thun trắng có ngôi sao xanh",
+          "Quần cargo charcoal"
+        ],
+        "avoid": [
+          "Không đổi tên thành Jin.",
+          "Không đóng kín áo làm mất ngôi sao.",
+          "Không nhầm nickname người chơi với avatarId."
+        ]
+      },
+      "palette": {
+        "status": "measured_from_character_sheet",
+        "colors": {
+          "skin": "#F6C9AB",
+          "hair": "#2D2A28",
+          "eyes": "#392419",
+          "top": "#1E63E9",
+          "shirt": "#FFFFFF",
+          "star": "#2563EB",
+          "bottom": "#374151",
+          "shoesDark": "#1F2937",
+          "shoesLight": "#60A5FA"
+        },
+        "note": "Đo trực tiếp từ ô Color Palette trên docs/avatars/references/hung-character-sheet.png. Thay thế các giá trị approximate_starting_points trước đó."
+      },
+      "expectedAssets": {
+        "modelUrl": "/assets/avatars/hung.glb",
+        "portraitUrl": "/assets/avatars/hung.png",
+        "status": "not_provided_or_verified_in_this_package"
+      },
+      "animationClipMap": {
+        "idle": null,
+        "walk": null,
+        "perform": null,
+        "wave": null,
+        "cheer": null,
+        "thinking": null
+      },
+      "runtimeVerification": {
+        "modelLoaded": null,
+        "rigChecked": null,
+        "texturesChecked": null,
+        "animationPlaybackChecked": null,
+        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+      },
+      "notes": "Hung là tên avatar chính thức. Jin chỉ là alias cũ phục vụ kiểm tra/migration tham chiếu avatar nếu cần. Palette cập nhật theo hung-character-sheet.png (hex đo được trực tiếp).",
+      "assets": {
+        "characterSheet": {
+          "path": "docs/avatars/references/hung-character-sheet.png",
+          "status": "available"
+        },
+        "sourceViews": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
+        },
+        "glb": {
+          "path": "public/assets/avatars/hung.glb",
+          "status": "generated_unverified"
+        },
+        "thumbnail": {
+          "path": "public/assets/avatars/thumbnails/hung.png",
+          "status": "available",
+          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+        },
+        "qaRenders": {
+          "front": "assets-src/avatars/hung/hung-front.png",
+          "side": "assets-src/avatars/hung/hung-side.png",
+          "back": "assets-src/avatars/hung/hung-back.png",
+          "status": "available",
+          "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
+        },
+        "blendSource": {
+          "path": "assets-src/avatars/hung/hung.blend",
+          "status": "available"
+        }
+      }
+    },
+    {
+      "id": "maya",
+      "displayName": "Maya",
+      "legacyAliases": [],
+      "characterGender": "female",
+      "gridPosition": {
+        "row": 2,
+        "column": 5
+      },
+      "pairedAvatarId": "hung",
+      "signature": "Tóc đen dài, tai nghe tím đội đầu, hoodie tím có trái tim nhỏ.",
+      "appearance": {
+        "face": "Da sáng ấm, mắt nâu đậm mở rõ, lông mày tối và nụ cười nhẹ. Khuôn mặt mềm, không phóng đại mắt hơn phong cách chung.",
+        "hair": "Tóc đen/nâu rất đậm, dài qua vai, phần lớn thẳng với độ cong mềm ở đuôi, mái lệch. Tóc không xuyên qua tai nghe, vai hoặc tay khi chuyển động.",
+        "upperClothing": "Hoodie tím lavender, mặc kín, dây rút trắng. Giữ trái tim nhỏ màu tím nhạt ở trái ngực người mặc (bên phải khi nhìn chính diện).",
+        "accessories": "Tai nghe over-ear tím đeo TRÊN ĐẦU, vòng qua tóc và hai chụp ở tai. Đây là dấu hiệu khác Liam, người đeo tai nghe đen ở cổ.",
+        "lowerClothing": "Quần jogger/cargo tím nhạt, gọn, không thêm váy vào outfit mặc định.",
+        "footwear": "Sneaker tím và trắng.",
+        "lowerBodyStatus": "proposed",
+        "eyeColorStatus": "reference",
+        "neutralPose": "Mắt mở, cười khép miệng; có thể nghiêng đầu rất nhẹ khi nghe đoạn mẫu.",
+        "preserve": [
+          "Tóc đen dài",
+          "Tai nghe tím trên đầu",
+          "Hoodie tím",
+          "Trái tim nhỏ"
+        ],
+        "avoid": [
+          "Không dùng tóc búi và áo hồng từ nhân vật cũ.",
+          "Không bỏ tai nghe hoặc chuyển tai nghe xuống cổ."
+        ]
+      },
+      "palette": {
+        "status": "measured_from_character_sheet",
+        "colors": {
+          "skin": "#F9D8E0",
+          "hair": "#1F1F1F",
+          "top": "#8B5CF6",
+          "heart": "#F3E8FF",
+          "headphones": "#A855F7",
+          "hoodieDark": "#4B2DB7",
+          "hoodieStrings": "#E0E0E0",
+          "bottom": "#6B7280"
+        },
+        "note": "Đo trực tiếp từ ô Color Palette trên docs/avatars/references/maya-character-sheet.png. Thay thế các giá trị approximate_starting_points trước đó."
+      },
+      "expectedAssets": {
+        "modelUrl": "/assets/avatars/maya.glb",
+        "portraitUrl": "/assets/avatars/maya.png",
+        "status": "not_provided_or_verified_in_this_package"
+      },
+      "animationClipMap": {
+        "idle": null,
+        "walk": null,
+        "perform": null,
+        "wave": null,
+        "cheer": null,
+        "thinking": null
+      },
+      "runtimeVerification": {
+        "modelLoaded": null,
+        "rigChecked": null,
+        "texturesChecked": null,
+        "animationPlaybackChecked": null,
+        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+      },
+      "notes": "Tai nghe và tóc là phụ kiện hình học/mesh riêng hoặc cấu trúc tương đương, nhưng phải theo đầu ổn định.",
+      "assets": {
+        "characterSheet": {
+          "path": "docs/avatars/references/maya-character-sheet.png",
+          "status": "available"
+        },
+        "sourceViews": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
+        },
+        "glb": {
+          "path": null,
+          "status": "missing"
+        },
+        "thumbnail": {
+          "path": "public/assets/avatars/thumbnails/maya.png",
+          "status": "available",
+          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+        },
+        "qaRenders": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
+        },
+        "blendSource": {
+          "path": null,
+          "status": "missing"
+        }
+      }
+    },
+    {
+      "id": "zoe",
+      "displayName": "Zoe",
+      "legacyAliases": [],
+      "characterGender": "female",
+      "gridPosition": {
+        "row": 2,
+        "column": 2
+      },
+      "pairedAvatarId": "liam",
+      "signature": "Tóc vàng dài, mắt xanh, hoodie màu san hô.",
+      "appearance": {
+        "face": "Da sáng, mắt xanh dương, tàn nhang mảnh và má hồng nhẹ. Giữ nụ cười tươi nhưng có neutral khép miệng để chuyển biểu cảm.",
+        "hair": "Tóc vàng mật ong, dài qua vai, gợn sóng mềm, mái rẽ lệch. Không dùng tóc đen búi cao.",
+        "upperClothing": "Hoodie màu san hô/hồng cam, mặc kín, dây rút trắng, mũ sau gáy. Không có hình hoa cúc.",
+        "accessories": "Không có tai nghe, mũ hoặc kính trong bản mặc định.",
+        "lowerClothing": "Quần jean xanh nhạt, dáng thẳng hoặc jogger gọn, có thể xắn gấu nhẹ.",
+        "footwear": "Sneaker màu san hô và trắng.",
+        "lowerBodyStatus": "proposed",
+        "eyeColorStatus": "reference",
+        "neutralPose": "Mắt mở, cười nhẹ; wave ngắn là tùy chọn, không bắt buộc mọi trạng thái đều cười há miệng.",
+        "preserve": [
+          "Tóc vàng dài",
+          "Mắt xanh",
+          "Hoodie san hô",
+          "Không có tóc búi hoặc áo hoa"
+        ],
+        "avoid": [
+          "Không quay về Zoe tóc đen búi cao, áo hồng có hoa.",
+          "Không đổi tóc thành đỏ cam của Emma."
+        ]
+      },
+      "palette": {
+        "status": "measured_from_character_sheet",
+        "colors": {
+          "skin": "#FDDCC3",
+          "hair": "#FBD37A",
+          "eyes": "#6DA5FF",
+          "top": "#FF7E73",
+          "trim": "#FFFFFF",
+          "bottom": "#5B8CCB",
+          "shoeSoleAccent": "#FFA9A1",
+          "shoeSole": "#EAEAEA"
+        },
+        "note": "Đo trực tiếp từ ô Color Palette trên docs/avatars/references/zoe-character-sheet.png. Thay thế các giá trị approximate_starting_points trước đó."
+      },
+      "expectedAssets": {
+        "modelUrl": "/assets/avatars/zoe.glb",
+        "portraitUrl": "/assets/avatars/zoe.png",
+        "status": "not_provided_or_verified_in_this_package"
+      },
+      "animationClipMap": {
+        "idle": null,
+        "walk": null,
+        "perform": null,
+        "wave": null,
+        "cheer": null,
+        "thinking": null
+      },
+      "runtimeVerification": {
+        "modelLoaded": null,
+        "rigChecked": null,
+        "texturesChecked": null,
+        "animationPlaybackChecked": null,
+        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+      },
+      "notes": "Đây là bản Zoe mới thay thế bản tóc búi cũ, không phải avatar thứ 11.",
+      "assets": {
+        "characterSheet": {
+          "path": "docs/avatars/references/zoe-character-sheet.png",
+          "status": "available"
+        },
+        "sourceViews": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
+        },
+        "glb": {
+          "path": null,
+          "status": "missing"
+        },
+        "thumbnail": {
+          "path": "public/assets/avatars/thumbnails/zoe.png",
+          "status": "available",
+          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+        },
+        "qaRenders": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
+        },
+        "blendSource": {
+          "path": null,
+          "status": "missing"
+        }
+      }
+    },
+    {
+      "id": "aisha",
+      "displayName": "Aisha",
+      "legacyAliases": [],
+      "characterGender": "female",
+      "gridPosition": {
+        "row": 2,
+        "column": 3
+      },
+      "pairedAvatarId": "noah",
+      "signature": "Da nâu, tóc xoăn dài, băng đô vàng, áo vàng và yếm jean.",
+      "appearance": {
+        "face": "Da nâu ấm, mắt nâu đậm, lông mày tự nhiên, nụ cười nhẹ và khuôn mặt mềm. Giữ đúng sắc da của ảnh riêng/lineup, không làm sáng màu da để khớp ánh sáng các bạn khác.",
+        "hair": "Tóc nâu rất đậm, xoăn dài, độ phồng rõ nhưng khuôn mặt không bị che. Các lọn nhỏ có cấu trúc tự nhiên, không đổi thành tóc ngắn của Noah.",
+        "upperClothing": "Áo thun vàng tay ngắn bên trong yếm jean xanh. Phần yếm trước có túi giữa, hai quai và khuy vàng.",
+        "accessories": "Băng đô vàng trơn nằm trên tóc, ôm sát đầu. Không tự thêm mũ hoặc tai nghe.",
+        "lowerClothing": "Tiếp tục yếm jean thành quần dài denim xanh, gấu xắn nhẹ, không biến thành váy.",
+        "footwear": "Sneaker vàng và trắng.",
+        "lowerBodyStatus": "proposed",
+        "eyeColorStatus": "reference",
+        "neutralPose": "Mắt mở, cười khép miệng nhẹ; tay để xuôi hoặc ở gần hông, không xuyên vào quai yếm.",
+        "preserve": [
+          "Màu da nâu ấm",
+          "Tóc xoăn dài",
+          "Băng đô vàng",
+          "Áo vàng + yếm denim"
+        ],
+        "avoid": [
+          "Không thay bằng hoodie vàng của Emma.",
+          "Không bỏ băng đô hoặc làm tóc thẳng."
+        ]
+      },
+      "palette": {
+        "status": "measured_from_character_sheet",
+        "colors": {
+          "skin": "#8B5A3C",
+          "hair": "#3E2A1F",
+          "eyes": "#2D1B12",
+          "top": "#F7C839",
+          "denim": "#3B82F6",
+          "headband": "#FBC02D",
+          "shoeAccent": "#FFFFFF",
+          "shoeSole": "#F4E6C8"
+        },
+        "note": "Đo trực tiếp từ ô Color Palette trên docs/avatars/references/aisha-character-sheet.png. Thay thế các giá trị approximate_starting_points trước đó."
+      },
+      "expectedAssets": {
+        "modelUrl": "/assets/avatars/aisha.glb",
+        "portraitUrl": "/assets/avatars/aisha.png",
+        "status": "not_provided_or_verified_in_this_package"
+      },
+      "animationClipMap": {
+        "idle": null,
+        "walk": null,
+        "perform": null,
+        "wave": null,
+        "cheer": null,
+        "thinking": null
+      },
+      "runtimeVerification": {
+        "modelLoaded": null,
+        "rigChecked": null,
+        "texturesChecked": null,
+        "animationPlaybackChecked": null,
+        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+      },
+      "notes": "Phần dưới của yếm và giày là phần hoàn thiện đề xuất từ outfit chân dung.",
+      "assets": {
+        "characterSheet": {
+          "path": "docs/avatars/references/aisha-character-sheet.png",
+          "status": "available"
+        },
+        "sourceViews": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
+        },
+        "glb": {
+          "path": null,
+          "status": "missing"
+        },
+        "thumbnail": {
+          "path": "public/assets/avatars/thumbnails/aisha.png",
+          "status": "available",
+          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+        },
+        "qaRenders": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
+        },
+        "blendSource": {
+          "path": null,
+          "status": "missing"
+        }
+      }
+    },
+    {
+      "id": "emma",
+      "displayName": "Emma",
+      "legacyAliases": [],
+      "characterGender": "female",
+      "gridPosition": {
+        "row": 2,
+        "column": 4
+      },
+      "pairedAvatarId": "kai",
+      "signature": "Tóc đỏ dài, kính tròn đen, hoodie vàng.",
+      "appearance": {
+        "face": "Da sáng ấm, mắt xanh/xám xanh, tàn nhang nhẹ. Mắt nhìn rõ qua tròng kính trong; không làm tròng kính tối như kính mát.",
+        "hair": "Tóc đỏ đồng/cam, dài và gợn sóng, rẽ lệch; màu tóc tương ứng nhóm tóc đỏ của Kai nhưng silhouette riêng.",
+        "upperClothing": "Hoodie vàng ấm, mặt trước kín, dây rút trắng và mũ ở sau gáy.",
+        "accessories": "Kính tròn gọng đen, cân hai bên, đặt đúng sống mũi; giữ độ dày gọng và phản xạ vừa phải để không che mắt.",
+        "lowerClothing": "Quần jean xanh trung bình, ống gọn, xắn gấu nhẹ.",
+        "footwear": "Sneaker vàng và trắng.",
+        "lowerBodyStatus": "proposed",
+        "eyeColorStatus": "reference",
+        "neutralPose": "Mắt mở, cười nhẹ. Khi thinking có thể nghiêng đầu hoặc đưa tay gần cằm, tránh va vào kính.",
+        "preserve": [
+          "Tóc đỏ dài",
+          "Kính tròn đen",
+          "Hoodie vàng",
+          "Mắt hiện rõ sau kính"
+        ],
+        "avoid": [
+          "Không đổi tên Emma sang Zoe.",
+          "Không đổi tóc thành vàng hoặc bỏ kính."
+        ]
+      },
+      "palette": {
+        "status": "measured_from_character_sheet",
+        "colors": {
+          "skin": "#F7D7C4",
+          "hair": "#E86B3C",
+          "glasses": "#2D1F1A",
+          "top": "#FDCB3B",
+          "trim": "#FFFDF7",
+          "bottom": "#4F7BC4",
+          "shoeWhite": "#F4F4F4",
+          "shoeYellow": "#F4B400"
+        },
+        "note": "Đo trực tiếp từ ô Color Palette trên docs/avatars/references/emma-character-sheet.png. Thay thế các giá trị approximate_starting_points trước đó."
+      },
+      "expectedAssets": {
+        "modelUrl": "/assets/avatars/emma.glb",
+        "portraitUrl": "/assets/avatars/emma.png",
+        "status": "not_provided_or_verified_in_this_package"
+      },
+      "animationClipMap": {
+        "idle": null,
+        "walk": null,
+        "perform": null,
+        "wave": null,
+        "cheer": null,
+        "thinking": null
+      },
+      "runtimeVerification": {
+        "modelLoaded": null,
+        "rigChecked": null,
+        "texturesChecked": null,
+        "animationPlaybackChecked": null,
+        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+      },
+      "notes": "Kính không phải phụ kiện trang trí có thể tự xóa trong outfit mặc định.",
+      "assets": {
+        "characterSheet": {
+          "path": "docs/avatars/references/emma-character-sheet.png",
+          "status": "available"
+        },
+        "sourceViews": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
+        },
+        "glb": {
+          "path": null,
+          "status": "missing"
+        },
+        "thumbnail": {
+          "path": "public/assets/avatars/thumbnails/emma.png",
+          "status": "available",
+          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+        },
+        "qaRenders": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
+        },
+        "blendSource": {
+          "path": null,
+          "status": "missing"
+        }
+      }
+    },
+    {
+      "id": "hana",
+      "displayName": "Hana",
+      "legacyAliases": [],
+      "characterGender": "female",
+      "gridPosition": {
+        "row": 2,
+        "column": 1
+      },
+      "pairedAvatarId": "leo",
+      "signature": "Tóc nâu dài, mũ len gấu màu kem, áo trắng và yếm jean.",
+      "appearance": {
+        "face": "Da sáng ấm, mắt nâu đậm, má hồng nhẹ, nụ cười mở hoặc khép đều giữ cùng khuôn mặt. Không lấy kính hoặc tàn nhang rõ của Emma.",
+        "hair": "Tóc nâu đậm, dài, mái bằng hơi tách lọn dưới mũ, đuôi tóc mềm. Giữ đường mái nhìn rõ dưới viền mũ.",
+        "upperClothing": "Áo dài tay trắng/kem bên trong yếm jean xanh; túi trước và đường may denim rõ vừa đủ.",
+        "accessories": "Mũ len màu kem có hai tai gấu nhỏ và mặt gấu thêu. Thêm charm gấu nâu nhỏ ở một bên phần yếm như ảnh; chốt vị trí khi duyệt full-body và giữ nhất quán các góc.",
+        "lowerClothing": "Yếm jean quần dài xanh trung bình, gấu xắn nhẹ.",
+        "footwear": "Sneaker be/kem và trắng.",
+        "lowerBodyStatus": "proposed",
+        "eyeColorStatus": "reference",
+        "neutralPose": "Mắt mở và cười nhẹ. Không để tay xuyên vào charm hoặc tóc khi perform.",
+        "preserve": [
+          "Mũ len gấu màu kem",
+          "Tóc dài có mái",
+          "Áo trắng + yếm jean",
+          "Charm gấu"
+        ],
+        "avoid": [
+          "Không đổi mũ len sang mũ bóng chày của Kai.",
+          "Không thêm băng đô vàng hoặc áo vàng của Aisha."
+        ]
+      },
+      "palette": {
+        "status": "measured_from_character_sheet",
+        "colors": {
+          "skin": "#F3C9A6",
+          "hair": "#3E2D1F",
+          "hat": "#F8F5EE",
+          "bear": "#D4A574",
+          "denim": "#2E6CC5",
+          "top": "#FFFFFF",
+          "shoe": "#A7B4CC",
+          "shoeDetail": "#6B7280"
+        },
+        "note": "Đo trực tiếp từ ô Color Palette trên docs/avatars/references/hana-character-sheet.png. Thay thế các giá trị approximate_starting_points trước đó."
+      },
+      "expectedAssets": {
+        "modelUrl": "/assets/avatars/hana.glb",
+        "portraitUrl": "/assets/avatars/hana.png",
+        "status": "not_provided_or_verified_in_this_package"
+      },
+      "animationClipMap": {
+        "idle": null,
+        "walk": null,
+        "perform": null,
+        "wave": null,
+        "cheer": null,
+        "thinking": null
+      },
+      "runtimeVerification": {
+        "modelLoaded": null,
+        "rigChecked": null,
+        "texturesChecked": null,
+        "animationPlaybackChecked": null,
+        "verificationScope": "Chưa thực hiện trong gói spec này; kiểm tra repo/asset thực tế trước khi cập nhật."
+      },
+      "notes": "Hana và Aisha cùng dùng yếm jean nhưng phải khác rõ tóc, phụ kiện đầu và màu áo trong.",
+      "assets": {
+        "characterSheet": {
+          "path": "docs/avatars/references/hana-character-sheet.png",
+          "status": "available"
+        },
+        "sourceViews": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Chưa có ảnh turnaround chụp/vẽ riêng (front/side/back) dùng làm nguồn dựng model. Chỉ có character sheet tổng hợp (nếu có) và avatar-lineup.png làm tham chiếu diện mạo."
+        },
+        "glb": {
+          "path": null,
+          "status": "missing"
+        },
+        "thumbnail": {
+          "path": "public/assets/avatars/thumbnails/hana.png",
+          "status": "available",
+          "source": "Cropped from public/assets/student-avatars.png via scripts/avatars/crop_thumbnails.py"
+        },
+        "qaRenders": {
+          "front": null,
+          "side": null,
+          "back": null,
+          "status": "missing",
+          "note": "Render QA của model 3D đã sinh (build.py), KHÔNG phải ảnh tham chiếu concept art."
+        },
+        "blendSource": {
+          "path": null,
+          "status": "missing"
+        }
+      }
+    }
+  ]
+}

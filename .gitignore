@@ -8,3 +8,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 *.tsbuildinfo
+.scripts
+
+# Blender auto-save backups and the avatar build script's local run summary
+*.blend1
+*.blend2
+scripts/avatars/_last_build_result.json
