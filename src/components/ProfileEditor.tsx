@@ -1,6 +1,6 @@
 import { useRef, type PointerEvent as ReactPointerEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { avatarOptions, type AvatarVariant } from '../data/profile';
+import { avatarDisplayNames, avatarOptions, type AvatarVariant } from '../data/profile';
 import Avatar from './Avatar';
 
 type ProfileEditorProps = {
@@ -79,30 +79,30 @@ export default function ProfileEditor({
                     onPointerUp={finishAvatarDrag}
                     role="radiogroup"
                 >
-                    {avatarOptions.map((option, index) => (
-                        <button
-                            aria-checked={avatar === option}
-                            aria-label={t('profile.avatarOption', { number: index + 1 })}
-                            className={avatar === option ? 'is-selected' : ''}
-                            key={option}
-                            onClick={(event) => {
-                                if (dragRef.current.moved) {
-                                    event.preventDefault();
-                                    dragRef.current.moved = false;
-                                    return;
-                                }
-                                onAvatarChange(option);
-                            }}
-                            role="radio"
-                            type="button"
-                        >
-                            <Avatar
-                                name={t('profile.avatarOption', { number: index + 1 })}
-                                size="large"
-                                variant={option}
-                            />
-                        </button>
-                    ))}
+                    {avatarOptions.map((option) => {
+                        const displayName = avatarDisplayNames[option];
+                        return (
+                            <button
+                                aria-checked={avatar === option}
+                                aria-label={displayName}
+                                className={avatar === option ? 'is-selected' : ''}
+                                key={option}
+                                onClick={(event) => {
+                                    if (dragRef.current.moved) {
+                                        event.preventDefault();
+                                        dragRef.current.moved = false;
+                                        return;
+                                    }
+                                    onAvatarChange(option);
+                                }}
+                                role="radio"
+                                type="button"
+                            >
+                                <Avatar name={displayName} size="large" variant={option} />
+                                <span className="profile-editor__avatar-name">{displayName}</span>
+                            </button>
+                        );
+                    })}
                 </div>
             </fieldset>
         </div>

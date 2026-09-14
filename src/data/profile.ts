@@ -13,6 +13,20 @@ export const avatarOptions = [
 
 export type AvatarVariant = (typeof avatarOptions)[number];
 
+// Proper nouns — kept identical across locales (see docs/avatars/AVATAR_SPEC.md section 4).
+export const avatarDisplayNames: Record<AvatarVariant, string> = {
+    leo: 'Leo',
+    maya: 'Maya',
+    noah: 'Noah',
+    emma: 'Emma',
+    kai: 'Kai',
+    zoe: 'Zoe',
+    liam: 'Liam',
+    hana: 'Hana',
+    aisha: 'Aisha',
+    hung: 'Hung',
+};
+
 export type UserProfile = {
     avatar: AvatarVariant;
     name: string;

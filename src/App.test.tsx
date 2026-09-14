@@ -38,7 +38,7 @@ describe('sound mimic routes', () => {
 
         expect(await screen.findByRole('heading', { name: 'Choose your player' })).toBeInTheDocument();
         await user.type(screen.getByLabelText('Display name'), 'Alex');
-        await user.click(screen.getByRole('radio', { name: 'Choose avatar 3' }));
+        await user.click(screen.getByRole('radio', { name: 'Noah' }));
         await user.click(screen.getByRole('button', { name: 'Join class' }));
 
         expect(await screen.findByRole('heading', { name: 'Joining the stage…' }, { timeout: 5000 })).toBeInTheDocument();
@@ -102,7 +102,7 @@ describe('sound mimic routes', () => {
         const nameInput = within(dialog).getByLabelText('Display name');
         await user.clear(nameInput);
         await user.type(nameInput, 'Ms Rivera');
-        await user.click(within(dialog).getByRole('radio', { name: 'Choose avatar 3' }));
+        await user.click(within(dialog).getByRole('radio', { name: 'Noah' }));
         await user.click(within(dialog).getByRole('button', { name: 'Save changes' }));
 
         expect(screen.getByRole('button', { name: 'Open profile menu for Ms Rivera' })).toBeInTheDocument();

@@ -1374,12 +1374,23 @@ select:focus-visible {
     flex: 0 0 118px;
     min-height: 96px;
     padding: 8px;
+    gap: 6px;
     background: var(--surface-soft);
     border: 2px solid transparent;
     border-radius: 14px;
     cursor: pointer;
     place-items: center;
     scroll-snap-align: start;
+}
+
+.profile-editor__avatar-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.profile-editor__avatars button.is-selected .profile-editor__avatar-name {
+    color: var(--color-blue);
 }
 
 .profile-editor__avatars button:hover {
@@ -3183,13 +3194,18 @@ select:focus-visible {
 
     .profile-editor__avatars button {
         flex-basis: 104px;
-        min-height: 80px;
+        min-height: 96px;
         padding: 5px;
+        gap: 4px;
     }
 
     .profile-editor__avatars .avatar--large {
         width: 64px;
         height: 64px;
+    }
+
+    .profile-editor__avatar-name {
+        font-size: 0.75rem;
     }
 
     .join-card input,
