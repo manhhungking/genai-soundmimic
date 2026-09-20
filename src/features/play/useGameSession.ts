@@ -22,6 +22,7 @@ import {
 import {
     gameClientCode,
     gamePeerCode,
+    isAuthorizedParticipantAction,
     isAuthorizedPlayerAction,
     isValidRecordingAction,
     peerConnectionConfig,
@@ -143,7 +144,7 @@ type HostSessionOptions = {
     code: string;
     hostProfile: UserProfile;
     onRecordingCancel: () => void;
-    onRecording: (recordingDataUrl: string) => void;
+    onRecording: (playerId: string, recordingDataUrl: string) => void;
     onRecordingStart: () => void;
     onRetry: () => void;
     setup: SavedGameSetup;
@@ -207,8 +208,18 @@ export function useHostGameSession({
                 return;
             }
             const normalizedId = data.player.id === 'host' ? `student-${data.player.id}` : data.player.id;
-            const idInUse = snapshotRef.current.players.some(({ connected, id }) => connected && id === normalizedId);
-            const requestedId = idInUse ? `student-${randomId()}` : normalizedId;
+            // The client's id is a per-tab random value it persists itself, so a matching id
+            // here always means the same physical player reconnecting (a page reload, a
+            // dropped connection) racing ahead of the old connection's close event — never a
+            // real collision with someone else. Take over the existing roster entry instead of
+            // minting a new id, or a reload would otherwise leave a disconnected ghost player
+            // behind and split that player's scores across two rows on the scoreboard.
+            for (const [connectionId, authorized] of authorizationRef.current) {
+                if (authorized.playerId === normalizedId && connectionId !== connection.connectionId) {
+                    authorizationRef.current.delete(connectionId);
+                }
+            }
+            const requestedId = normalizedId;
             const authorization = {
                 connectionId: connection.connectionId,
                 playerId: requestedId,
@@ -239,9 +250,9 @@ export function useHostGameSession({
             const authorization = authorizationRef.current.get(connection.connectionId);
             if (
                 isValidRecordingAction(data)
-                && isAuthorizedPlayerAction(data as GameRecordingEvent, connection, authorization, snapshotRef.current)
+                && isAuthorizedParticipantAction(data as GameRecordingEvent, connection, authorization, snapshotRef.current)
                 && snapshotRef.current.phase === 'recording'
-            ) callbackRef.current.onRecording(data.recordingDataUrl);
+            ) callbackRef.current.onRecording(data.playerId, data.recordingDataUrl);
             return;
         }
 
@@ -257,7 +268,7 @@ export function useHostGameSession({
         if (data.event === 'game:record-cancel') {
             const authorization = authorizationRef.current.get(connection.connectionId);
             if (
-                isAuthorizedPlayerAction(data as GameRecordCancelEvent, connection, authorization, snapshotRef.current)
+                isAuthorizedParticipantAction(data as GameRecordCancelEvent, connection, authorization, snapshotRef.current)
                 && snapshotRef.current.phase === 'recording'
             ) callbackRef.current.onRecordingCancel();
             return;

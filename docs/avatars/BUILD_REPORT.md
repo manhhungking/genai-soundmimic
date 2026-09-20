@@ -180,3 +180,28 @@ touched, per the task's instruction not to regenerate character sheets or thumbn
 `.build-staging/` (git-ignored) holds the pre-publish staged GLBs; `publish.py` refuses
 to copy any avatar into `public/` that isn't recorded as `loaded_ok` with all 3 clips in
 `scripts/avatars/_verify_result.json`.
+
+## 6. Follow-up: connected limbs (rebuilt all 10)
+
+The original geometry had two real defects visible once someone actually looked at the
+renders instead of just checking file/animation validity:
+
+- **Floating arms.** `shoulder_width` (0.185) placed the arm root further from the body
+  centre than the torso's own radius (0.11), so every arm hung in open air with a visible
+  gap at the shoulder instead of touching the torso. Pulled in to 0.16 — just past the
+  torso surface, confirmed by rendering (0.095 was tried first and swallowed the arms
+  entirely inside the torso, invisible; 0.16 keeps them clearly visible while touching).
+- **"Log" limbs.** Thigh/shin and upper-arm/forearm were uniform-radius cylinders that
+  simply abutted at the knee/elbow with a hard radius change and no blending — reading as
+  stacked wooden dowels rather than a limb. Fixed by tapering each segment (a frustum, wider
+  near the body and narrower toward the extremity) and adding a rounded ball joint at the
+  knee and elbow that the segments overlap into, so the flat cylinder end-caps are hidden
+  inside the ball instead of exposed as a seam ring. The hand was also nudged up ~1.5cm to
+  close a small gap at the wrist.
+
+All 10 avatars were rebuilt, re-verified with `scripts/avatars/verify_glb.mjs` (still 10/10
+`loaded_ok`, all 3 clips, zero loop delta), and re-published. Confirmed by rendering
+`docs/avatars/previews/{id}-{front,side,back}.png` for several avatars across different
+clothing styles (closed hoodie, open hoodie, overalls with short sleeves) before publishing
+— not just checked for file/animation validity as the first build report's "what was not
+verified" section flagged as a gap.

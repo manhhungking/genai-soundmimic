@@ -1,5 +1,5 @@
 import type { AvatarVariant, UserProfile } from '../../data/profile';
-import type { SavedGameSetup } from '../setup/model';
+import type { SavedGameSetup, SetupRound } from '../setup/model';
 
 export type GamePhase =
     | 'waiting'
@@ -31,6 +31,7 @@ export type GameTurnResult = {
     predictions: GamePrediction[];
     recordingDataUrl: string;
     roundId: string;
+    score: number;
 };
 
 export type GameSnapshot = {
@@ -43,12 +44,46 @@ export type GameSnapshot = {
     players: GameParticipant[];
     predictions: GamePrediction[];
     resultRevealed: boolean;
+    recordedPlayerIds: string[];
     recordingDataUrl?: string;
     revision: number;
     roundIndex: number;
     sessionId: string;
     xaiEnabled: boolean;
 };
+
+/**
+ * Turns the classifier's predictions for a round into a 0-100 score.
+ * "Match" rounds reward mimicking the target sound (the round's own name);
+ * "break" rounds reward the opposite — sounding as unlike the target as possible.
+ */
+export function computeTurnScore(round: Pick<SetupRound, 'challenge' | 'name'>, predictions: GamePrediction[]) {
+    const target = predictions.find(
+        ({ className }) => className.trim().toLowerCase() === round.name.trim().toLowerCase(),
+    );
+    const matchConfidence = target?.probability ?? 0;
+    const raw = round.challenge === 'break' ? 1 - matchConfidence : matchConfidence;
+    return Math.round(Math.max(0, Math.min(1, raw)) * 100);
+}
+
+export type PlayerScore = {
+    player: GameParticipant;
+    roundsPlayed: number;
+    total: number;
+};
+
+/** Sums each connected player's per-round scores, highest total first, for the scoreboard. */
+export function computePlayerScores(snapshot: Pick<GameSnapshot, 'history' | 'players'>): PlayerScore[] {
+    const totals = new Map<string, { roundsPlayed: number; total: number }>();
+    for (const turn of snapshot.history) {
+        const existing = totals.get(turn.playerId) ?? { roundsPlayed: 0, total: 0 };
+        totals.set(turn.playerId, { roundsPlayed: existing.roundsPlayed + 1, total: existing.total + turn.score });
+    }
+    return snapshot.players
+        .filter(({ connected }) => connected)
+        .map((player) => ({ player, ...(totals.get(player.id) ?? { roundsPlayed: 0, total: 0 }) }))
+        .sort((left, right) => right.total - left.total);
+}
 
 export function createGameSnapshot(
     sessionId: string,
@@ -73,6 +108,7 @@ export function createGameSnapshot(
         phase: 'waiting',
         players: host,
         predictions: [],
+        recordedPlayerIds: [],
         resultRevealed: false,
         revision: 0,
         roundIndex: 0,
@@ -112,7 +148,7 @@ export function setGameControls(snapshot: GameSnapshot, paused: boolean, xaiEnab
 
 export function completeGameAttempt(
     snapshot: GameSnapshot,
-    result: Omit<GameTurnResult, 'attempt' | 'playerId' | 'roundId'>,
+    result: Omit<GameTurnResult, 'attempt' | 'playerId' | 'roundId' | 'score'>,
     setup: SavedGameSetup,
 ) {
     const playerId = snapshot.activePlayerId;
@@ -123,6 +159,7 @@ export function completeGameAttempt(
         attempt: snapshot.attempt,
         playerId,
         roundId: round.id,
+        score: computeTurnScore(round, result.predictions),
     };
     return setGamePhase(snapshot, 'result', {
         history: [...snapshot.history, completed],
@@ -134,12 +171,15 @@ export function completeGameAttempt(
 
 export function retryGameTurn(snapshot: GameSnapshot, setup: SavedGameSetup) {
     if (snapshot.attempt >= setup.rules.attempts) return snapshot;
-    return setGamePhase(snapshot, setup.rules.playReference ? 'reference' : 'entering', {
+    // Straight to 'ready' (not 'entering') — everyone re-records from where they're already
+    // standing, nobody needs to walk anywhere until it's time to play a clip back.
+    return setGamePhase(snapshot, setup.rules.playReference ? 'reference' : 'ready', {
         attempt: snapshot.attempt + 1,
         error: undefined,
         predictions: [],
         resultRevealed: false,
         recordingDataUrl: undefined,
+        recordedPlayerIds: [],
     });
 }
 
@@ -152,6 +192,7 @@ export function advanceGameTurn(snapshot: GameSnapshot, roundCount: number): Gam
             predictions: [],
             resultRevealed: false,
             recordingDataUrl: undefined,
+            recordedPlayerIds: [],
         });
     }
 
@@ -166,6 +207,7 @@ export function advanceGameTurn(snapshot: GameSnapshot, roundCount: number): Gam
             predictions: [],
             resultRevealed: false,
             recordingDataUrl: undefined,
+            recordedPlayerIds: [],
         });
     }
 
@@ -176,17 +218,21 @@ export function advanceGameTurn(snapshot: GameSnapshot, roundCount: number): Gam
         predictions: [],
         resultRevealed: false,
         recordingDataUrl: undefined,
+        recordedPlayerIds: wrapped ? [] : snapshot.recordedPlayerIds,
         roundIndex: nextRoundIndex,
     });
 }
 
 export function beginCurrentTurn(snapshot: GameSnapshot, setup: SavedGameSetup) {
     if (!snapshot.activePlayerId) return snapshot;
-    return setGamePhase(snapshot, setup.rules.playReference ? 'reference' : 'entering', {
+    // Straight to 'ready' (not 'entering') — everyone records from where they're already
+    // standing, nobody needs to walk anywhere until it's time to play a clip back.
+    return setGamePhase(snapshot, setup.rules.playReference ? 'reference' : 'ready', {
         error: undefined,
         predictions: [],
         resultRevealed: false,
         recordingDataUrl: undefined,
+        recordedPlayerIds: [],
     });
 }
 

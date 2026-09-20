@@ -93,6 +93,18 @@ export function isAuthorizedPlayerAction(
         && snapshot.players.some(({ connected, id }) => connected && id === event.playerId);
 }
 
+export function isAuthorizedParticipantAction(
+    event: GameRecordCancelEvent | GameRecordingEvent,
+    connection: Connection<GameProtocol>,
+    authorization: AuthorizedPlayer | undefined,
+    snapshot: GameSnapshot,
+) {
+    return authorization?.connectionId === connection.connectionId
+        && authorization.playerId === event.playerId
+        && authorization.token === event.token
+        && snapshot.players.some(({ connected, id }) => connected && id === event.playerId);
+}
+
 export function gamePeerCode(code: string) {
     return `soundmimic-${code}`;
 }

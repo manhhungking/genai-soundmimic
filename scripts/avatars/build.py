@@ -166,6 +166,19 @@ def add_cylinder(name, radius, depth, location, rotation=(0, 0, 0), verts=10):
     return obj
 
 
+def add_tapered_limb(name, radius1, radius2, depth, location, rotation=(0, 0, 0), verts=10):
+    """A frustum (tapered cylinder, radius1 at the near end / radius2 at the far end) — reads
+    as an actual limb segment instead of a uniform pipe."""
+    bpy.ops.mesh.primitive_cone_add(
+        vertices=verts, radius1=radius1, radius2=radius2, depth=depth,
+        location=location, rotation=rotation,
+    )
+    obj = bpy.context.active_object
+    obj.name = name
+    bpy.ops.object.shade_smooth()
+    return obj
+
+
 def add_sphere(name, radius, location, scale=(1, 1, 1)):
     bpy.ops.mesh.primitive_uv_sphere_add(radius=radius, location=location, segments=16, ring_count=10)
     obj = bpy.context.active_object
@@ -240,7 +253,10 @@ P = {
     "torso_len": 0.30,
     "neck_len": 0.05,
     "head_r": 0.125,
-    "shoulder_width": 0.185,
+    # Pulled in from the old 0.185 (well past the torso's own 0.11 radius, which left the arms
+    # floating in open air with a visible gap at the shoulder) to just past the torso surface,
+    # so the arm chain overlaps into the body instead of floating beside it.
+    "shoulder_width": 0.16,
     "upper_arm_len": 0.20,
     "forearm_len": 0.18,
     "hand_len": 0.09,
@@ -257,16 +273,27 @@ Z_HEAD = Z_NECK + P["head_r"]
 Z_SHOULDER = Z_CHEST - 0.02
 
 
+# Extra length each tapered limb segment reaches into its neighbouring ball joint, so the
+# segment's flat end-cap is hidden inside the ball instead of exposed as a visible seam ring.
+JOINT_OVERLAP = 0.02
+
+
 def build_limb_chain(prefix, side, hip_x):
-    """Leg: hip -> knee -> ankle -> foot. Returns dict of mesh objects."""
+    """Leg: hip -> knee -> ankle -> foot. Tapered (not uniform-radius) thigh/shin segments
+    with a ball joint at the knee blend into one connected limb instead of two stacked pipes
+    of mismatched radius — the hip end sits inside the torso's own radius already, so it
+    doesn't need a separate ball there."""
     objs = {}
     thigh_mid_z = (Z_HIP + Z_KNEE) / 2
-    objs["thigh"] = add_cylinder(
-        f"{prefix}Thigh.{side}", P["limb_r"], P["thigh_len"], (hip_x, 0, thigh_mid_z)
+    objs["thigh"] = add_tapered_limb(
+        f"{prefix}Thigh.{side}", P["limb_r"] * 1.05, P["limb_r"] * 0.9,
+        P["thigh_len"] + JOINT_OVERLAP, (hip_x, 0, thigh_mid_z),
     )
+    objs["knee"] = add_sphere(f"{prefix}Knee.{side}", P["limb_r"] * 0.9 * 1.1, (hip_x, 0, Z_KNEE))
     shin_mid_z = (Z_KNEE + Z_ANKLE) / 2
-    objs["shin"] = add_cylinder(
-        f"{prefix}Shin.{side}", P["limb_r"] * 0.85, P["shin_len"], (hip_x, 0, shin_mid_z)
+    objs["shin"] = add_tapered_limb(
+        f"{prefix}Shin.{side}", P["limb_r"] * 0.82, P["limb_r"] * 0.6,
+        P["shin_len"] + JOINT_OVERLAP, (hip_x, 0, shin_mid_z),
     )
     objs["foot"] = add_cube(
         f"{prefix}Foot.{side}", (0.075, 0.16, P["foot_h"]), (hip_x, 0.045, P["foot_h"] / 2)
@@ -275,18 +302,25 @@ def build_limb_chain(prefix, side, hip_x):
 
 
 def build_arm_chain(prefix, side, shoulder_x, sign):
+    """Arm: shoulder -> elbow -> wrist -> hand. Tapered upper-arm/forearm segments with a ball
+    joint at the elbow blend into one connected limb, matching build_limb_chain's approach."""
     objs = {}
     upper_mid_z = Z_SHOULDER - P["upper_arm_len"] / 2
-    objs["upper"] = add_cylinder(
-        f"{prefix}UpperArm.{side}", P["limb_r"] * 0.82, P["upper_arm_len"], (shoulder_x, 0, upper_mid_z)
+    objs["upper"] = add_tapered_limb(
+        f"{prefix}UpperArm.{side}", P["limb_r"] * 0.88, P["limb_r"] * 0.74,
+        P["upper_arm_len"] + JOINT_OVERLAP, (shoulder_x, 0, upper_mid_z),
     )
     z_elbow = Z_SHOULDER - P["upper_arm_len"]
+    objs["elbow"] = add_sphere(f"{prefix}Elbow.{side}", P["limb_r"] * 0.74 * 1.12, (shoulder_x, 0, z_elbow))
     fore_mid_z = z_elbow - P["forearm_len"] / 2
-    objs["fore"] = add_cylinder(
-        f"{prefix}ForeArm.{side}", P["limb_r"] * 0.7, P["forearm_len"], (shoulder_x, 0, fore_mid_z)
+    objs["fore"] = add_tapered_limb(
+        f"{prefix}ForeArm.{side}", P["limb_r"] * 0.68, P["limb_r"] * 0.55,
+        P["forearm_len"] + JOINT_OVERLAP, (shoulder_x, 0, fore_mid_z),
     )
     z_wrist = z_elbow - P["forearm_len"]
-    hand_mid_z = z_wrist - P["hand_len"] / 2
+    # Nudged up from the exact wrist point so the hand's top overlaps the forearm's end-cap —
+    # the sphere's non-uniform z-scale otherwise pulls it just short, leaving a sliver gap.
+    hand_mid_z = z_wrist - P["hand_len"] / 2 + 0.015
     objs["hand"] = add_sphere(
         f"{prefix}Hand.{side}", P["limb_r"] * 0.85, (shoulder_x, 0, hand_mid_z), scale=(0.9, 0.6, 1.3)
     )

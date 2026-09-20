@@ -1,5 +1,5 @@
 import type ClassifierApp from '@genai-fi/classifier';
-import type { AudioExample, TeachableModel } from '@genai-fi/classifier';
+import type { AudioExample, SoundRecorder, TeachableModel } from '@genai-fi/classifier';
 import type { ISample } from '@genai-fi/classifier/main/ClassifierApp';
 import { loadClassifier } from '../../util/classifier';
 import { randomId } from '../../util/randomId';
@@ -34,7 +34,7 @@ export type SaveSoundClassifierOptions = {
 };
 
 export const minimumSampleCount = {
-    backgroundNoise: 20,
+    backgroundNoise: 2,
     soundClass: 2,
 } as const;
 
@@ -55,12 +55,75 @@ export async function createSoundRecorder() {
     return recorder;
 }
 
-export function recordingOptions(durationMillis?: number, keepSourceAudio = true, deviceId?: string) {
+type SoundRecorderRuntime = {
+    sourceAudioBlob?: Blob | null;
+    stream?: MediaStream | null;
+};
+
+export async function disableAutomaticMicrophoneProcessing(recorder: SoundRecorder) {
+    const { stream } = recorder as unknown as SoundRecorderRuntime;
+    const track = stream?.getAudioTracks()[0];
+    if (!track?.applyConstraints) return;
+
+    try {
+        await track.applyConstraints({
+            autoGainControl: false,
+            echoCancellation: false,
+            noiseSuppression: false,
+        });
+    } catch {
+        // Some browsers expose these constraints but do not allow changing
+        // them after capture starts. Recording can safely continue unchanged.
+    }
+}
+
+export async function readCompleteSoundRecording(
+    recorder: SoundRecorder,
+): Promise<NonNullable<AudioExample['rawAudio']> | null> {
+    const { sourceAudioBlob } = recorder as unknown as SoundRecorderRuntime;
+    if (!sourceAudioBlob?.size) return null;
+
+    const context = new AudioContext();
+    try {
+        const buffer = await context.decodeAudioData(await sourceAudioBlob.arrayBuffer());
+        return {
+            data: new Float32Array(buffer.getChannelData(0)),
+            sampleRateHz: buffer.sampleRate,
+        };
+    } finally {
+        await context.close().catch(() => undefined);
+    }
+}
+
+export function keepCompleteRecordingForPlayback(
+    examples: AudioExample[],
+    rawAudio: NonNullable<AudioExample['rawAudio']>,
+): AudioExample[] {
+    return examples.map((example, index) => ({
+        ...example,
+        rawAudio: index === 0 ? rawAudio : undefined,
+    }));
+}
+
+type SoundRecordingOptions = Parameters<SoundRecorder['startRecording']>[1];
+
+export function recordingOptions(
+    durationMillis?: number,
+    keepSourceAudio = true,
+    deviceId?: string,
+): SoundRecordingOptions {
+    // SoundRecorder forwards this value to MediaTrackConstraints.deviceId, but
+    // its public type currently narrows that browser constraint to `string`.
+    // An exact constraint prevents the browser from silently keeping the
+    // default microphone when the user explicitly chose another device.
+    const exactDeviceId = deviceId
+        ? ({ exact: deviceId } as unknown as SoundRecordingOptions['deviceId'])
+        : undefined;
     const options = {
         ...recorderOptions,
         includeRawAudio: keepSourceAudio,
         includeCanvas: keepSourceAudio,
-        ...(deviceId ? { deviceId } : {}),
+        ...(exactDeviceId ? { deviceId: exactDeviceId } : {}),
     };
     return durationMillis === undefined ? options : { ...options, durationMillis };
 }

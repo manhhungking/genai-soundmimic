@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import i18n, { i18nReady } from '../../i18n';
 import TrainingClassCard from './TrainingClassCard';
+import TrainingDataPanel from './TrainingDataPanel';
 import type { SoundSample } from './model';
 
 const soundClassifierMocks = vi.hoisted(() => ({
@@ -74,6 +75,7 @@ describe('TrainingClassCard recording selection', () => {
                     active
                     editing={false}
                     menuOpen={false}
+                    micPanelOpen={false}
                     soundClass={{ id: 'bird', name: 'Bird', icon: 'bird', tone: 'blue' }}
                     sampleCount={2}
                     samples={[
@@ -85,6 +87,7 @@ describe('TrainingClassCard recording selection', () => {
                     onCaptureError={vi.fn()}
                     onCloseControls={vi.fn()}
                     onEdit={vi.fn()}
+                    onOpenRecording={vi.fn()}
                     onRemove={vi.fn()}
                     onRemoveSample={onRemoveSample}
                     onToggleMenu={vi.fn()}
@@ -130,6 +133,7 @@ describe('TrainingClassCard recording selection', () => {
                         active={false}
                         editing={editing}
                         menuOpen={false}
+                        micPanelOpen={false}
                         soundClass={{ id: 'bird', name: 'Bird', icon: 'bird', tone: 'blue' }}
                         sampleCount={0}
                         samples={[]}
@@ -138,6 +142,7 @@ describe('TrainingClassCard recording selection', () => {
                         onCaptureError={vi.fn()}
                         onCloseControls={() => setEditing(false)}
                         onEdit={() => setEditing(true)}
+                        onOpenRecording={vi.fn()}
                         onRemove={vi.fn()}
                         onRemoveSample={vi.fn()}
                         onToggleMenu={vi.fn()}
@@ -178,29 +183,39 @@ describe('TrainingClassCard recording selection', () => {
         soundClassifierMocks.createSoundRecorder.mockResolvedValue(recorder);
         const onAddSamples = vi.fn();
 
-        const { container } = render(
-            <WorkflowLayout connections={[]} columns={1}>
-                <div className="training-data-panel">
-                    <TrainingClassCard
-                        active={false}
-                        editing={false}
-                        menuOpen={false}
-                        soundClass={{ id: 'bird', name: 'Bird', icon: 'bird', tone: 'blue' }}
-                        sampleCount={0}
-                        samples={[]}
-                        canRemove
-                        onAddSamples={onAddSamples}
-                        onCaptureError={vi.fn()}
-                        onCloseControls={vi.fn()}
-                        onEdit={vi.fn()}
-                        onRemove={vi.fn()}
-                        onRemoveSample={vi.fn()}
-                        onToggleMenu={vi.fn()}
-                        onUpdate={vi.fn()}
-                    />
-                </div>
-            </WorkflowLayout>,
-        );
+        function RecordableCard() {
+            const [micPanelOpen, setMicPanelOpen] = useState(false);
+            return (
+                <>
+                    <WorkflowLayout connections={[]} columns={1}>
+                        <div className="training-data-panel">
+                            <TrainingClassCard
+                                active={false}
+                                editing={false}
+                                menuOpen={false}
+                                micPanelOpen={micPanelOpen}
+                                soundClass={{ id: 'bird', name: 'Bird', icon: 'bird', tone: 'blue' }}
+                                sampleCount={0}
+                                samples={[]}
+                                canRemove
+                                onAddSamples={onAddSamples}
+                                onCaptureError={vi.fn()}
+                                onCloseControls={() => setMicPanelOpen(false)}
+                                onEdit={vi.fn()}
+                                onOpenRecording={() => setMicPanelOpen(true)}
+                                onRemove={vi.fn()}
+                                onRemoveSample={vi.fn()}
+                                onToggleMenu={vi.fn()}
+                                onUpdate={vi.fn()}
+                            />
+                        </div>
+                    </WorkflowLayout>
+                    <button type="button">Outside training data</button>
+                </>
+            );
+        }
+
+        const { container } = render(<RecordableCard />);
 
         await user.click(screen.getByRole('button', { name: 'Record Bird' }));
         await user.click(screen.getByRole('button', { name: 'Record' }));
@@ -217,10 +232,113 @@ describe('TrainingClassCard recording selection', () => {
         expect(liveSample?.querySelector('.training-waveform')).toHaveClass('training-waveform--clip');
         expect(onAddSamples).not.toHaveBeenCalled();
 
+        await user.click(screen.getByRole('button', { name: 'Outside training data' }));
+        expect(recorder.stopRecording).toHaveBeenCalledOnce();
+        expect(container.querySelector('.training-recording-panel')).toBeInTheDocument();
+
         act(() => listeners.get('stop')?.());
 
-        expect(onAddSamples).toHaveBeenCalledOnce();
+        await waitFor(() => expect(onAddSamples).toHaveBeenCalledOnce());
         expect(onAddSamples).toHaveBeenCalledWith('bird', [example]);
         expect(container.querySelector('.training-recording-panel__live-sample')).not.toBeInTheDocument();
+        expect(container.querySelector('.training-recording-panel')).not.toBeInTheDocument();
+    });
+
+    it('records class samples from the microphone selected in the dropdown', async () => {
+        const user = userEvent.setup();
+        const enumerateDevices = vi.fn().mockResolvedValue([
+            { deviceId: 'default', kind: 'audioinput', label: 'Default microphone' },
+            { deviceId: 'usb-microphone', kind: 'audioinput', label: 'USB microphone' },
+            { deviceId: 'camera', kind: 'videoinput', label: 'Camera' },
+        ]);
+        Object.defineProperty(navigator, 'mediaDevices', {
+            configurable: true,
+            value: { enumerateDevices },
+        });
+        const recorder = {
+            on: vi.fn(),
+            startRecording: vi.fn().mockResolvedValue(undefined),
+            stopRecording: vi.fn(),
+            removeAllListeners: vi.fn(),
+        } as unknown as SoundRecorder;
+        soundClassifierMocks.createSoundRecorder.mockClear();
+        soundClassifierMocks.createSoundRecorder.mockResolvedValue(recorder);
+
+        function RecordableCard() {
+            const [micPanelOpen, setMicPanelOpen] = useState(false);
+            return (
+                <WorkflowLayout connections={[]} columns={1}>
+                    <div className="training-data-panel">
+                        <TrainingClassCard
+                            active={false}
+                            editing={false}
+                            menuOpen={false}
+                            micPanelOpen={micPanelOpen}
+                            soundClass={{ id: 'bird', name: 'Bird', icon: 'bird', tone: 'blue' }}
+                            sampleCount={0}
+                            samples={[]}
+                            canRemove
+                            onAddSamples={vi.fn()}
+                            onCaptureError={vi.fn()}
+                            onCloseControls={() => setMicPanelOpen(false)}
+                            onEdit={vi.fn()}
+                            onOpenRecording={() => setMicPanelOpen(true)}
+                            onRemove={vi.fn()}
+                            onRemoveSample={vi.fn()}
+                            onToggleMenu={vi.fn()}
+                            onUpdate={vi.fn()}
+                        />
+                    </div>
+                </WorkflowLayout>
+            );
+        }
+
+        render(<RecordableCard />);
+
+        await user.click(screen.getByRole('button', { name: 'Record Bird' }));
+        await user.click(screen.getByRole('button', { name: /Sound input source: Microphone \(Default\)/ }));
+        await user.click(await screen.findByRole('option', { name: 'USB microphone' }));
+        expect(screen.getByRole('button', { name: 'Sound input source: USB microphone' })).toBeInTheDocument();
+
+        await user.click(screen.getByRole('button', { name: 'Record' }));
+
+        await waitFor(() => expect(recorder.startRecording).toHaveBeenCalledWith(
+            'Bird',
+            expect.objectContaining({ deviceId: { exact: 'usb-microphone' } }),
+        ));
+        expect(enumerateDevices).toHaveBeenCalledOnce();
+    });
+
+    it('keeps only one class microphone panel open at a time', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <WorkflowLayout connections={[]} columns={1}>
+                <TrainingDataPanel
+                    classes={[
+                        { id: 'bird', name: 'Bird', icon: 'bird', tone: 'blue' },
+                        { id: 'cat', name: 'Cat', icon: 'cat', tone: 'green' },
+                    ]}
+                    samples={{ bird: [], cat: [] }}
+                    onAddClass={vi.fn()}
+                    onAddSamples={vi.fn()}
+                    onCaptureError={vi.fn()}
+                    onRemoveClass={vi.fn()}
+                    onRemoveSample={vi.fn()}
+                    onUpdateClass={vi.fn()}
+                />
+            </WorkflowLayout>,
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Record Bird' }));
+        const birdCard = screen.getByRole('heading', { name: 'Bird' }).closest('.training-class-card');
+        const catCard = screen.getByRole('heading', { name: 'Cat' }).closest('.training-class-card');
+        expect(birdCard?.querySelector('.training-recording-panel')).toBeInTheDocument();
+        expect(catCard?.querySelector('.training-recording-panel')).not.toBeInTheDocument();
+
+        await user.click(screen.getByRole('button', { name: 'Record Cat' }));
+        expect(birdCard?.querySelector('.training-recording-panel')).not.toBeInTheDocument();
+        expect(catCard?.querySelector('.training-recording-panel')).toBeInTheDocument();
+        expect(document.querySelectorAll('.training-recording-panel')).toHaveLength(1);
     });
 });

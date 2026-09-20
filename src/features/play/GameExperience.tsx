@@ -5,6 +5,7 @@ import { getRecordingDuration, type SavedGameSetup } from '../setup/model';
 import PlayStage from './PlayStage';
 import type { GameSnapshot } from './model';
 import useAudioPerformance from './useAudioPerformance';
+import useRecordingCountdown from './useRecordingCountdown';
 import useSoundRecorder, { type RecordingResult } from './useSoundRecorder';
 
 type GameExperienceProps = {
@@ -43,6 +44,7 @@ export default function GameExperience({
     const [referenceBlocked, setReferenceBlocked] = useState(false);
     const referenceRef = useRef<AudioPlayback | undefined>(undefined);
     const referenceEndedRef = useRef(onReferenceEnded);
+    const recordingStartedKeyRef = useRef('');
     const {
         blocked: audioBlocked,
         levelRef: audioLevel,
@@ -54,10 +56,8 @@ export default function GameExperience({
     const {
         elapsedSeconds,
         error: recordingError,
-        recording,
         setPaused: setRecordingPaused,
         start,
-        stop,
     } = useSoundRecorder(onRecordingComplete);
     const duration = getRecordingDuration(setup, snapshot.roundIndex);
 
@@ -115,16 +115,38 @@ export default function GameExperience({
         onRecordingCancel();
     }, [onRecordingCancel, recordingError]);
 
-    const startRecording = useCallback(() => {
-        onRecordingStart();
+    const viewerParticipates = snapshot.players.some(({ connected, id }) => connected && id === viewerPlayerId);
+    const recordingKey = `${snapshot.roundIndex}:${snapshot.attempt}`;
+    const startGroupRecording = useCallback(() => {
+        if (isHost) onRecordingStart();
+    }, [isHost, onRecordingStart]);
+    const canCountDown = connectionReady
+        && snapshot.phase === 'ready'
+        && !snapshot.paused
+        && !snapshot.error;
+    const countdown = useRecordingCountdown(
+        canCountDown,
+        recordingKey,
+        startGroupRecording,
+    );
+
+    useEffect(() => {
+        if (
+            snapshot.phase !== 'recording'
+            || snapshot.paused
+            || !viewerParticipates
+            || recordingStartedKeyRef.current === recordingKey
+        ) return;
+        recordingStartedKeyRef.current = recordingKey;
         void start(duration);
-    }, [duration, onRecordingStart, start]);
+    }, [duration, recordingKey, snapshot.paused, snapshot.phase, start, viewerParticipates]);
 
     return (
         <GameExperienceView
             audioBlocked={audioBlocked}
             audioLevel={audioLevel}
             connectionReady={connectionReady}
+            countdown={countdown}
             elapsedSeconds={elapsedSeconds}
             isHost={isHost}
             onAdvance={onAdvance}
@@ -133,9 +155,10 @@ export default function GameExperience({
             onResumeReference={playReference}
             onReveal={onReveal}
             onRetry={onRetry}
-            onStartRecording={startRecording}
-            onStopRecording={stop}
-            recording={recording}
+            onStartRecording={() => {
+                onRecordingStart();
+                if (viewerParticipates) void start(duration);
+            }}
             recordingDuration={duration}
             referenceBlocked={referenceBlocked}
             setup={setup}

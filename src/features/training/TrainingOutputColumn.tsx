@@ -24,6 +24,26 @@ type TrainingOutputColumnProps = {
     onPredict: (example: AudioExample) => Promise<void>;
 };
 
+const recorderStopTimeoutMillis = 1_000;
+
+async function stopSoundRecorder(recorder: SoundRecorder) {
+    await new Promise<void>((resolve) => {
+        let settled = false;
+        const finish = () => {
+            if (settled) return;
+            settled = true;
+            window.clearTimeout(timeout);
+            recorder.removeListener('stop', finish);
+            resolve();
+        };
+        const timeout = window.setTimeout(finish, recorderStopTimeoutMillis);
+
+        recorder.once('stop', finish);
+        recorder.stopRecording();
+    });
+    recorder.removeAllListeners();
+}
+
 function InputPanel({ canPredict, onPredict }: Pick<TrainingOutputColumnProps, 'canPredict' | 'onPredict'>) {
     const { t } = useTranslation();
     const fileRef = useRef<HTMLInputElement>(null);
@@ -53,8 +73,9 @@ function InputPanel({ canPredict, onPredict }: Pick<TrainingOutputColumnProps, '
     useEffect(() => () => {
         inputRequestedRef.current = false;
         previewSessionRef.current += 1;
-        recorderRef.current?.stopRecording();
-        recorderRef.current?.removeAllListeners();
+        const recorder = recorderRef.current;
+        recorderRef.current = null;
+        if (recorder) void stopSoundRecorder(recorder);
     }, []);
 
     useEffect(() => {
@@ -92,8 +113,7 @@ function InputPanel({ canPredict, onPredict }: Pick<TrainingOutputColumnProps, '
         previewSessionRef.current += 1;
         const recorder = recorderRef.current;
         recorderRef.current = null;
-        recorder?.stopRecording();
-        recorder?.removeAllListeners();
+        if (recorder) void stopSoundRecorder(recorder);
         setEnabled(false);
     }
 
@@ -102,14 +122,14 @@ function InputPanel({ canPredict, onPredict }: Pick<TrainingOutputColumnProps, '
         previewSessionRef.current = previewSession;
         const previousRecorder = recorderRef.current;
         recorderRef.current = null;
-        previousRecorder?.stopRecording();
-        previousRecorder?.removeAllListeners();
 
         try {
+            if (previousRecorder) await stopSoundRecorder(previousRecorder);
+            if (!inputRequestedRef.current || previewSessionRef.current !== previewSession) return;
+
             const recorder = await createSoundRecorder();
             if (!inputRequestedRef.current || previewSessionRef.current !== previewSession) {
-                recorder.stopRecording();
-                recorder.removeAllListeners();
+                void stopSoundRecorder(recorder);
                 return;
             }
             recorderRef.current = recorder;
@@ -133,13 +153,13 @@ function InputPanel({ canPredict, onPredict }: Pick<TrainingOutputColumnProps, '
                 recordingOptions(60 * 60 * 1000, false, deviceId || undefined),
             );
             if (!inputRequestedRef.current || previewSessionRef.current !== previewSession) {
-                recorder.stopRecording();
-                recorder.removeAllListeners();
+                void stopSoundRecorder(recorder);
                 return;
             }
             void refreshMicrophones();
         } catch {
             if (previewSessionRef.current === previewSession) {
+                recorderRef.current?.removeAllListeners();
                 recorderRef.current = null;
                 inputRequestedRef.current = false;
                 setEnabled(false);

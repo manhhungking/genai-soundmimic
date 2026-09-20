@@ -5,13 +5,13 @@ import GroupsRounded from '@mui/icons-material/GroupsRounded';
 import MicRounded from '@mui/icons-material/MicRounded';
 import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
 import ReplayRounded from '@mui/icons-material/ReplayRounded';
-import StopRounded from '@mui/icons-material/StopRounded';
 import WifiRounded from '@mui/icons-material/WifiRounded';
 import { useEffect, useState, type MutableRefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import Waveform from '../../components/Waveform';
 import type { SavedGameSetup, SetupSoundIcon } from '../setup/model';
-import type { GameSnapshot } from './model';
+import { computePlayerScores, computeTurnScore, type GameSnapshot } from './model';
+import Scoreboard from './Scoreboard';
 import StageScene, { type AvatarAssetIssue } from './StageScene';
 
 const soundEmoji: Record<SetupSoundIcon, string> = {
@@ -21,10 +21,10 @@ const soundEmoji: Record<SetupSoundIcon, string> = {
     whistle: '🎵',
 };
 
+// Mirrors StageScene's onStagePhases: everyone records from their waiting spot, so the
+// performer bubble should only "dock" at the mic once they actually walk up to it.
 const performerPhases = new Set<GameSnapshot['phase']>([
     'entering',
-    'ready',
-    'recording',
     'performing',
     'result',
 ]);
@@ -33,6 +33,7 @@ type PlayStageProps = {
     audioBlocked: boolean;
     audioLevel: MutableRefObject<number>;
     connectionReady: boolean;
+    countdown: number | null;
     elapsedSeconds: number;
     isHost: boolean;
     onAdvance: () => void;
@@ -42,8 +43,6 @@ type PlayStageProps = {
     onReveal: () => void;
     onRetry: () => void;
     onStartRecording: () => void;
-    onStopRecording: () => void;
-    recording: boolean;
     recordingDuration: number;
     referenceBlocked: boolean;
     setup: SavedGameSetup;
@@ -51,15 +50,11 @@ type PlayStageProps = {
     viewerPlayerId: string;
 };
 
-function phaseKey(snapshot: GameSnapshot) {
-    if (snapshot.paused) return 'play.phasePaused';
-    return `play.phase.${snapshot.phase}`;
-}
-
 export default function PlayStage({
     audioBlocked,
     audioLevel,
     connectionReady,
+    countdown,
     elapsedSeconds,
     isHost,
     onAdvance,
@@ -69,8 +64,6 @@ export default function PlayStage({
     onReveal,
     onRetry,
     onStartRecording,
-    onStopRecording,
-    recording,
     recordingDuration,
     referenceBlocked,
     setup,
@@ -85,6 +78,8 @@ export default function PlayStage({
     const canAct = viewerPlayerId === snapshot.activePlayerId && !snapshot.paused;
     const prediction = snapshot.predictions[0];
     const confidence = prediction ? Math.round(prediction.probability * 100) : 0;
+    const turnScore = round ? computeTurnScore(round, snapshot.predictions) : 0;
+    const scores = computePlayerScores(snapshot);
     const performerOnStage = performerPhases.has(snapshot.phase);
     const assetIssueDetails = avatarAssetIssues.map(({ missingMotions, modelUrl }) => (
         missingMotions?.length ? `${modelUrl}: ${missingMotions.join(', ')}` : modelUrl
@@ -121,16 +116,27 @@ export default function PlayStage({
                         <strong>{round?.name ?? t('play.complete')}</strong>
                     </div>
                 </div>
-                <div className={`play-stage__connection${connectionReady ? ' is-ready' : ''}`}>
-                    <WifiRounded />
-                    <span>{t(connectionReady ? 'play.connected' : 'play.connecting')}</span>
+                <div className="play-stage__hud-right">
+                    <div className={`play-stage__connection${connectionReady ? ' is-ready' : ''}`}>
+                        <WifiRounded />
+                        <span>{t(connectionReady ? 'play.connected' : 'play.connecting')}</span>
+                    </div>
+                    {snapshot.phase !== 'waiting' && (
+                        <Scoreboard activePlayerId={snapshot.activePlayerId} scores={scores} />
+                    )}
                 </div>
             </header>
 
-            {activePlayer && snapshot.phase !== 'complete' && (
+            {activePlayer && snapshot.phase !== 'complete' && snapshot.phase !== 'waiting' && (
                 <div className={`play-stage__turn-bubble${performerOnStage ? ' is-on-stage' : ' is-waiting'}`}>
                     <strong>{t('play.personTurn', { name: activePlayer.name })}</strong>
-                    <span>{t(phaseKey(snapshot))}</span>
+                </div>
+            )}
+
+            {snapshot.phase === 'ready' && countdown !== null && (
+                <div className="play-stage__countdown" role="status" aria-live="assertive">
+                    <span>{t('play.recordingStartsIn')}</span>
+                    <strong key={countdown}>{countdown || t('play.go')}</strong>
                 </div>
             )}
 
@@ -165,7 +171,7 @@ export default function PlayStage({
                     {snapshot.phase === 'ready' && (
                         <>
                             <MicRounded />
-                            <span>{t(canAct ? 'play.yourTurn' : 'play.waitForPlayer', { name: activePlayer?.name })}</span>
+                            <span>{t('play.everyoneGetReady')}</span>
                         </>
                     )}
 
@@ -199,6 +205,10 @@ export default function PlayStage({
                                     <strong>{confidence}%</strong>
                                 </div>
                             )}
+                            <div className="play-stage__score">
+                                <small>{t('play.turnScore')}</small>
+                                <strong>{t('play.scoreOutOf100', { score: turnScore })}</strong>
+                            </div>
                         </div>
                     )}
 
@@ -225,16 +235,11 @@ export default function PlayStage({
                             <PlayArrowRounded /> {t('play.playReference')}
                         </button>
                     )}
-                    {snapshot.phase === 'ready' && canAct && (
+                    {snapshot.phase === 'ready' && canAct && countdown === null && !!snapshot.error && (
                         <button className="play-stage__record" onClick={onStartRecording} type="button">
                             <MicRounded />
                             <span>{t('play.recordNow')}</span>
                             <small>{t('play.secondsAvailable', { count: recordingDuration })}</small>
-                        </button>
-                    )}
-                    {snapshot.phase === 'recording' && canAct && recording && (
-                        <button className="play-stage__stop" onClick={onStopRecording} type="button">
-                            <StopRounded /> {t('play.stopRecording')}
                         </button>
                     )}
                     {snapshot.phase === 'performing' && audioBlocked && (

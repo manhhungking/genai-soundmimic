@@ -43,9 +43,9 @@ describe('PlayStage permissions and XAI', () => {
                 audioBlocked={false}
                 audioLevel={{ current: 0 }}
                 connectionReady
+                countdown={3}
                 elapsedSeconds={0}
                 isHost={false}
-                recording={false}
                 recordingDuration={3}
                 referenceBlocked={false}
                 setup={setup}
@@ -54,12 +54,13 @@ describe('PlayStage permissions and XAI', () => {
             />,
         );
 
-        expect(screen.getByRole('button', { name: /Record your sound/ })).toBeInTheDocument();
-        expect(screen.getByRole('region', { name: /Sound Mimic game stage/i })).toHaveClass(
-            'phase-ready',
-            'has-active-performer',
-        );
-        expect(document.querySelector('.play-stage__turn-bubble')).toHaveClass('is-on-stage');
+        expect(screen.getByRole('status')).toHaveTextContent('Recording starts in3');
+        expect(screen.queryByRole('button', { name: /Record your sound/ })).not.toBeInTheDocument();
+        // Everyone records from their waiting spot at once, so nobody is "on stage" at the mic
+        // yet during the countdown/recording phases.
+        expect(screen.getByRole('region', { name: /Sound Mimic game stage/i })).toHaveClass('phase-ready');
+        expect(screen.getByRole('region', { name: /Sound Mimic game stage/i })).not.toHaveClass('has-active-performer');
+        expect(document.querySelector('.play-stage__turn-bubble')).toHaveClass('is-waiting');
         expect(screen.queryByLabelText('Turn order')).not.toBeInTheDocument();
 
         view.rerender(
@@ -68,9 +69,9 @@ describe('PlayStage permissions and XAI', () => {
                 audioBlocked={false}
                 audioLevel={{ current: 0 }}
                 connectionReady
+                countdown={null}
                 elapsedSeconds={0}
                 isHost={false}
-                recording={false}
                 recordingDuration={3}
                 referenceBlocked={false}
                 setup={setup}
@@ -80,7 +81,7 @@ describe('PlayStage permissions and XAI', () => {
         );
 
         expect(screen.queryByRole('button', { name: /Record your sound/ })).not.toBeInTheDocument();
-        expect(screen.getByText('Waiting for Maya to record')).toBeInTheDocument();
+        expect(screen.getByText('Everyone get ready to record')).toBeInTheDocument();
     });
 
     it('keeps the waiting state compact without dashboard cards', () => {
@@ -93,9 +94,9 @@ describe('PlayStage permissions and XAI', () => {
                 audioBlocked={false}
                 audioLevel={{ current: 0 }}
                 connectionReady
+                countdown={null}
                 elapsedSeconds={0}
                 isHost
-                recording={false}
                 recordingDuration={3}
                 referenceBlocked={false}
                 setup={setup}
@@ -105,7 +106,8 @@ describe('PlayStage permissions and XAI', () => {
         );
 
         expect(screen.getByRole('region', { name: /Sound Mimic game stage/i })).toHaveClass('phase-waiting');
-        expect(document.querySelector('.play-stage__turn-bubble')).toHaveClass('is-waiting');
+        // The game hasn't started yet, so there's no "so-and-so's turn" to announce.
+        expect(document.querySelector('.play-stage__turn-bubble')).not.toBeInTheDocument();
         expect(document.querySelector('.play-stage__action-bar')).toBeInTheDocument();
         expect(document.querySelector('.play-stage__controls')).not.toBeInTheDocument();
         expect(document.querySelector('.play-stage__queue')).not.toBeInTheDocument();
@@ -128,9 +130,9 @@ describe('PlayStage permissions and XAI', () => {
                 audioBlocked={false}
                 audioLevel={{ current: 0 }}
                 connectionReady
+                countdown={null}
                 elapsedSeconds={0}
                 isHost={false}
-                recording={false}
                 recordingDuration={3}
                 referenceBlocked={false}
                 setup={setup}
@@ -142,5 +144,30 @@ describe('PlayStage permissions and XAI', () => {
         expect(screen.getByLabelText('AI explanation')).toBeInTheDocument();
         expect(screen.getByText('Why Bird?')).toBeInTheDocument();
         expect(screen.getAllByText('82%')).toHaveLength(2);
+    });
+
+    it('offers a manual retry instead of looping the countdown after a microphone error', () => {
+        const { setup, snapshot } = readySnapshot();
+        const errorSnapshot = { ...snapshot, error: 'play.microphoneDenied' };
+
+        render(
+            <PlayStage
+                {...callbacks}
+                audioBlocked={false}
+                audioLevel={{ current: 0 }}
+                connectionReady
+                countdown={null}
+                elapsedSeconds={0}
+                isHost={false}
+                recordingDuration={3}
+                referenceBlocked={false}
+                setup={setup}
+                snapshot={errorSnapshot}
+                viewerPlayerId="student-1"
+            />,
+        );
+
+        expect(screen.getByRole('button', { name: /Record your sound/ })).toBeInTheDocument();
+        expect(screen.queryByText('Recording starts in')).not.toBeInTheDocument();
     });
 });

@@ -1,6 +1,7 @@
 import CheckRounded from '@mui/icons-material/CheckRounded';
 import DeleteOutlineRounded from '@mui/icons-material/DeleteOutlineRounded';
 import EditRounded from '@mui/icons-material/EditRounded';
+import ExpandMoreRounded from '@mui/icons-material/ExpandMoreRounded';
 import MicRounded from '@mui/icons-material/MicRounded';
 import MoreVertRounded from '@mui/icons-material/MoreVertRounded';
 import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
@@ -21,12 +22,20 @@ import {
     type SoundIconKey,
     type SoundSample,
 } from './model';
-import { createSoundRecorder, extractAudioExamples, recordingOptions } from './soundClassifier';
+import {
+    createSoundRecorder,
+    disableAutomaticMicrophoneProcessing,
+    extractAudioExamples,
+    keepCompleteRecordingForPlayback,
+    readCompleteSoundRecording,
+    recordingOptions,
+} from './soundClassifier';
 
 type TrainingClassCardProps = {
     active: boolean;
     editing: boolean;
     menuOpen: boolean;
+    micPanelOpen: boolean;
     soundClass: SoundClass;
     sampleCount: number;
     samples: SoundSample[];
@@ -35,6 +44,7 @@ type TrainingClassCardProps = {
     onCaptureError: () => void;
     onCloseControls: () => void;
     onEdit: () => void;
+    onOpenRecording: () => void;
     onRemove: (id: string) => void;
     onRemoveSample: (id: string, clipId: string) => void;
     onToggleMenu: () => void;
@@ -45,6 +55,7 @@ export default function TrainingClassCard({
     active,
     editing,
     menuOpen,
+    micPanelOpen,
     soundClass,
     sampleCount,
     samples,
@@ -53,6 +64,7 @@ export default function TrainingClassCard({
     onCaptureError,
     onCloseControls,
     onEdit,
+    onOpenRecording,
     onRemove,
     onRemoveSample,
     onToggleMenu,
@@ -60,13 +72,18 @@ export default function TrainingClassCard({
 }: TrainingClassCardProps) {
     const { t } = useTranslation();
     const fileRef = useRef<HTMLInputElement>(null);
+    const microphoneMenuRef = useRef<HTMLDivElement>(null);
+    const microphoneTriggerRef = useRef<HTMLButtonElement>(null);
     const recorderRef = useRef<SoundRecorder | null>(null);
+    const closeAfterStopRef = useRef(false);
     const capturedRef = useRef<AudioExample[]>([]);
     const sampleListRef = useRef<HTMLDivElement>(null);
     const playbackContextRef = useRef<AudioContext | null>(null);
     const playbackSourceRef = useRef<AudioBufferSourceNode | null>(null);
     const [recording, setRecording] = useState(false);
-    const [micPanelOpen, setMicPanelOpen] = useState(false);
+    const [microphoneMenuOpen, setMicrophoneMenuOpen] = useState(false);
+    const [microphones, setMicrophones] = useState<MediaDeviceInfo[]>([]);
+    const [selectedDeviceId, setSelectedDeviceId] = useState('');
     const [recordingElapsed, setRecordingElapsed] = useState(0);
     const [liveSamples, setLiveSamples] = useState<AudioExample[]>([]);
     const [uploading, setUploading] = useState(false);
@@ -88,6 +105,17 @@ export default function TrainingClassCard({
         () => clips.find((clip) => clip.id === selectedClipId) ?? null,
         [clips, selectedClipId],
     );
+    const microphoneOptions = [
+        { deviceId: '', label: t('train.microphoneDefault') },
+        ...microphones
+            .filter(({ deviceId }) => deviceId && deviceId !== 'default')
+            .map((device, index) => ({
+                deviceId: device.deviceId,
+                label: device.label || `${t('train.mic')} ${index + 1}`,
+            })),
+    ];
+    const selectedMicrophone = microphoneOptions.find(({ deviceId }) => deviceId === selectedDeviceId)
+        ?? microphoneOptions[0];
 
     useEffect(() => {
         if (!recording) return;
@@ -104,6 +132,27 @@ export default function TrainingClassCard({
         const sampleList = sampleListRef.current;
         if (sampleList) sampleList.scrollTop = sampleList.scrollHeight;
     }, [liveSamples.length, recording]);
+
+    useEffect(() => {
+        if (!microphoneMenuOpen) return;
+
+        function closeOnOutsidePress(event: PointerEvent) {
+            if (!microphoneMenuRef.current?.contains(event.target as Node)) setMicrophoneMenuOpen(false);
+        }
+
+        function closeOnEscape(event: KeyboardEvent) {
+            if (event.key !== 'Escape') return;
+            setMicrophoneMenuOpen(false);
+            microphoneTriggerRef.current?.focus();
+        }
+
+        document.addEventListener('pointerdown', closeOnOutsidePress);
+        document.addEventListener('keydown', closeOnEscape);
+        return () => {
+            document.removeEventListener('pointerdown', closeOnOutsidePress);
+            document.removeEventListener('keydown', closeOnEscape);
+        };
+    }, [microphoneMenuOpen]);
 
     useEffect(() => () => {
         recorderRef.current?.stopRecording();
@@ -136,26 +185,56 @@ export default function TrainingClassCard({
     }
 
     function openRecordingPanel() {
-        onCloseControls();
-        setMicPanelOpen(true);
+        closeAfterStopRef.current = false;
+        setRecording(false);
         setRecordingElapsed(0);
         setLiveSamples([]);
+        setMicrophoneMenuOpen(false);
+        onOpenRecording();
     }
 
-    const closeRecordingPanel = useCallback(() => {
+    async function refreshMicrophones() {
+        try {
+            const devices = await navigator.mediaDevices?.enumerateDevices();
+            setMicrophones(devices?.filter(({ kind }) => kind === 'audioinput') ?? []);
+        } catch {
+            setMicrophones([]);
+        }
+    }
+
+    const releaseRecorder = useCallback(() => {
         recorderRef.current?.stopRecording();
         recorderRef.current?.removeAllListeners();
         recorderRef.current = null;
         capturedRef.current = [];
         recordingStartedAtRef.current = null;
+        closeAfterStopRef.current = false;
+    }, []);
+
+    const resetRecordingPanel = useCallback(() => {
+        releaseRecorder();
         setRecording(false);
         setRecordingElapsed(0);
         setLiveSamples([]);
-        setMicPanelOpen(false);
-    }, []);
+        setMicrophoneMenuOpen(false);
+    }, [releaseRecorder]);
+
+    const closeRecordingPanel = useCallback(() => {
+        if (recording) {
+            closeAfterStopRef.current = true;
+            recorderRef.current?.stopRecording();
+            return;
+        }
+        resetRecordingPanel();
+        onCloseControls();
+    }, [onCloseControls, recording, resetRecordingPanel]);
 
     useEffect(() => {
-        if (!micPanelOpen || recording) return;
+        if (!micPanelOpen) releaseRecorder();
+    }, [micPanelOpen, releaseRecorder]);
+
+    useEffect(() => {
+        if (!micPanelOpen) return;
 
         const closeWhenClickingOutsideTrainingData = (event: PointerEvent) => {
             const target = event.target;
@@ -165,7 +244,7 @@ export default function TrainingClassCard({
 
         document.addEventListener('pointerdown', closeWhenClickingOutsideTrainingData);
         return () => document.removeEventListener('pointerdown', closeWhenClickingOutsideTrainingData);
-    }, [closeRecordingPanel, micPanelOpen, recording]);
+    }, [closeRecordingPanel, micPanelOpen]);
 
     async function toggleRecording() {
         if (recording) {
@@ -185,13 +264,28 @@ export default function TrainingClassCard({
             });
             recorder.on('stop', () => {
                 const completedSamples = capturedRef.current;
-                if (completedSamples.length) onAddSamples(soundClass.id, completedSamples);
+                const shouldClosePanel = closeAfterStopRef.current;
+                closeAfterStopRef.current = false;
                 capturedRef.current = [];
                 recorderRef.current = null;
                 recordingStartedAtRef.current = null;
                 setRecording(false);
                 setRecordingElapsed(0);
                 setLiveSamples([]);
+                if (shouldClosePanel) onCloseControls();
+                void readCompleteSoundRecording(recorder)
+                    .then((completeAudio) => {
+                        if (!completedSamples.length) return;
+                        onAddSamples(
+                            soundClass.id,
+                            completeAudio
+                                ? keepCompleteRecordingForPlayback(completedSamples, completeAudio)
+                                : completedSamples,
+                        );
+                    })
+                    .catch(() => {
+                        if (completedSamples.length) onAddSamples(soundClass.id, completedSamples);
+                    });
             });
             recorder.on('error', () => {
                 capturedRef.current = [];
@@ -203,14 +297,19 @@ export default function TrainingClassCard({
             recordingStartedAtRef.current = performance.now();
             await recorder.startRecording(
                 displayName,
-                recordingOptions(),
+                recordingOptions(undefined, true, selectedDeviceId || undefined),
             );
+            await disableAutomaticMicrophoneProcessing(recorder);
+            if (closeAfterStopRef.current) recorder.stopRecording();
         } catch {
+            const shouldClosePanel = closeAfterStopRef.current;
+            closeAfterStopRef.current = false;
             recorderRef.current = null;
             capturedRef.current = [];
             recordingStartedAtRef.current = null;
             setRecording(false);
             setLiveSamples([]);
+            if (shouldClosePanel) onCloseControls();
             onCaptureError();
         }
     }
@@ -424,10 +523,53 @@ export default function TrainingClassCard({
                                 ×
                             </button>
                         </div>
-                        <button className="training-recording-panel__device" type="button">
-                            <span>{t('train.microphoneDefault')}</span>
-                            <span aria-hidden="true">⌄</span>
-                        </button>
+                        <div
+                            className={`training-recording-panel__device-source${microphoneMenuOpen ? ' is-open' : ''}`}
+                            ref={microphoneMenuRef}
+                        >
+                            <button
+                                aria-expanded={microphoneMenuOpen}
+                                aria-haspopup="listbox"
+                                aria-label={`${t('train.inputSource')}: ${selectedMicrophone.label}`}
+                                className="training-recording-panel__device"
+                                disabled={recording}
+                                onClick={() => {
+                                    const nextOpen = !microphoneMenuOpen;
+                                    setMicrophoneMenuOpen(nextOpen);
+                                    if (nextOpen) void refreshMicrophones();
+                                }}
+                                ref={microphoneTriggerRef}
+                                type="button"
+                            >
+                                <span>{selectedMicrophone.label}</span>
+                                <ExpandMoreRounded aria-hidden="true" />
+                            </button>
+                            {microphoneMenuOpen && (
+                                <ul
+                                    aria-label={t('train.inputSource')}
+                                    className="training-recording-panel__device-menu"
+                                    role="listbox"
+                                >
+                                    {microphoneOptions.map(({ deviceId, label }) => (
+                                        <li key={deviceId || 'default'} role="presentation">
+                                            <button
+                                                aria-selected={deviceId === selectedDeviceId}
+                                                onClick={() => {
+                                                    setSelectedDeviceId(deviceId);
+                                                    setMicrophoneMenuOpen(false);
+                                                    microphoneTriggerRef.current?.focus();
+                                                }}
+                                                role="option"
+                                                type="button"
+                                            >
+                                                <span>{label}</span>
+                                                {deviceId === selectedDeviceId && <CheckRounded aria-hidden="true" />}
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
                         <div className="training-recording-panel__canvas">
                             <TrainingWaveform active={recording} />
                         </div>

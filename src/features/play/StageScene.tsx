@@ -42,8 +42,10 @@ type AvatarActor = {
 const loader = new GLTFLoader();
 const assetCache = new Map<AvatarVariant, Promise<GLTF>>();
 const floorY = -1.24;
-const activePosition: StagePosition = { scale: 1, x: 0.55, z: 0.12 };
-const onStagePhases = new Set<GamePhase>(['entering', 'ready', 'recording', 'performing', 'result']);
+// Everyone records from their waiting spot at once; only the performer walks up to the mic
+// afterwards, to play back their clip and see the AI's score.
+const activePosition: StagePosition = { scale: 1.05, x: 0.42, z: 0.75 };
+const onStagePhases = new Set<GamePhase>(['entering', 'performing', 'result']);
 
 function loadAvatarAsset(variant: AvatarVariant) {
     const cached = assetCache.get(variant);
@@ -84,7 +86,9 @@ function createMicrophone() {
     grille.position.y = 0.34;
     neck.add(handle, grille);
     group.add(base, stand, neck);
-    group.position.set(1.22, -0.19, 0.26);
+    // Original size — pushed well forward of the performer spot (toward the front of the
+    // stage/camera) so it reads as clearly in front rather than sitting on the same line.
+    group.position.set(1.02, -0.19, 1.42);
     group.scale.setScalar(0.86);
     return group;
 }
@@ -98,9 +102,11 @@ function waitingPosition(index: number, total: number): StagePosition {
     const centre = inBackRow ? -1.42 : -1.3;
     const curve = Math.abs(rowIndex - (rowCount - 1) / 2) * 0.045;
     return {
-        scale: inBackRow ? 0.82 : 0.9,
+        scale: inBackRow ? 0.78 : 0.86,
         x: centre + (rowIndex - (rowCount - 1) / 2) * spacing,
-        z: (inBackRow ? -0.52 : -0.05) - curve,
+        // Pulled well behind the mic/performer line so walking up to perform reads as a
+        // forward walk with real depth, not a same-line sideways slide.
+        z: (inBackRow ? -0.95 : -0.42) - curve,
     };
 }
 
@@ -180,8 +186,13 @@ export default function StageScene({
         let cancelled = false;
         const scene = new THREE.Scene();
         const camera = new THREE.OrthographicCamera(-4.8, 4.8, 2.7, -2.7, 0.1, 100);
-        camera.position.set(0, 0.12, 9);
-        camera.lookAt(0, -0.22, 0);
+        // Tilted down noticeably more than before: an orthographic camera has no perspective
+        // foreshortening, so a near-flat angle (as this used to be) makes forward/backward (z)
+        // movement almost invisible — nothing to walk "toward". A real downward tilt turns z
+        // into actual vertical screen movement, so walking to the mic reads as a diagonal walk
+        // forward instead of a sideways slide with the character just growing in place.
+        camera.position.set(0, 1.9, 8.1);
+        camera.lookAt(0, -0.75, 0);
         const renderer = new THREE.WebGLRenderer({
             alpha: true,
             antialias: true,
@@ -278,7 +289,7 @@ export default function StageScene({
                 const targetRotation = lookingAtPerformer ? -0.2 : active ? 0.08 : 0;
                 actor.root.rotation.y += (targetRotation - actor.root.rotation.y) * moveFactor;
 
-                const performing = active && (current.phase === 'recording' || current.phase === 'performing');
+                const performing = active && current.phase === 'performing';
                 const motion: AvatarMotion = distance > 0.035 ? 'walk' : performing ? 'perform' : 'idle';
                 transitionTo(actor, motion, reducedMotion);
                 const performAction = actor.actions.perform;

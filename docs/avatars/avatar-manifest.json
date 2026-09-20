@@ -139,9 +139,9 @@
         "glb": {
           "path": "public/assets/avatars/leo.glb",
           "status": "verified",
-          "sizeBytes": 1434452,
-          "triangles": 36424,
-          "boneCount": 19,
+          "sizeBytes": 1610028,
+          "triangles": 41288,
+          "boneCount": 20,
           "clips": [
             "idle",
             "perform",
@@ -256,9 +256,9 @@
         "glb": {
           "path": "public/assets/avatars/liam.glb",
           "status": "verified",
-          "sizeBytes": 1510136,
-          "triangles": 39936,
-          "boneCount": 19,
+          "sizeBytes": 1683868,
+          "triangles": 44800,
+          "boneCount": 20,
           "clips": [
             "idle",
             "perform",
@@ -373,9 +373,9 @@
         "glb": {
           "path": "public/assets/avatars/noah.glb",
           "status": "verified",
-          "sizeBytes": 1648216,
-          "triangles": 42504,
-          "boneCount": 19,
+          "sizeBytes": 1823824,
+          "triangles": 47368,
+          "boneCount": 20,
           "clips": [
             "idle",
             "perform",
@@ -492,9 +492,9 @@
         "glb": {
           "path": "public/assets/avatars/kai.glb",
           "status": "verified",
-          "sizeBytes": 1450592,
-          "triangles": 37044,
-          "boneCount": 19,
+          "sizeBytes": 1628064,
+          "triangles": 41908,
+          "boneCount": 20,
           "clips": [
             "idle",
             "perform",
@@ -614,9 +614,9 @@
         "glb": {
           "path": "public/assets/avatars/hung.glb",
           "status": "verified",
-          "sizeBytes": 1680668,
-          "triangles": 43348,
-          "boneCount": 19,
+          "sizeBytes": 1854372,
+          "triangles": 48212,
+          "boneCount": 20,
           "clips": [
             "idle",
             "perform",
@@ -731,9 +731,9 @@
         "glb": {
           "path": "public/assets/avatars/maya.glb",
           "status": "verified",
-          "sizeBytes": 1309812,
-          "triangles": 33812,
-          "boneCount": 19,
+          "sizeBytes": 1487228,
+          "triangles": 38676,
+          "boneCount": 20,
           "clips": [
             "idle",
             "perform",
@@ -848,9 +848,9 @@
         "glb": {
           "path": "public/assets/avatars/zoe.glb",
           "status": "verified",
-          "sizeBytes": 1216892,
-          "triangles": 30208,
-          "boneCount": 19,
+          "sizeBytes": 1390600,
+          "triangles": 35072,
+          "boneCount": 20,
           "clips": [
             "idle",
             "perform",
@@ -965,9 +965,9 @@
         "glb": {
           "path": "public/assets/avatars/aisha.glb",
           "status": "verified",
-          "sizeBytes": 1934428,
-          "triangles": 50688,
-          "boneCount": 19,
+          "sizeBytes": 2110000,
+          "triangles": 55552,
+          "boneCount": 20,
           "clips": [
             "idle",
             "perform",
@@ -1082,9 +1082,9 @@
         "glb": {
           "path": "public/assets/avatars/emma.glb",
           "status": "verified",
-          "sizeBytes": 1261344,
-          "triangles": 32380,
-          "boneCount": 19,
+          "sizeBytes": 1436996,
+          "triangles": 37244,
+          "boneCount": 20,
           "clips": [
             "idle",
             "perform",
@@ -1199,9 +1199,9 @@
         "glb": {
           "path": "public/assets/avatars/hana.glb",
           "status": "verified",
-          "sizeBytes": 1372888,
-          "triangles": 35624,
-          "boneCount": 19,
+          "sizeBytes": 1548456,
+          "triangles": 40488,
+          "boneCount": 20,
           "clips": [
             "idle",
             "perform",

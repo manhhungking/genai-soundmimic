@@ -1,11 +1,13 @@
-import type { AudioExample } from '@genai-fi/classifier';
-import { describe, expect, it } from 'vitest';
+import type { AudioExample, SoundRecorder } from '@genai-fi/classifier';
+import { describe, expect, it, vi } from 'vitest';
 import { groupSoundSamplesByClip } from '../../util/soundSamples';
 import { initialSoundClasses, type SoundSample } from './model';
 import {
     canTrainSoundClassifier,
+    disableAutomaticMicrophoneProcessing,
     hasEnoughSamplesForClass,
     minimumSampleCount,
+    keepCompleteRecordingForPlayback,
     recordingOptions,
 } from './soundClassifier';
 
@@ -43,7 +45,7 @@ describe('sound recording clips', () => {
 
     it('passes the selected microphone to the sound recorder', () => {
         expect(recordingOptions(undefined, false, 'usb-microphone')).toMatchObject({
-            deviceId: 'usb-microphone',
+            deviceId: { exact: 'usb-microphone' },
             includeCanvas: false,
             includeRawAudio: false,
         });
@@ -58,6 +60,40 @@ describe('sound recording clips', () => {
         expect(hasEnoughSamplesForClass(1, samples.slice(0, 1))).toBe(false);
         expect(hasEnoughSamplesForClass(1, samples)).toBe(true);
         expect(minimumSampleCount.soundClass).toBe(2);
+        expect(minimumSampleCount.backgroundNoise).toBe(2);
+    });
+
+    it('keeps the complete recording once instead of replaying truncated frame slices', () => {
+        const examples = [
+            createSample('frame-1', 'recording-1').data,
+            createSample('frame-2', 'recording-1').data,
+        ];
+        const completeAudio = {
+            data: new Float32Array([0.1, 0.2, 0.3, 0.4, 0.5]),
+            sampleRateHz: 44_100,
+        };
+
+        const result = keepCompleteRecordingForPlayback(examples, completeAudio);
+
+        expect(result[0].rawAudio).toBe(completeAudio);
+        expect(result[1].rawAudio).toBeUndefined();
+    });
+
+    it('disables browser processing that can reduce microphone volume over time', async () => {
+        const applyConstraints = vi.fn().mockResolvedValue(undefined);
+        const recorder = {
+            stream: {
+                getAudioTracks: () => [{ applyConstraints }],
+            },
+        } as unknown as SoundRecorder;
+
+        await disableAutomaticMicrophoneProcessing(recorder);
+
+        expect(applyConstraints).toHaveBeenCalledWith({
+            autoGainControl: false,
+            echoCancellation: false,
+            noiseSuppression: false,
+        });
     });
 
     it('keeps the classifier inactive until every class reaches its threshold', () => {

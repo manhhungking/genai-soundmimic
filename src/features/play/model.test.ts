@@ -67,6 +67,24 @@ describe('play game state', () => {
         expect(retryGameTurn(finalAttempt, setup)).toBe(finalAttempt);
     });
 
+    it('goes straight to ready (never entering) when starting or retrying a round without a reference clip', () => {
+        // Everyone records simultaneously from where they're already standing — nobody should
+        // walk to the mic ("entering") until it's their turn to play a clip back.
+        const noReference = { ...setup, rules: { ...setup.rules, playReference: false } };
+        let snapshot = createGameSnapshot('session', noReference, defaultHostProfile);
+        snapshot = addGameParticipant(snapshot, {
+            avatar: 'maya', connected: true, id: 'student-1', name: 'Maya', role: 'student',
+        });
+        snapshot = beginCurrentTurn(snapshot, noReference);
+        expect(snapshot.phase).toBe('ready');
+
+        snapshot = completeGameAttempt(snapshot, {
+            predictions: [{ className: 'Bird', probability: 0.5 }],
+            recordingDataUrl: 'data:audio/webm;base64,abc',
+        }, noReference);
+        expect(retryGameTurn(snapshot, noReference).phase).toBe('ready');
+    });
+
     it('accepts student actions only from the authorized active connection', () => {
         const snapshot = addGameParticipant(createGameSnapshot('session', {
             ...setup,

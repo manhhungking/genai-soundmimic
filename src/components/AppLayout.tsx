@@ -6,6 +6,7 @@ import {
     hostProfileStorageKey,
     type UserProfile,
 } from '../data/profile';
+import { useTrainingSession, type TrainingSession } from '../features/training/useTrainingSession';
 import { readProfile, saveProfile } from '../util/profile';
 import CornerControls from './CornerControls';
 import GameControls from './GameControls';
@@ -19,6 +20,7 @@ export type AppOutletContext = {
     classCode: string;
     paused: boolean;
     profile: UserProfile;
+    training: TrainingSession;
     xaiEnabled: boolean;
 };
 
@@ -32,6 +34,7 @@ export function Component() {
     const [xaiEnabled, setXaiEnabled] = useState(false);
     const [paused, setPaused] = useState(false);
     const classCode = useID(8);
+    const training = useTrainingSession();
 
     return (
         <div className={`app-shell${sidebarCollapsed ? ' app-shell--sidebar-collapsed' : ''}`}>
@@ -52,7 +55,7 @@ export function Component() {
                     onOpenProfileSettings={() => setProfileOpen(true)}
                     profile={profile}
                 />
-                <Outlet context={{ classCode, paused, profile, xaiEnabled } satisfies AppOutletContext} />
+                <Outlet context={{ classCode, paused, profile, training, xaiEnabled } satisfies AppOutletContext} />
             </main>
             <GameControls
                 paused={paused}

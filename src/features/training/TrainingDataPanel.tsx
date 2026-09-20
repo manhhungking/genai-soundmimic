@@ -20,7 +20,7 @@ type TrainingDataPanelProps = {
 
 type OpenClassControl = {
     classId: string;
-    type: 'edit' | 'menu';
+    type: 'edit' | 'menu' | 'record';
 };
 
 export default function TrainingDataPanel({
@@ -72,6 +72,7 @@ export default function TrainingDataPanel({
                         active={hasEnoughSamplesForClass(index, samples[soundClass.id] ?? [])}
                         editing={openClassControl?.classId === soundClass.id && openClassControl.type === 'edit'}
                         menuOpen={openClassControl?.classId === soundClass.id && openClassControl.type === 'menu'}
+                        micPanelOpen={openClassControl?.classId === soundClass.id && openClassControl.type === 'record'}
                         soundClass={soundClass}
                         sampleCount={groupSoundSamplesByClip(samples[soundClass.id] ?? []).length}
                         samples={samples[soundClass.id] ?? []}
@@ -80,6 +81,7 @@ export default function TrainingDataPanel({
                         onCaptureError={onCaptureError}
                         onCloseControls={() => setOpenClassControl(null)}
                         onEdit={() => setOpenClassControl({ classId: soundClass.id, type: 'edit' })}
+                        onOpenRecording={() => setOpenClassControl({ classId: soundClass.id, type: 'record' })}
                         onRemove={(id) => {
                             setOpenClassControl(null);
                             onRemoveClass(id);

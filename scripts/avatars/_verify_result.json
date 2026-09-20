@@ -2,11 +2,11 @@
   {
     "id": "leo",
     "status": "loaded_ok",
-    "sizeBytes": 1434452,
+    "sizeBytes": 1610028,
     "meshes": 15,
-    "triangles": 36424,
+    "triangles": 41288,
     "hasSkinnedMesh": true,
-    "boneCount": 19,
+    "boneCount": 20,
     "morphTargets": [
       "MouthOpen",
       "Blink"
@@ -36,11 +36,11 @@
   {
     "id": "liam",
     "status": "loaded_ok",
-    "sizeBytes": 1510136,
+    "sizeBytes": 1683868,
     "meshes": 18,
-    "triangles": 39936,
+    "triangles": 44800,
     "hasSkinnedMesh": true,
-    "boneCount": 19,
+    "boneCount": 20,
     "morphTargets": [
       "MouthOpen",
       "Blink"
@@ -70,11 +70,11 @@
   {
     "id": "noah",
     "status": "loaded_ok",
-    "sizeBytes": 1648216,
+    "sizeBytes": 1823824,
     "meshes": 15,
-    "triangles": 42504,
+    "triangles": 47368,
     "hasSkinnedMesh": true,
-    "boneCount": 19,
+    "boneCount": 20,
     "morphTargets": [
       "MouthOpen",
       "Blink"
@@ -104,11 +104,11 @@
   {
     "id": "kai",
     "status": "loaded_ok",
-    "sizeBytes": 1450592,
+    "sizeBytes": 1628064,
     "meshes": 17,
-    "triangles": 37044,
+    "triangles": 41908,
     "hasSkinnedMesh": true,
-    "boneCount": 19,
+    "boneCount": 20,
     "morphTargets": [
       "MouthOpen",
       "Blink"
@@ -138,11 +138,11 @@
   {
     "id": "hung",
     "status": "loaded_ok",
-    "sizeBytes": 1680668,
+    "sizeBytes": 1854372,
     "meshes": 15,
-    "triangles": 43348,
+    "triangles": 48212,
     "hasSkinnedMesh": true,
-    "boneCount": 19,
+    "boneCount": 20,
     "morphTargets": [
       "MouthOpen",
       "Blink"
@@ -172,11 +172,11 @@
   {
     "id": "hana",
     "status": "loaded_ok",
-    "sizeBytes": 1372888,
+    "sizeBytes": 1548456,
     "meshes": 21,
-    "triangles": 35624,
+    "triangles": 40488,
     "hasSkinnedMesh": true,
-    "boneCount": 19,
+    "boneCount": 20,
     "morphTargets": [
       "MouthOpen",
       "Blink"
@@ -206,11 +206,11 @@
   {
     "id": "zoe",
     "status": "loaded_ok",
-    "sizeBytes": 1216892,
+    "sizeBytes": 1390600,
     "meshes": 15,
-    "triangles": 30208,
+    "triangles": 35072,
     "hasSkinnedMesh": true,
-    "boneCount": 19,
+    "boneCount": 20,
     "morphTargets": [
       "MouthOpen",
       "Blink"
@@ -240,11 +240,11 @@
   {
     "id": "aisha",
     "status": "loaded_ok",
-    "sizeBytes": 1934428,
+    "sizeBytes": 2110000,
     "meshes": 19,
-    "triangles": 50688,
+    "triangles": 55552,
     "hasSkinnedMesh": true,
-    "boneCount": 19,
+    "boneCount": 20,
     "morphTargets": [
       "MouthOpen",
       "Blink"
@@ -274,11 +274,11 @@
   {
     "id": "emma",
     "status": "loaded_ok",
-    "sizeBytes": 1261344,
+    "sizeBytes": 1436996,
     "meshes": 18,
-    "triangles": 32380,
+    "triangles": 37244,
     "hasSkinnedMesh": true,
-    "boneCount": 19,
+    "boneCount": 20,
     "morphTargets": [
       "MouthOpen",
       "Blink"
@@ -308,11 +308,11 @@
   {
     "id": "maya",
     "status": "loaded_ok",
-    "sizeBytes": 1309812,
+    "sizeBytes": 1487228,
     "meshes": 19,
-    "triangles": 33812,
+    "triangles": 38676,
     "hasSkinnedMesh": true,
-    "boneCount": 19,
+    "boneCount": 20,
     "morphTargets": [
       "MouthOpen",
       "Blink"

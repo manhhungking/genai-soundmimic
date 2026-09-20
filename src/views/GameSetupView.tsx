@@ -4,7 +4,8 @@ import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
 import SaveRounded from '@mui/icons-material/SaveRounded';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { useNavigate, useOutletContext } from 'react-router';
+import type { AppOutletContext } from '../components/AppLayout';
 import ClipEditor from '../features/setup/ClipEditor';
 import GameRulesPanel from '../features/setup/GameRulesPanel';
 import ModelSelectionPanel from '../features/setup/ModelSelectionPanel';
@@ -26,6 +27,7 @@ const roundTones: SetupTone[] = ['blue', 'orange', 'green', 'violet'];
 export function Component() {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const { training } = useOutletContext<AppOutletContext>();
     const [savedSetup] = useState(readGameSetup);
     const [modelMode, setModelMode] = useState<ModelMode>(savedSetup?.modelMode ?? 'rotate');
     const [selectedStudent, setSelectedStudent] = useState(savedSetup?.selectedStudent ?? 0);
@@ -102,6 +104,7 @@ export function Component() {
                     }}
                     onSelectedStudentChange={setSelectedStudent}
                     selectedStudent={selectedStudent}
+                    training={training}
                 />
                 <span className="setup-connector"><ArrowForwardRounded /></span>
                 <RoundBuilder
