@@ -3689,24 +3689,35 @@ select:focus-visible {
     content: '';
 }
 
-.play-stage__three {
+/* The cast: every connected player's own painted avatar art (same as the picker), lined up
+   across the stage. The current performer steps forward from the row with a highlighted ring
+   instead of a 3D rig walking to a mic — see StageScene.tsx for why. */
+.play-stage__cast {
     position: absolute;
-    z-index: -1;
-    inset: 12% 2% 4%;
+    z-index: 1;
+    right: 6%;
+    bottom: 20%;
+    left: 6%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: center;
+    column-gap: 22px;
+    row-gap: 14px;
     pointer-events: none;
 }
 
-.stage-name-tags {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
+.play-stage__cast-member {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    transition: transform 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.stage-name-tag {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 2px 9px;
+.play-stage__cast-member span {
+    padding: 2px 10px;
     color: #fff;
     white-space: nowrap;
     background: rgba(25, 12, 14, 0.62);
@@ -3718,10 +3729,42 @@ select:focus-visible {
     backdrop-filter: blur(3px);
 }
 
-.play-stage__three canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
+.play-stage__cast-member.is-active {
+    z-index: 2;
+    transform: translateY(-22px) scale(1.22);
+}
+
+.play-stage__cast-member.is-active .avatar {
+    border-color: #ffd589;
+    box-shadow: 0 0 0 5px rgba(255, 198, 111, 0.4), var(--shadow-avatar);
+}
+
+.play-stage__cast-member.is-performing .avatar {
+    animation: stage-sing-pulse 550ms ease-in-out infinite;
+}
+
+@keyframes stage-sing-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(calc(1 + var(--sing-level, 0.3) * 0.14)); }
+}
+
+.play-stage__cast-mic {
+    position: absolute;
+    top: -14px;
+    right: -6px;
+    padding: 3px 5px !important;
+    font-size: 15px;
+    line-height: 1;
+    background: #fff7de !important;
+    border-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .play-stage__cast-member,
+    .play-stage__cast-member.is-performing .avatar {
+        animation: none;
+        transition: none;
+    }
 }
 
 .play-stage__hud {
@@ -4237,10 +4280,6 @@ select:focus-visible {
         linear-gradient(180deg, rgba(18, 6, 9, 0.05), transparent 46%, rgba(19, 6, 7, 0.18));
 }
 
-.play-stage__three {
-    inset: 5% 0 1%;
-}
-
 .play-stage__hud {
     top: 18px;
     right: 18px;
@@ -4421,38 +4460,6 @@ select:focus-visible {
     gap: 0;
 }
 
-.play-stage__asset-notice {
-    position: absolute;
-    z-index: 5;
-    bottom: 19px;
-    left: 18px;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    min-height: 34px;
-    max-width: min(280px, 30%);
-    padding: 6px 10px;
-    color: #fff0c6;
-    background: rgba(42, 25, 29, 0.74);
-    border: 1px solid rgba(255, 216, 151, 0.32);
-    border-radius: 999px;
-    font-size: 10px;
-    font-weight: 700;
-    backdrop-filter: blur(12px);
-}
-
-.play-stage__asset-notice svg {
-    flex: 0 0 auto;
-    width: 17px;
-    height: 17px;
-}
-
-.play-stage__asset-notice span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
 @media (max-width: 900px) {
     .play-stage__action-bar {
         right: 14px;
@@ -4467,10 +4474,6 @@ select:focus-visible {
         flex: 1 1 auto;
     }
 
-    .play-stage__asset-notice {
-        bottom: 84px;
-        max-width: 45%;
-    }
 }
 
 @media (max-width: 600px) {
@@ -4519,12 +4522,6 @@ select:focus-visible {
         min-height: 42px;
     }
 
-    .play-stage__asset-notice {
-        top: 86px;
-        bottom: auto;
-        left: 10px;
-        max-width: calc(100% - 76px);
-    }
 }
 
 @media (max-width: 420px) {

@@ -6,13 +6,13 @@ import MicRounded from '@mui/icons-material/MicRounded';
 import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
 import ReplayRounded from '@mui/icons-material/ReplayRounded';
 import WifiRounded from '@mui/icons-material/WifiRounded';
-import { useEffect, useState, type MutableRefObject } from 'react';
+import { useEffect, type MutableRefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import Waveform from '../../components/Waveform';
 import type { SavedGameSetup, SetupSoundIcon } from '../setup/model';
 import { computePlayerScores, computeTurnScore, type GameSnapshot } from './model';
 import Scoreboard from './Scoreboard';
-import StageScene, { type AvatarAssetIssue } from './StageScene';
+import StageScene from './StageScene';
 
 const soundEmoji: Record<SetupSoundIcon, string> = {
     bird: '🐦',
@@ -82,7 +82,6 @@ export default function PlayStage({
     viewerPlayerId,
 }: PlayStageProps) {
     const { t } = useTranslation();
-    const [avatarAssetIssues, setAvatarAssetIssues] = useState<AvatarAssetIssue[]>([]);
     const round = setup.rounds[snapshot.roundIndex] ?? setup.rounds[0];
     const activePlayer = snapshot.players.find(({ id }) => id === snapshot.activePlayerId);
     const connectedPlayers = snapshot.players.filter(({ connected }) => connected);
@@ -93,9 +92,6 @@ export default function PlayStage({
     const scores = computePlayerScores(snapshot);
     const performerOnStage = performerPhases.has(snapshot.phase);
     const roundStage = roundStageKey[snapshot.phase];
-    const assetIssueDetails = avatarAssetIssues.map(({ missingMotions, modelUrl }) => (
-        missingMotions?.length ? `${modelUrl}: ${missingMotions.join(', ')}` : modelUrl
-    )).join('\n');
 
     useEffect(() => {
         const image = new Image();
@@ -111,7 +107,6 @@ export default function PlayStage({
             <StageScene
                 activePlayerId={snapshot.activePlayerId}
                 audioLevel={audioLevel}
-                onAssetIssues={setAvatarAssetIssues}
                 phase={snapshot.phase}
                 players={snapshot.players}
             />
@@ -144,13 +139,6 @@ export default function PlayStage({
                 <div className="play-stage__countdown" role="status" aria-live="assertive">
                     <span>{t('play.recordingStartsIn')}</span>
                     <strong key={countdown}>{countdown || t('play.go')}</strong>
-                </div>
-            )}
-
-            {avatarAssetIssues.length > 0 && (
-                <div className="play-stage__asset-notice" role="status" title={assetIssueDetails}>
-                    <ErrorOutlineRounded />
-                    <span>{t('play.riggedAvatarsUnavailable', { count: avatarAssetIssues.length })}</span>
                 </div>
             )}
 
