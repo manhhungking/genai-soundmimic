@@ -22,12 +22,23 @@ const soundEmoji: Record<SetupSoundIcon, string> = {
 };
 
 // Mirrors StageScene's onStagePhases: everyone records from their waiting spot, so the
-// performer bubble should only "dock" at the mic once they actually walk up to it.
+// performer only "docks" at the mic once they actually walk up to it.
 const performerPhases = new Set<GameSnapshot['phase']>([
     'entering',
     'performing',
     'result',
 ]);
+
+// Which of the round's four stages a given game phase belongs to, shown in capitals under
+// the round card. Phases with no entry here (waiting/exiting/complete) show nothing.
+const roundStageKey: Partial<Record<GameSnapshot['phase'], string>> = {
+    entering: 'play.stagePlayback',
+    performing: 'play.stagePlayback',
+    ready: 'play.stageRecord',
+    recording: 'play.stageRecord',
+    reference: 'play.stageReveal',
+    result: 'play.stageResult',
+};
 
 type PlayStageProps = {
     audioBlocked: boolean;
@@ -81,6 +92,7 @@ export default function PlayStage({
     const turnScore = round ? computeTurnScore(round, snapshot.predictions) : 0;
     const scores = computePlayerScores(snapshot);
     const performerOnStage = performerPhases.has(snapshot.phase);
+    const roundStage = roundStageKey[snapshot.phase];
     const assetIssueDetails = avatarAssetIssues.map(({ missingMotions, modelUrl }) => (
         missingMotions?.length ? `${modelUrl}: ${missingMotions.join(', ')}` : modelUrl
     )).join('\n');
@@ -115,6 +127,7 @@ export default function PlayStage({
                         </span>
                         <strong>{round?.name ?? t('play.complete')}</strong>
                     </div>
+                    {roundStage && <span className="play-stage__round-stage">{t(roundStage)}</span>}
                 </div>
                 <div className="play-stage__hud-right">
                     <div className={`play-stage__connection${connectionReady ? ' is-ready' : ''}`}>
@@ -126,12 +139,6 @@ export default function PlayStage({
                     )}
                 </div>
             </header>
-
-            {activePlayer && snapshot.phase !== 'complete' && snapshot.phase !== 'waiting' && (
-                <div className={`play-stage__turn-bubble${performerOnStage ? ' is-on-stage' : ' is-waiting'}`}>
-                    <strong>{t('play.personTurn', { name: activePlayer.name })}</strong>
-                </div>
-            )}
 
             {snapshot.phase === 'ready' && countdown !== null && (
                 <div className="play-stage__countdown" role="status" aria-live="assertive">

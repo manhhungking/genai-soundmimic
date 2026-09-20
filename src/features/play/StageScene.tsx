@@ -205,6 +205,15 @@ export default function StageScene({
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         container.append(renderer.domElement);
 
+        // A plain DOM layer for name tags, positioned every frame by projecting each
+        // character's head into screen space — simpler and crisper than sprites baked into
+        // the WebGL scene, and it stays legible at any zoom/DPI.
+        const labelLayer = document.createElement('div');
+        labelLayer.className = 'stage-name-tags';
+        container.append(labelLayer);
+        const labels = new Map<string, HTMLDivElement>();
+        const headPoint = new THREE.Vector3();
+
         scene.add(new THREE.HemisphereLight(0xffe4bd, 0x4c261e, 2.1));
         const spot = new THREE.SpotLight(0xffc66f, 42, 15, Math.PI / 5.4, 0.72, 1.35);
         spot.position.set(1.15, 5.2, 4.7);
@@ -238,6 +247,11 @@ export default function StageScene({
                 actors.set(player.id, actor);
                 scene.add(actor.root);
                 transitionTo(actor, 'idle', false);
+                const label = document.createElement('div');
+                label.className = 'stage-name-tag';
+                label.textContent = player.name;
+                labelLayer.append(label);
+                labels.set(player.id, label);
                 return missingMotions.length
                     ? { missingMotions, modelUrl: definition.modelUrl, variant: player.avatar }
                     : undefined;
@@ -297,6 +311,20 @@ export default function StageScene({
                     ? 0.82 + Math.min(1, audioLevel.current) * 0.8
                     : 1;
                 actor.mixer.update(delta);
+
+                const label = labels.get(player.id);
+                if (label) {
+                    headPoint.set(actor.root.position.x, floorY + 2.18 * actor.root.scale.x + 0.14, actor.root.position.z);
+                    headPoint.project(camera);
+                    if (headPoint.z > 1) {
+                        label.style.display = 'none';
+                    } else {
+                        label.style.display = '';
+                        const xPx = (headPoint.x * 0.5 + 0.5) * container.clientWidth;
+                        const yPx = (1 - (headPoint.y * 0.5 + 0.5)) * container.clientHeight;
+                        label.style.transform = `translate(-50%, -100%) translate(${xPx}px, ${yPx}px)`;
+                    }
+                }
             });
             renderer.render(scene, camera);
             frame = requestAnimationFrame(animate);
@@ -322,6 +350,7 @@ export default function StageScene({
             });
             renderer.dispose();
             renderer.domElement.remove();
+            labelLayer.remove();
         };
     }, [audioLevel, onAssetIssues, playerKey, scenePlayers]);
 

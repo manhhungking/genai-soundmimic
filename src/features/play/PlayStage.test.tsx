@@ -60,7 +60,7 @@ describe('PlayStage permissions and XAI', () => {
         // yet during the countdown/recording phases.
         expect(screen.getByRole('region', { name: /Sound Mimic game stage/i })).toHaveClass('phase-ready');
         expect(screen.getByRole('region', { name: /Sound Mimic game stage/i })).not.toHaveClass('has-active-performer');
-        expect(document.querySelector('.play-stage__turn-bubble')).toHaveClass('is-waiting');
+        expect(screen.getByText('RECORD')).toBeInTheDocument();
         expect(screen.queryByLabelText('Turn order')).not.toBeInTheDocument();
 
         view.rerender(
@@ -106,8 +106,9 @@ describe('PlayStage permissions and XAI', () => {
         );
 
         expect(screen.getByRole('region', { name: /Sound Mimic game stage/i })).toHaveClass('phase-waiting');
-        // The game hasn't started yet, so there's no "so-and-so's turn" to announce.
-        expect(document.querySelector('.play-stage__turn-bubble')).not.toBeInTheDocument();
+        // No round stage badge before the game has started (the 'waiting' phase has no entry
+        // in roundStageKey).
+        expect(document.querySelector('.play-stage__round-stage')).not.toBeInTheDocument();
         expect(document.querySelector('.play-stage__action-bar')).toBeInTheDocument();
         expect(document.querySelector('.play-stage__controls')).not.toBeInTheDocument();
         expect(document.querySelector('.play-stage__queue')).not.toBeInTheDocument();

@@ -3696,6 +3696,28 @@ select:focus-visible {
     pointer-events: none;
 }
 
+.stage-name-tags {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.stage-name-tag {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 2px 9px;
+    color: #fff;
+    white-space: nowrap;
+    background: rgba(25, 12, 14, 0.62);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(3px);
+}
+
 .play-stage__three canvas {
     display: block;
     width: 100%;
@@ -3845,38 +3867,6 @@ select:focus-visible {
     font-size: 12px;
     font-weight: 800;
     color: #b5651d;
-}
-
-.play-stage__turn-bubble {
-    position: absolute;
-    z-index: 3;
-    top: 96px;
-    left: 18px;
-    display: grid;
-    min-width: 172px;
-    padding: 9px 14px;
-    color: #47261f;
-    background: #fff7de;
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 12px;
-    box-shadow: 0 9px 20px rgba(43, 16, 10, 0.22);
-    text-align: center;
-}
-
-.play-stage__turn-bubble strong,
-.play-stage__turn-bubble span {
-    position: relative;
-    z-index: 1;
-}
-
-.play-stage__turn-bubble strong {
-    font-size: clamp(16px, 1.6vw, 24px);
-}
-
-.play-stage__turn-bubble span {
-    color: #77584d;
-    font-size: 11px;
-    font-weight: 700;
 }
 
 .play-stage__result,
@@ -4206,12 +4196,6 @@ select:focus-visible {
         left: 10px;
     }
 
-    .play-stage__turn-bubble {
-        top: 84px;
-        left: 10px;
-        min-width: 160px;
-    }
-
     .play-stage__countdown {
         left: 54%;
         min-width: 128px;
@@ -4298,6 +4282,16 @@ select:focus-visible {
     line-height: 1;
 }
 
+.play-stage__round .play-stage__round-stage {
+    margin-top: 6px;
+    padding-top: 6px;
+    color: #b5651d;
+    border-top: 1px solid rgba(38, 14, 12, 0.14);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
 .play-stage__connection {
     min-height: 36px;
     padding: 6px 10px;
@@ -4306,28 +4300,6 @@ select:focus-visible {
     font-size: 10px;
 }
 
-.play-stage__turn-bubble {
-    /* Docked under the round card, not centred on the stage — a plain status card (no tail,
-       no tilt) rather than a speech bubble the character is "saying". */
-    top: 96px;
-    left: 18px;
-    min-width: 168px;
-    padding: 9px 15px;
-    transition: opacity 200ms ease;
-}
-
-.play-stage__turn-bubble.is-waiting {
-    opacity: 0.85;
-}
-
-.play-stage__turn-bubble strong {
-    font-size: clamp(15px, 1.45vw, 22px);
-}
-
-.play-stage__turn-bubble span {
-    max-width: 190px;
-    margin: 2px auto 0;
-}
 
 .play-stage__action-bar {
     position: absolute;
@@ -4518,13 +4490,6 @@ select:focus-visible {
 
     .play-stage__connection span {
         display: none;
-    }
-
-    .play-stage__turn-bubble,
-    .play-stage__turn-bubble.is-on-stage {
-        top: 84px;
-        left: 10px;
-        min-width: 145px;
     }
 
     .play-stage__action-bar {
